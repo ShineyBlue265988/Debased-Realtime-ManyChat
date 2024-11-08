@@ -46,6 +46,7 @@ wss.on('connection', (ws) => {
   const newMessage = new Message({
     username: data.username,
     text: data.text,
+    publicKey: data.publicKey,
     timestamp: new Date()
   });
     try {

@@ -1,0 +1,79 @@
+// 
+// root.scss
+//
+
+@mixin color-mode($mode: light, $root: false) {
+    @if $color-mode-type =="media-query" {
+        @if $root ==true {
+            @media (prefers-color-scheme: $mode) {
+                :root {
+                    @content;
+                }
+            }
+        }
+
+        @else {
+            @media (prefers-color-scheme: $mode) {
+                @content;
+            }
+        }
+    }
+
+    @else {
+        [data-bs-theme="#{$mode}"] {
+            @content;
+        }
+    }
+}
+
+//theme-light
+:root,
+[data-bs-theme="light"] {
+    --#{$prefix}header-bg: #ffffff;
+    --#{$prefix}header-item-sub-color: #{$text-muted};
+    --#{$prefix}header-height: 70px;
+
+    //sidebar vertical light
+    --#{$prefix}sidebar-bg:                                         #2e2e2e;
+    --#{$prefix}sidebar-menu-item-color:                            #878a92;
+    --#{$prefix}sidebar-menu-item-active-color:                     #4eac6d;
+    --#{$prefix}sidebar-menu-item-active-bg:                        #f7f7ff;
+    --#{$prefix}sidebar-sub-bg:                                     #ffffff;
+
+    // chat
+    --#{$prefix}chat-primary-bg:                                    #ffffff;
+    --#{$prefix}chat-text-color:                                    #495057;
+    --#{$prefix}footer-bg:                                          rgba(255,255,255,.05);
+    
+    
+    --#{$prefix}modal-content-bg:                                    #ffffff;
+    --#{$prefix}input-bg:                                             #ffffff;
+
+
+}
+
+//theme dark
+@if $enable-dark-mode {
+    @include color-mode(dark, true) {
+        --#{$prefix}light: #{$light-dark};
+        --#{$prefix}light-rgb: #{to-rgb($light-dark)};
+        --#{$prefix}dark: #{$light-dark};
+        --#{$prefix}dark-rgb: #{to-rgb($light-dark)};
+
+
+        --#{$prefix}sidebar-bg:                                     #2e2e2e;
+        --#{$prefix}sidebar-menu-item-color:                        #878a92;
+        --#{$prefix}sidebar-menu-item-active-color:                 #4eac6d;
+        --#{$prefix}sidebar-menu-item-active-bg:                    #f7f7ff;
+        --#{$prefix}sidebar-sub-bg:                                 #262626;
+
+        --#{$prefix}chat-primary-bg:                                #383838;
+        --#{$prefix}chat-text-color:                                #ffffffcc;
+        --#{$prefix}footer-bg:                                      rgba(46,46,46,.5); 
+
+        --#{$prefix}modal-content-bg:                               #262626;
+
+        --#{$prefix}input-bg:                                       #{$gray-800};
+
+    }
+}

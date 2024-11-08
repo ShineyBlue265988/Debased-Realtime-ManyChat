@@ -1,0 +1,80 @@
+// 
+// _dropdown.scss
+// 
+
+.dropdown-menu {
+  box-shadow: $box-shadow;
+  animation-name: DropDownSlide;
+  animation-duration: .3s;
+  animation-fill-mode: both;
+  position: absolute;
+  z-index: 1000;
+
+  &.dropdown-megamenu {
+    padding: 20px;
+    left: 0 !important;
+    right: 0 !important;
+  }
+
+  &[data-popper-placement="top-start"] {
+    animation-name: DropDownSlideDown;
+  }
+}
+
+
+@keyframes DropDownSlide {
+  100% {
+      margin-top: -1px;
+  }
+  0% {
+      margin-top: 8px;
+  }
+}
+
+@keyframes DropDownSlideDown {
+  100% {
+      margin-bottom: 0;
+  }
+  0% {
+      margin-bottom: 8px;
+  }
+}
+
+@media (min-width: 600px) {
+  .dropdown-menu-xl {
+    width: 420px;
+  }
+
+  .dropdown-menu-lg {
+    width: 320px;
+  }
+
+  .dropdown-menu-md {
+    width: 240px;
+  }
+}
+
+.dropdown-divider{
+  border-top-color: var(--#{$prefix}border-color);
+}
+
+// Dropdown Mega Menu
+
+.dropdown-mega {
+  position: static!important;
+}
+
+
+
+// Dropdown size
+
+.dropdown-mega-menu-xl{
+  width: 40rem;
+}
+
+.dropdown-mega-menu-lg{
+  width: 26rem;
+}
+.dropdown-mega-menu-xl{
+  width: 32rem;
+}

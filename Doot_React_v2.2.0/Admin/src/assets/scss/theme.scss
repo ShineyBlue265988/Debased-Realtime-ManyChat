@@ -1,0 +1,38 @@
+@import "./icons.scss";
+
+@import "./bootstrap.scss";
+@import "./app.scss";
+
+// RTL
+// @import "./rtl/general-rtl";
+// @import "./rtl/bootstrap-rtl";
+// @import "./rtl/spacing-rtl";
+// @import "./rtl/float-rtl";
+// @import "./rtl/text-rtl";
+// @import "./rtl/structure-rtl";
+// @import "./rtl/pages-rtl";
+ 
+@import "./custom.scss";
+
+// Emoji picker
+aside.EmojiPickerReact.epr-main {
+    position: absolute !important;
+    bottom: 82px;
+    z-index: 2;
+    left: 23px;
+};
+
+aside.EmojiPickerReact.epr-main {
+    background-color: var(--#{$prefix}secondary-bg);
+    border-color: var(--#{$prefix}border-color) !important;
+}
+
+.EmojiPickerReact .epr-search-container input.epr-search {
+    background-color: var(--#{$prefix}tertiary-bg) !important;
+    border-color: var(--#{$prefix}border-color) !important;
+}
+
+.EmojiPickerReact li.epr-emoji-category>.epr-emoji-category-label {
+    background-color: var(--#{$prefix}tertiary-bg) !important;
+    color: var(--#{$prefix}tertiary-color) !important;
+}
