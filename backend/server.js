@@ -25,14 +25,20 @@ wss.on('connection', (ws) => {
     .then(existingMessages => {
       ws.send(JSON.stringify({ type: 'history', messages: existingMessages }));
     });
-
+  ws.on('error', (error) => {
+    console.error('WebSocket error:', error);
+  });
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
+    if (!data.username || !data.text || !data.publicKey) {
+      console.error('Invalid message format');
+      return;
+    }
     console.log('Received message:', data);
     try {
       await User.findOneAndUpdate(
         { username: data.username },
-        { 
+        {
           username: data.username,
           publicKey: data.publicKey,
           lastSeen: new Date()
@@ -40,33 +46,41 @@ wss.on('connection', (ws) => {
         { upsert: true }
       );
 
-  }catch (error) {
-    console.error('Error handling user', error);
-  }
-  const newMessage = new Message({
-    username: data.username,
-    text: data.text,
-    publicKey: data.publicKey,
-    timestamp: new Date()
-  });
+    } catch (error) {
+      console.error('Error handling user', error);
+    }
+    const messageCount = {}; // Store message count per user
+    // In your message handling logic:
+    if (messageCount[data.username] > 10) { // 10 messages per minute
+      console.log('Rate limit exceeded for user:', data.username);
+      return;
+    }
+    messageCount[data.username] = (messageCount[data.username] || 0) + 1;
+    setTimeout(() => messageCount[data.username]--, 60000); // Reset count after 1 minute
+    const newMessage = new Message({
+      username: data.username,
+      text: data.text,
+      publicKey: data.publicKey,
+      timestamp: new Date()
+    });
     try {
       await newMessage.save();
       messages.push(newMessage);
-      
+
       // Keep only last 500 messages in memory
       if (messages.length > 500) {
         messages.shift();
       }
 
       // Broadcast to all connected clients
-clients.forEach((client, id) => {
-  if (client.readyState === WebSocket.OPEN && id !== clientId) {  // Only send to other clients
-    client.send(JSON.stringify({
-      type: 'message',
-      message: newMessage
-    }));
-  }
-});
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {  // Only send to other clients
+          client.send(JSON.stringify({
+            type: 'message',
+            message: newMessage
+          }));
+        }
+      });
 
     } catch (error) {
       console.error('Error saving message:', error);

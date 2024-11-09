@@ -199,18 +199,21 @@ const ChatBox = ({ username, walletAddress }) => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log('Received message:', data);
         if (data.type === 'history') {
           setMessages(data.messages);
           scrollToBottom(true);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
+          console.log('Added message:', data.message);
         }
       } catch (error) {
         console.log('Message processing error:', error);
       }
     };
 
+   
     ws.onclose = () => {
       console.log('WebSocket Disconnected - Retrying in 3s');
       wsRef.current = null;
