@@ -186,8 +186,8 @@ const ChatBox = ({ username, walletAddress }) => {
       return;
     }
 
-    const ws = new WebSocket(backgroundUrl);
-    console.log('WebSocket Connecting...', `${backgroundUrl}`);
+    const ws = new WebSocket("wss://debased-chat.onrender.com");
+    console.log('WebSocket Connecting...', `wss://debased-chat.onrender.com`);
     ws.onerror = (error) => {
       console.error('WebSocket Error:', error);
     };
