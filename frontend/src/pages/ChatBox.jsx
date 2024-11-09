@@ -11,6 +11,7 @@ import BasenameDisplay from '../components/ui/basename'; // Import the new compo
 import { useSelector } from "react-redux";
 
 const ChatBox = ({ username, walletAddress }) => {
+  const backgroundUrl = import.meta.env.VITE_BACKGROUND_URL;
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
   const [showScrollButton, setShowScrollButton] = useState(false);
@@ -180,14 +181,16 @@ const ChatBox = ({ username, walletAddress }) => {
       }
     }
   };
-
   const connectWebSocket = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
     }
 
-    const ws = new WebSocket("ws://192.168.142.11:5000");
-
+    const ws = new WebSocket(`wss://${backgroundUrl}`);
+    console.log('WebSocket Connecting...', `wss://${backgroundUrl}`);
+    ws.onerror = (error) => {
+      console.error('WebSocket Error:', error);
+    };
     ws.onopen = () => {
       console.log('WebSocket Connected');
       wsRef.current = ws;
