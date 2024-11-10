@@ -238,6 +238,14 @@ const ChatBox = ({ username, walletAddress }) => {
     if (text.match(/(http|https):\/\/[^\s]+/) || text.match(/\.(jpg|jpeg|png|gif)/i)) {
       return;
     }
+    console.log('Sending message:', JSON.stringify({
+      username,
+      publicKey: walletAddress,
+      text: text.trim(),
+      timestamp: new Date(),
+      read: false,
+      mentions: text.match(/@[\w]+/g) || []
+    }));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         username,
