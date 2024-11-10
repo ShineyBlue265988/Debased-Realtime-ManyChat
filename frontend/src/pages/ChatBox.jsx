@@ -227,6 +227,7 @@ const ChatBox = ({ username, walletAddress }) => {
     const ws = connectWebSocket();
     return () => {
       if (ws && ws.readyState === WebSocket.OPEN) {
+        console.log('WebSocket Closing...');
         ws.close();
       }
     };
