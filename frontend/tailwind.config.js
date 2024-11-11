@@ -17,7 +17,9 @@ module.exports = {
       scrollbar:{
         width: '8px',
         track: 'bg-gray-100',
-        thumb: 'bg-gray-500 rounded-md',}
+        thumb: 'bg-gray-500 rounded-md',},
+        
+        
     },
   },
   plugins: [require('tailwind-scrollbar'),],

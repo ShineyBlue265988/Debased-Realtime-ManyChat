@@ -1,5 +1,29 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Spicy+Rice&display=swap');
 
+/* Custom scrollbar for WebKit browsers */
+.scrollbar-thin::-webkit-scrollbar {
+    width: 12px; /* Width of the scrollbar */
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Background of the scrollbar track */
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background-color: #888; /* Color of the scrollbar thumb */
+    border-radius: 10px; /* Roundness of the scrollbar thumb */
+    border: 3px solid #f1f1f1; /* Padding around the scrollbar thumb */
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the scrollbar thumb on hover */
+  }
+  
+  /* For Firefox */
+  .scrollbar-thin {
+    scrollbar-width: thin; /* Width of the scrollbar */
+    scrollbar-color: #888 #f1f1f1; /* Color of the scrollbar thumb and track */
+  }
+  
