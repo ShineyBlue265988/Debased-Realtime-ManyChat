@@ -18,7 +18,7 @@ import { getSubscriptionState } from './store/authSlice';
 const ProtectedRoute = ({ children }) => {
   const { isSubscribed, loading } = useSelector(state => state.auth);
   const username = useSelector(state => state.auth.username);
-
+  console.log('username', username);
   const { primaryWallet } = useDynamicContext();
   // console.log('primaryWallet', primaryWallet);
   if (loading) {
@@ -40,7 +40,7 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  const [username, setUsername] = useState("123");
+  const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
   const [publicKey, setPublicKey] = useState(null);
   setPublicKey(useSelector(state => state.auth.publicKey));
@@ -83,11 +83,11 @@ function App() {
     },
   };
   useEffect(() => {
-    if (walletAddress) {
-      setUsername(walletAddress.slice(0, 7));
-      // console.log("Username:", username);
+    setUsername(useSelector(state => state.auth.username));
+    setPublicKey(primaryWallet?.address);
+    console.log("publicKey", publicKey);
     }
-  }, [walletAddress]);
+, [primaryWallet]);
   const handleLogin = (user) => {
     // console.log("App component received user:", user);
     const primaryWallet = user.primaryWallet; // Access primaryWallet from the user object
