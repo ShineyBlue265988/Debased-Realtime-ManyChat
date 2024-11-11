@@ -18,6 +18,7 @@ import { getSubscriptionState } from './store/authSlice';
 const ProtectedRoute = ({ children }) => {
   const { isSubscribed, loading } = useSelector(state => state.auth);
   const username = useSelector(state => state.auth.username);
+
   const { primaryWallet } = useDynamicContext();
   // console.log('primaryWallet', primaryWallet);
   if (loading) {
@@ -41,7 +42,8 @@ const ProtectedRoute = ({ children }) => {
 function App() {
   const [username, setUsername] = useState("123");
   const [user, setUser] = useState(null);
-  const [walletAddress, setWalletAddress] = useState(null);
+  const [publicKey, setPublicKey] = useState(null);
+  setPublicKey(useSelector(state => state.auth.publicKey));
   const queryClient = new QueryClient();
   const dynamicSettings = {
     environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",
@@ -120,9 +122,9 @@ function App() {
                         width: '100vw',
                       }}>
                         {
-                          // <ProtectedRoute>
-                          <ChatBox username={username} walletAddress={walletAddress} />
-                          // </ProtectedRoute>
+                          <ProtectedRoute>
+                          <ChatBox username={username} publicKey={publicKey} />
+                          </ProtectedRoute>
                           }
                       </div>
                       :

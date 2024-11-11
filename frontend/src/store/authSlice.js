@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
+import { set } from 'mongoose';
 
 const CONTRACT_ADDRESS = "0xFBeF9631bff614C602c09C806FDA7eeceBf30bC7";
 const CONTRACT_ABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, 
@@ -62,7 +63,18 @@ export const fetchUserName = createAsyncThunk(
     return ensName || address.slice(0, 7) ;
   }
 );
+export const fetchPublicKey = createAsyncThunk(
+  'auth/fetchPublicKey',
+  async (wallet) => {
+    if (!wallet) return null;
 
+    const provider = await getWeb3Provider(wallet);
+    const publicKey = wallet.publicKey;
+    
+    console.log("publicKey",publicKey)
+    return publicKey ;
+  }
+);
 
 const authSlice = createSlice({
   name: 'auth',
@@ -73,12 +85,16 @@ const authSlice = createSlice({
     subscriptionEndDate: null,
     isSubscribed: false,
     loading: false,
-    error: null
+    error: null,
+    publicKey: null
   },
   reducers: {
     setAuth: (state, action) => {
       state.isAuthenticated = true;
       state.walletAddress = action.payload;
+    },
+    setPublicKey: (state, action) => {
+      state.publicKey = action.payload;
     },
     setUserName:(state, action) =>{
       state.username=action.payload;
@@ -92,6 +108,7 @@ const authSlice = createSlice({
       state.username = null;
       state.subscriptionEndDate = null;
       state.isSubscribed = false;
+      state.publicKey = null;
     }
   },
   extraReducers: (builder) => {
