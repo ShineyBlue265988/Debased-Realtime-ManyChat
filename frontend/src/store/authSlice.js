@@ -1,8 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { ethers } from 'ethers';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
-import { set } from 'mongoose';
-
 const CONTRACT_ADDRESS = "0xFBeF9631bff614C602c09C806FDA7eeceBf30bC7";
 const CONTRACT_ABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, 
 { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "to", "type": "address" }], "name": "FeePaid", "type": "event" }, 
