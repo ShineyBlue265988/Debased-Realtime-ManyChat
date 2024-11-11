@@ -67,7 +67,11 @@ const ChatBox = ({ username, walletAddress }) => {
   };
   const isAtBottom = () => {
     const container = messageContainerRef.current;
-    return container.scrollHeight - container.scrollTop <= container.clientHeight + 100;
+    console.log("container.scrollHeight",container.scrollHeight,"container.scrollTop",container.scrollTop,"container.clientHeight",container.clientHeight)
+    
+    if(container.scrollHeight - container.scrollTop <= container.clientHeight+50) return true ;
+    else return false;
+
   };
   const handleEmojiSelect = (emoji) => {
     setText(text + emoji.native);
@@ -147,14 +151,14 @@ const ChatBox = ({ username, walletAddress }) => {
   }, [newMessageCount]);
 
   const scrollToBottom = (force = false) => {
-    if (messageContainerRef.current) {
+    // if (messageContainerRef.current) {
       const container = messageContainerRef.current;
       const scrollHeight = container.scrollHeight;
       const height = container.clientHeight;
       const maxScrollTop = scrollHeight - height;
 
-      container.scrollTop = maxScrollTop; // Add extra padding to ensure full scroll
-    }
+      container.scrollTop = maxScrollTop+100; // Add extra padding to ensure full scroll
+    // }
     setNewMessageCount(0);
     setShowScrollButton(false);
   };
@@ -164,19 +168,22 @@ const ChatBox = ({ username, walletAddress }) => {
       // For own messages: just add message and scroll to bottom
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
-      setTimeout(() => scrollToBottom(true), 100); // Add delay to ensure DOM update
+      setTimeout(() => scrollToBottom(true), 50); // Add delay to ensure DOM update
       setNewMessageCount(0); // Reset unread count
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
-      if (!isAtBottom()) {
-
+      const bottomstate=isAtBottom()
+      console.log("bottomstate",bottomstate);
+      if (!bottomstate) {
+        console.log('Scrolling to bottom',isAtBottom());
         setNewMessageCount(prev => prev + 1);
         setShowScrollButton(true);
       } else {
-        scrollToBottom(true);
+        console.log('Scrolling to bottom');
+        setTimeout(() => scrollToBottom(true), 50);
         setNewMessageCount(0);
       }
     }
@@ -332,7 +339,7 @@ const ChatBox = ({ username, walletAddress }) => {
       </div>
 
       {showScrollButton && (
-        <div className="absolute bottom-40 right-4 flex flex-col items-center hover:scale-105 ">
+        <div className="absolute bottom-32 right-4 flex flex-col items-center hover:scale-105 ">
           {newMessageCount > 0 && (
             <div className="bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-semibold mb-1 translate-x-3 translate-y-5">
               {newMessageCount}
