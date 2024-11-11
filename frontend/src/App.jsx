@@ -3,24 +3,21 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import ChatBox from './pages/ChatBox';
 import Login from './pages/Login';
 import WelcomeModal from './pages/WelcomeModal';
+import { Provider, useSelector } from 'react-redux';
+import { store } from './store/store'; // Ensure you import your store
 import SubscriptionPages from './pages/SubscriptionPages';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DynamicContextProvider, useDynamicContext } from '@dynamic-labs/sdk-react-core';
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { base, baseSepolia } from 'viem/chains';
 import Header from './components/ui/Header';
-import { Provider, useSelector, useDispatch } from 'react-redux';
-import { store } from './store/store';
-import { getSubscriptionState } from './store/authSlice';
-
-
-
+import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
+const username="";
+const walletAddress="";
 const ProtectedRoute = ({ children }) => {
-  const { isSubscribed, loading } = useSelector(state => state.auth);
   const username = useSelector(state => state.auth.username);
-  console.log('username', username);
-  const { primaryWallet } = useDynamicContext();
-  // console.log('primaryWallet', primaryWallet);
+  const isSubscribed = useSelector(state => state.auth.isSubscribed); // Fixed: Added the correct state property
+  const loading = useSelector(state=>state.auth.loading);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -29,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
-  if (!primaryWallet || !username) {
+  if (!username) {
     return <Navigate to="/" />;
   }
 
@@ -40,11 +37,10 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  const [username, setUsername] = useState("");
   const [user, setUser] = useState(null);
-  const [publicKey, setPublicKey] = useState(null);
-  setPublicKey(useSelector(state => state.auth.publicKey));
   const queryClient = new QueryClient();
+  const username = useSelector(state => state.auth.username);
+  const walletAddress = useSelector(state => state.auth.walletAddress);
   const dynamicSettings = {
     environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",
     walletConnectors: [EthereumWalletConnectors],
@@ -82,12 +78,14 @@ function App() {
       },
     },
   };
-  useEffect(() => {
-    setUsername(useSelector(state => state.auth.username));
-    setPublicKey(primaryWallet?.address);
-    console.log("publicKey", publicKey);
-    }
-, [primaryWallet]);
+  // useEffect(() => {
+  //   if (primaryWallet) {
+  //     setUsername(primaryWallet.walletAddress.slice(0, 7));
+  //     console.log("Username:", username);
+  //     setWalletAddress(primaryWallet.walletAddress)
+  //     console.log("Wallet Address",walletAddress)
+  //   }
+  // }, [primaryWallet]);
   const handleLogin = (user) => {
     // console.log("App component received user:", user);
     const primaryWallet = user.primaryWallet; // Access primaryWallet from the user object
@@ -97,7 +95,9 @@ function App() {
     setUsername(address?.slice(0, 7)); // Set username based on wallet address
     // console.log("Username:", username);
   };
-
+  console.log("Username:", username);
+  console.log("Wallet Address:", walletAddress);
+  // console.log("Public Key:", publicKey);
   return (
     <Router>
       <Provider store={store}>
@@ -123,7 +123,7 @@ function App() {
                       }}>
                         {
                           <ProtectedRoute>
-                          <ChatBox username={username} publicKey={publicKey} />
+                          <ChatBox username={username} walletAddress={walletAddress} />
                           </ProtectedRoute>
                           }
                       </div>

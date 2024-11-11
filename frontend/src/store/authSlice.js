@@ -57,7 +57,7 @@ export const fetchUserName = createAsyncThunk(
     } catch (error) {
       console.error('Error fetching ENS name:', error);
     }
-
+    console.log(ensName, address.slice(0,7))
     return ensName || address.slice(0, 7) ;
   }
 );

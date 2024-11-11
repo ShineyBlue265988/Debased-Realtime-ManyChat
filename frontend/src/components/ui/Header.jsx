@@ -1,9 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useDynamicContext, DynamicWidget } from '@dynamic-labs/sdk-react-core';
 import { useState, useEffect } from 'react';
-import { FiMenu, FiX } from 'react-icons/fi'; // Import menu icons
+import { FiMenu, FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAuth, logout, fetchUserName, getSubscriptionState } from '../../store/authSlice';
+import { setAuth, logout, fetchUserName, getSubscriptionState, fetchPublicKey } from '../../store/authSlice';
 import debased from '../icons/debased.png';
 
 const Header = () => {
@@ -11,45 +11,34 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, username, isSubscribed } = useSelector(state => state.auth);
+  
+  const { isAuthenticated, username } = useSelector(state => state.auth);
+
+  // Navigation items
   const navItems = [
     { label: 'Home', path: '/' },
     { label: 'ChatRoom', path: '/chat' },
     { label: 'Pricing', path: '/subscription' },
   ];
+
+  // Effect to handle wallet connection
   useEffect(() => {
     if (primaryWallet) {
       dispatch(setAuth(primaryWallet.address));
       dispatch(fetchUserName(primaryWallet));
+      dispatch(fetchPublicKey(primaryWallet));
       dispatch(getSubscriptionState(primaryWallet));
     }
   }, [primaryWallet, dispatch]);
-  const getEnsName = async () => {
-    const publicClient = await primaryWallet?.getPublicClient()
 
-    // Now you can use the public client to read data from the blockchain
-    const ens = await publicClient?.getEnsName({ address: primaryWallet.address })
-    return ens
-  }
-  // useEffect(() => {
-  //   if (primaryWallet) {
-  //     const address = primaryWallet?.address
-  //     const ensName = getEnsName()
-  //     console.log('ensName', ensName)
-  //     if (ensName) {
-  //       setUsername(ensName)
-  //     }
-  //     else {
-  //       setUsername(address?.slice(0, 7));
-  //     }
-  //   }
-  // }, [primaryWallet]);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle menu on click
+
   const handleLogOutClick = () => {
-    handleLogOut();
-    dispatch(logout());
+    handleLogOut(); // Log out from Dynamic context
+    dispatch(logout()); // Clear Redux state
+    navigate('/'); // Redirect to home after logout
   };
-  // console.log('primaryWallet', primaryWallet);
+
   return (
     <header className="bg-white shadow-md w-full border-b-4 border-gray-200">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-4">
@@ -65,7 +54,7 @@ const Header = () => {
             />
 
             <div className="md:hidden">
-              <button onClick={toggleMenu} aria-label="Toggle menu">
+              <button onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
                 {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
             </div>
@@ -87,7 +76,8 @@ const Header = () => {
             <DynamicWidget />
             {isAuthenticated && (
               <>
-                <span className="text-gray-600">{username}</span>
+                {/* Uncomment if you want to show username */}
+                {/* <span className="text-gray-600">{username}</span> */}
                 <button
                   onClick={handleLogOutClick}
                   className="text-red-600 hover:text-red-700 hidden md:block"
