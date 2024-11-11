@@ -209,7 +209,7 @@ const ChatBox = ({ username, walletAddress }) => {
         console.log('Received message:', data);
         if (data.type === 'history') {
           setMessages(data.messages);
-          scrollToBottom(true);
+          setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
