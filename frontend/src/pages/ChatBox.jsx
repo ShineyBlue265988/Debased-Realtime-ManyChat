@@ -247,6 +247,18 @@ const ChatBox = ({ username, walletAddress }) => {
       read: false,
       mentions: text.match(/@[\w]+/g) || []
     }));
+    const newMessage = {
+      _id: `temp-${Date.now()}`, // Temporary ID
+      username,
+      publicKey: walletAddress,
+      text: text.trim(),
+      timestamp: new Date(),
+      read: false,
+      mentions: text.match(/@[\w]+/g) || []
+    };
+    setMessages(prev => [...prev, newMessage]);
+
+    console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         username,
@@ -258,7 +270,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }));
       setText("");
       setNewMessageCount(0);
-
+      
       // Add small delay to ensure DOM update
       setTimeout(() => {
         if (messageContainerRef.current) {
