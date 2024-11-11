@@ -85,7 +85,7 @@ const Login = () => {
                 <div className='flex flex-col'>
                   <h3 className="text-xl font-semibold mb-2 text-black z-50">Build Your Digital Identity</h3>
                   <p className="text-gray-600 text-sm">
-                  Use your ENS or Base name to log in and join the community. Show off your unique identity as part of the deBase chat experience.
+                    Use your ENS or Base name to log in and join the community. Show off your unique identity as part of the deBase chat experience.
                   </p>
                 </div>
               </div>
@@ -97,7 +97,7 @@ const Login = () => {
                 <div className='flex flex-col'>
                   <h3 className="text-xl font-semibold mb-2 text-black">Connect & Chat in Real-Time</h3>
                   <p className="text-gray-600 text-sm">
-                  Dive into a continuous chat stream with other crypto enthusiasts, sharing insights, jokes, and conversations that never end.
+                    Dive into a continuous chat stream with other crypto enthusiasts, sharing insights, jokes, and conversations that never end.
                   </p>
                 </div>
               </div>
@@ -112,7 +112,7 @@ const Login = () => {
                 <div className='flex flex-col'>
                   <h3 className="text-xl font-semibold mb-2 text-black">Simple and Fun</h3>
                   <p className="text-gray-600 text-sm">
-                  With a straightforward, no-threads format, deBase keeps things light and lively. No complex setup or endless threads—just one chatbox where everyone can jump in!
+                    With a straightforward, no-threads format, deBase keeps things light and lively. No complex setup or endless threads—just one chatbox where everyone can jump in!
                   </p>
                 </div>
               </div>
@@ -132,9 +132,9 @@ const Login = () => {
             <div className='order-1 md:order-2 md:px-12'>
               <h2 className="text-4xl font-bold mb-6">What is deBase?</h2>
               <p className="text-gray-600 text-xl leading-relaxed text-start">
-              deBase is a new kind of social space where crypto users connect with their Ethereum identity. 
-              <br />
-              Whether you’re here to share ideas, join the banter, or just see what others are saying, deBase keeps it real and engaging.
+                deBase is a new kind of social space where crypto users connect with their Ethereum identity.
+                <br />
+                Whether you’re here to share ideas, join the banter, or just see what others are saying, deBase keeps it real and engaging.
               </p>
             </div>
           </div>
@@ -153,8 +153,8 @@ const Login = () => {
             </p>
           </div>
           <Accordion type="single" collapsible className="w-full space-y-2">
-            <AccordionItem value="item-1" className="border-b">
-              <AccordionTrigger className="text-lg font-medium">
+            <AccordionItem value="item-1" className="border-b w-full">
+              <AccordionTrigger className="text-lg font-medium text-left">
                 What is deBase?
               </AccordionTrigger>
               <AccordionContent className="text-md">
