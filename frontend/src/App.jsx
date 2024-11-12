@@ -7,15 +7,18 @@ import { Provider, useSelector } from 'react-redux';
 import { store } from './store/store'; // Ensure you import your store
 import SubscriptionPages from './pages/SubscriptionPages';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DynamicContextProvider, useDynamicContext } from '@dynamic-labs/sdk-react-core';
+import { DynamicContextProvider, useDynamicContext,useRpcProviders } from '@dynamic-labs/sdk-react-core';
+import { evmProvidersSelector } from '@dynamic-labs/ethereum-core'
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { base, baseSepolia } from 'viem/chains';
 import Header from './components/ui/Header';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
-const username="";
+import { getName } from '@coinbase/onchainkit/identity';
+ 
+
 const walletAddress="";
-const ProtectedRoute = ({ children }) => {
-  const username = useSelector(state => state.auth.username);
+const ProtectedRoute = ({address, children }) => {
+  let username = useSelector(state => state.auth.username);
   const isSubscribed = useSelector(state => state.auth.isSubscribed); // Fixed: Added the correct state property
   const loading = useSelector(state=>state.auth.loading);
   if (loading) {
@@ -26,6 +29,8 @@ const ProtectedRoute = ({ children }) => {
     );
   }
 
+  // let username = useSelector(state => state.auth.username);
+  console.log("Username:", username);
   if (!username) {
     return <Navigate to="/" />;
   }
@@ -40,10 +45,12 @@ function App() {
   const [user, setUser] = useState(null);
   const queryClient = new QueryClient();
   const username = useSelector(state => state.auth.username);
+  console.log("Username:", username);
   const walletAddress = useSelector(state => state.auth.walletAddress);
   const dynamicSettings = {
     environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",
     walletConnectors: [EthereumWalletConnectors],
+    enableEnsLookup: true,
     evmNetworks: [
       {
         chainId: base.id,
@@ -86,18 +93,17 @@ function App() {
   //     console.log("Wallet Address",walletAddress)
   //   }
   // }, [primaryWallet]);
-  const handleLogin = (user) => {
-    // console.log("App component received user:", user);
-    const primaryWallet = user.primaryWallet; // Access primaryWallet from the user object
-    // console.log("Primary wallet:", primaryWallet);
-    const address = primaryWallet?.address; // Safely access address
-    setWalletAddress(address);
-    setUsername(address?.slice(0, 7)); // Set username based on wallet address
-    // console.log("Username:", username);
-  };
-  console.log("Username:", username);
+  // const handleLogin = (user) => {
+  //   // console.log("App component received user:", user);
+  //   const primaryWallet = user.primaryWallet; // Access primaryWallet from the user object
+  //   // console.log("Primary wallet:", primaryWallet);
+  //   const address = primaryWallet?.address; // Safely access address
+  //   setWalletAddress(address);
+  //   setUsername(address?.slice(0, 7)); // Set username based on wallet address
+  //   // console.log("Username:", username);
+  // };
+  // console.log("Username:", username);
   console.log("Wallet Address:", walletAddress);
-  // console.log("Public Key:", publicKey);
   return (
     <Router>
       <Provider store={store}>
@@ -109,12 +115,12 @@ function App() {
                 <Routes>
                   <Route
                     path="/"
-                    element={<Login onLogin={handleLogin} />}
+                    element={<Login />}
                   />
                   <Route path="/subscription" element={<SubscriptionPages />} />
                   <Route
                     path="/chat"
-                    element={username ?
+                    element={
                       <div style={{
                         backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pattern-01-qX0NjZaOV8g9QrnkzzOeFWx1ByjbJH.png')`,
                         backgroundRepeat: 'repeat',
@@ -122,13 +128,12 @@ function App() {
                         width: '100vw',
                       }}>
                         {
-                          <ProtectedRoute>
+                          <ProtectedRoute address={walletAddress}>
                           <ChatBox username={username} walletAddress={walletAddress} />
                           </ProtectedRoute>
                           }
                       </div>
-                      :
-                      <Navigate to="/" />}
+}
                   />
                 </Routes>
               </div>

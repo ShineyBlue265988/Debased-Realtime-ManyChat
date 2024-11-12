@@ -9,8 +9,10 @@ import { useNavigate } from 'react-router-dom';
 import { ScrollArea } from "../components/ui/scroll-area";
 import BasenameDisplay from '../components/ui/basename'; // Import the new component
 import { useSelector } from "react-redux";
-
+import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { base } from 'viem/chains';
 const ChatBox = ({ username, walletAddress }) => {
+  const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
@@ -30,7 +32,18 @@ const ChatBox = ({ username, walletAddress }) => {
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
-  username=useSelector(state=>state.auth.username)
+  username = useSelector(state => state.auth.username)
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [text]);
+
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = `${textarea.scrollHeight}px`;
+    }
+  };
   const handleUsernameClick = (username) => {
     setReplyingTo(username);
     const mentionToAdd = `@${username}`;
@@ -67,9 +80,9 @@ const ChatBox = ({ username, walletAddress }) => {
   };
   const isAtBottom = () => {
     const container = messageContainerRef.current;
-    console.log("container.scrollHeight",container.scrollHeight,"container.scrollTop",container.scrollTop,"container.clientHeight",container.clientHeight)
-    
-    if(container.scrollHeight - container.scrollTop <= container.clientHeight+50) return true ;
+    console.log("container.scrollHeight", container.scrollHeight, "container.scrollTop", container.scrollTop, "container.clientHeight", container.clientHeight)
+
+    if (container.scrollHeight - container.scrollTop <= container.clientHeight + 50) return true;
     else return false;
 
   };
@@ -78,7 +91,7 @@ const ChatBox = ({ username, walletAddress }) => {
     setShowEmojiPicker(false);
   };
   const handleTextChange = (e) => {
-    const newText = e.target.value;
+    const newText = e.target.value.slice(0,140);
     setText(newText);
     // Log words starting with @
     const mentionedWords = newText.split(' ').filter(word => word.startsWith('@'));
@@ -152,12 +165,12 @@ const ChatBox = ({ username, walletAddress }) => {
 
   const scrollToBottom = (force = false) => {
     // if (messageContainerRef.current) {
-      const container = messageContainerRef.current;
-      const scrollHeight = container.scrollHeight;
-      const height = container.clientHeight;
-      const maxScrollTop = scrollHeight - height;
+    const container = messageContainerRef.current;
+    const scrollHeight = container.scrollHeight;
+    const height = container.clientHeight;
+    const maxScrollTop = scrollHeight - height;
 
-      container.scrollTop = maxScrollTop+100; // Add extra padding to ensure full scroll
+    container.scrollTop = maxScrollTop + 100; // Add extra padding to ensure full scroll
     // }
     setNewMessageCount(0);
     setShowScrollButton(false);
@@ -175,10 +188,10 @@ const ChatBox = ({ username, walletAddress }) => {
       // For others' messages: check scroll position
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
-      const bottomstate=isAtBottom()
-      console.log("bottomstate",bottomstate);
+      const bottomstate = isAtBottom()
+      console.log("bottomstate", bottomstate);
       if (!bottomstate) {
-        console.log('Scrolling to bottom',isAtBottom());
+        console.log('Scrolling to bottom', isAtBottom());
         setNewMessageCount(prev => prev + 1);
         setShowScrollButton(true);
       } else {
@@ -220,7 +233,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }
     };
 
-   
+
     ws.onclose = () => {
       console.log('WebSocket Disconnected - Retrying in 3s');
       wsRef.current = null;
@@ -277,7 +290,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }));
       setText("");
       setNewMessageCount(0);
-      
+
       // Add small delay to ensure DOM update
       setTimeout(() => {
         if (messageContainerRef.current) {
@@ -290,10 +303,20 @@ const ChatBox = ({ username, walletAddress }) => {
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       <div className="flex items-center justify-between p-2 ">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center">
+          <span>
+            <Identity
+              address={walletAddress}
+              schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+              chain={base}
+            >
+                <Avatar className='w-8 h-8' />
+            </Identity>
+          </span>
           <span className="text-green-700 text-xl bg-green-50 px-2 py-1">CurrentUser: {username}</span>
         </div>
       </div>
+
       {/* </div> */}
       {/* <ScrollArea 
         ref={messageContainerRef}
@@ -326,9 +349,9 @@ const ChatBox = ({ username, walletAddress }) => {
                   ) : (
                     formatMessageWithMentions(msg.text, msg.username === username)
                   )}
-                <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text)  ? 'text-white/70' : 'text-gray-500'} `}>
-                  {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
+                  <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
+                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
                 </div>
               </div>
             </div>
@@ -355,7 +378,7 @@ const ChatBox = ({ username, walletAddress }) => {
       )}
       {/* </ScrollArea> */}
       <form onSubmit={sendMessage} className="p-4 border-t border-gray-400 h-[80px]">
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
           <button
             type="button"
             onClick={handleAtButtonClick}
@@ -363,14 +386,15 @@ const ChatBox = ({ username, walletAddress }) => {
           >
             <AtSign className="h-6 w-6" />
           </button>
-          <input
-            type="text"
-            value={text}
-            onChange={handleTextChange}
-            id="inputMessage"
-            placeholder="Type your message..."
-            className="flex-1 p-2 rounded-lg focus:outline-gray-300 outline-none w-full bg-inherit"
-          />
+          <textarea
+          ref={textareaRef}
+          value={text}
+          onChange={handleTextChange}
+          id="inputMessage"
+          placeholder="Type your message..."
+          className="flex-1 p-2 rounded-lg focus:outline-gray-300 outline-none w-full bg-inherit resize-none overflow-hidden"
+          rows={1}
+        />
           <button
             type="button"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
@@ -380,7 +404,7 @@ const ChatBox = ({ username, walletAddress }) => {
           </button>
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="px-6 py-2 w-18 h-10 items-center justify-center bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
             <FaPaperPlane className="w-5 h-5" />
           </button>

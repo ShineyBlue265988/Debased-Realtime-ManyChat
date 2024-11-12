@@ -18,6 +18,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "../components/ui/accordion.tsx";
+
+
 const Login = () => {
   return (
     <div className="min-h-screen min-w-screen bg-white text-black">

@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAuth, logout, fetchUserName, getSubscriptionState, fetchPublicKey } from '../../store/authSlice';
 import debased from '../icons/debased.png';
 
+
 const Header = () => {
   const { primaryWallet, handleLogOut } = useDynamicContext();
   const navigate = useNavigate();
