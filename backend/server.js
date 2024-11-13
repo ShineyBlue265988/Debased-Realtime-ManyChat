@@ -12,11 +12,14 @@ const PORT = process.env.PORT || 5000;
 const fs = require("fs");
 const https = require("https");
 
+// const options = {
+//   key: fs.readFileSync("./cert/privkey.pem"),
+//   cert: fs.readFileSync("./cert/fullchain.pem"),
+// };
 const options = {
-  key: fs.readFileSync("./cert/privkey.pem"),
-  cert: fs.readFileSync("./cert/fullchain.pem"),
+  key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/fullchain.pem')
 };
-
 const server=https.createServer(options, app).listen(443, "167.71.99.132", () => {
   console.log(`Server running at https://167.71.99.132/`);
 });
