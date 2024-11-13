@@ -1,16 +1,13 @@
 const express = require("express");
-// const http = require("http");
 const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
 const { create } = require('ipfs-http-client');
-const NodeCache = require('node-cache');
 const fs = require("fs");
 const https = require("https");
 
 const app = express();
-// const PORT = process.env.PORT || 5000;
 
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
@@ -28,7 +25,6 @@ connectDB();
 const ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
 
 const clients = new Map();
-const messageCache = new NodeCache({ stdTTL: 3600 }); // 1 hour TTL
 const BATCH_SIZE = 10; // Number of messages to batch
 let messageBatch = []; // Array to store batched messages
 
@@ -41,17 +37,18 @@ async function storeMessagesBatch(batch) {
 }
 
 async function getMessage(cid) {
-  let message = messageCache.get(cid);
-  if (!message) {
-    const stream = ipfs.cat(cid);
-    let data = '';
-    for await (const chunk of stream) {
-      data += chunk.toString();
-    }
-    message = JSON.parse(data);
-    messageCache.set(cid, message);
+  console.log('Fetching message for CID:', cid);
+  const stream = ipfs.cat(cid);
+  let data = '';
+  for await (const chunk of stream) {
+    data += chunk.toString();
   }
-  return message;
+  return JSON.parse(data);
+}
+
+async function storeMessage(message) {
+  const { cid } = await ipfs.add(JSON.stringify(message));
+  return cid.toString();
 }
 
 wss.on('connection', (ws) => {
@@ -62,13 +59,20 @@ wss.on('connection', (ws) => {
   Message.find().sort({ timestamp: -1 }).limit(500)
     .then(async existingMessages => {
       const fullMessages = await Promise.all(existingMessages.map(async (meta) => {
+        if (!meta.cid) {
+          console.error('Missing CID for message:', meta);
+          return null; // Handle missing CID
+        }
         const content = await getMessage(meta.cid);
         return {
           ...meta.toObject(),
           text: content.text
         };
       }));
-      ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
+
+      // Filter out null messages
+      const validMessages = fullMessages.filter(message => message !== null);
+      ws.send(JSON.stringify({ type: 'history', messages: validMessages }));
     });
 
   ws.on('error', (error) => {
@@ -110,22 +114,21 @@ wss.on('connection', (ws) => {
 
       await newMessage.save();
 
+      // Broadcast messages to all connected clients
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+          client.send(JSON.stringify({
+            type: 'message',
+            message: newMessage
+          }));
+        }
+      });
 
-
-        // Broadcast batched messages to all connected clients
-        clients.forEach((client, id) => {
-          if (client.readyState === WebSocket.OPEN && id !== clientId) {
-            client.send(JSON.stringify({
-              type: 'message',
-              message: newMessage
-            }));
-          }
-        });
       // Add the new message to the batch
       messageBatch.push(newMessage);
-       // If batch size is reached, save the batch to IPFS and MongoDB
-       if (messageBatch.length >= BATCH_SIZE) {
-        const cid = await storeMessagesBatch(messageBatch);
+      // If batch size is reached, save the batch to IPFS and MongoDB
+      if (messageBatch.length >= BATCH_SIZE) {
+        const batchCid = await storeMessagesBatch(messageBatch);
 
         // Save metadata and CID in MongoDB for each message
         for (let msg of messageBatch) {
@@ -133,15 +136,15 @@ wss.on('connection', (ws) => {
             username: msg.username,
             publicKey: msg.publicKey,
             timestamp: msg.timestamp,
-            cid: cid // Store the same CID for all batched messages
+            cid: batchCid // Store the same CID for all batched messages
           });
           await mongoMessage.save();
         }
 
         // Clear the batch after saving
         messageBatch.length = 0;
-        
-        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${cid}`);
+
+        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
       }
 
     } catch (error) {
@@ -155,7 +158,7 @@ wss.on('connection', (ws) => {
 });
 
 function generateUniqueId() {
-  return Math.random().toString(36).substr(2, 9);
+  return Math.random().toString(36).substr(2, 9); // Generates a unique ID
 }
 
 // Basic health check endpoint
