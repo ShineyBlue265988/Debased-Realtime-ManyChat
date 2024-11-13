@@ -3,7 +3,7 @@ const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
-const { create } = require('ipfs-http-client');
+const { create } = require('kubo-rpc-client');
 const fs = require("fs");
 const https = require("https");
 
