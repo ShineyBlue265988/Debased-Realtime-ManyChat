@@ -21,8 +21,18 @@ const server = https.createServer(options, app).listen(443, "167.71.99.132", () 
 // Connect to MongoDB
 connectDB();
 
-// IPFS setup
-const ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' });
+const projectId = '0882917bbbbe443f8d259cf345a90ab7';
+const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
+const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+
+const ipfs = create({
+  host: 'ipfs.infura.io',
+  port: 5001,
+  protocol: 'https',
+  headers: {
+    authorization: auth
+  }
+});
 
 const clients = new Map();
 const BATCH_SIZE = 10; // Number of messages to batch
