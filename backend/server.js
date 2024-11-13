@@ -5,9 +5,21 @@ const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
 const app = express();
-const server = http.createServer(app);
+// const server = https.createServer(app);
 const PORT = process.env.PORT || 5000;
+// import fs from "fs";
+// import https from "https";
+const fs = require("fs");
+const https = require("https");
 
+const options = {
+  key: fs.readFileSync("./cert/privkey.pem"),
+  cert: fs.readFileSync("./cert/fullchain.pem"),
+};
+
+const server=https.createServer(options, app).listen(443, "167.71.99.132", () => {
+  console.log(`Server running at https://167.71.99.132/`);
+});
 // Connect to MongoDB
 connectDB();
 
@@ -101,6 +113,6 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+// server.listen(PORT, () => {
+//   console.log(`Server running on port ${PORT}`);
+// });
