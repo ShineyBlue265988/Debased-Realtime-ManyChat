@@ -3,42 +3,39 @@ const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
+// import {create} from 'kubo-rpc-client';
 const fs = require("fs");
 const https = require("https");
-// const { create } = require('kubo-rpc-client');
-import {create} from 'kubo-rpc-client';
+const axios = require('axios');
 const app = express();
 
+const PINATA_API_KEY = '938d269e80d74e636354';
+const PINATA_API_SECRET = 'e1c7451ef6efea8a999af55ab661e636442997e1e89144c83b43c818bf2c2629';
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/fullchain.pem')
+};
 
+const server = https.createServer(options, app).listen(443, "167.71.99.132", () => {
+  console.log(`Server running at https://167.71.99.132/`);
+});
 
 // Connect to MongoDB
 connectDB();
 
-const projectId = '6b14c246a1d446938940a9ea96d27e4b';
-const projectSecret = 'PSGk0UyJTuNyYhMfjFp5iSwSk8HXXG6rErU3uEIGhf/9w+vIXzdMxQ';
+const projectId = '0882917bbbbe443f8d259cf345a90ab7';
+const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
-// Define `ipfs` as a global variable to be initialized later
-let ipfs;
+// const ipfs = create({
+//   host: 'ipfs.infura.io',
+//   port: 5001,
+//   protocol: 'https',
+//   headers: {
+//     authorization: auth
+//   }
+// });
 
-  // Initialize IPFS client
-  ipfs = create({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-    headers: {
-      authorization: auth
-    }
-  });
-
-  const options = {
-    key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
-    cert: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/fullchain.pem')
-  };
-  
-  const server = https.createServer(options, app).listen(443, "167.71.99.132", () => {
-    console.log(`Server running at https://167.71.99.132/`);
-  });
 const clients = new Map();
 const BATCH_SIZE = 10; // Number of messages to batch
 let messageBatch = []; // Array to store batched messages
@@ -47,23 +44,56 @@ const wss = new WebSocket.Server({ server });
 
 // IPFS functions
 async function storeMessagesBatch(batch) {
-  const { cid } = await ipfs.add(JSON.stringify(batch));
-  return cid.toString();
+  try {
+    const response = await axios.post(
+      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+      { batch },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          pinata_api_key: PINATA_API_KEY,
+          pinata_secret_api_key: PINATA_API_SECRET
+        }
+      }
+    );
+    console.log(`Stored batch of messages on IPFS with CID: ${response.data.IpfsHash}`);
+    return response.data.IpfsHash;
+  } catch (error) {
+    console.error("Error storing message batch on Pinata:", error);
+    throw error;
+  }
 }
 
+
 async function getMessage(cid) {
-  console.log('Fetching message for CID:', cid);
-  const stream = ipfs.cat(cid);
-  let data = '';
-  for await (const chunk of stream) {
-    data += chunk.toString();
+  try {
+    const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${cid}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching message from IPFS via Pinata gateway:", error);
+    throw error;
   }
-  return JSON.parse(data);
 }
 
 async function storeMessage(message) {
-  const { cid } = await ipfs.add(JSON.stringify(message));
-  return cid.toString();
+  try {
+    const response = await axios.post(
+      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+      message,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          pinata_api_key: PINATA_API_KEY,
+          pinata_secret_api_key: PINATA_API_SECRET
+        }
+      }
+    );
+    console.log("Stored message CID:", response.data.IpfsHash);
+    return response.data.IpfsHash;
+  } catch (error) {
+    console.error("Error storing message on Pinata:", error);
+    throw error;
+  }
 }
 
 wss.on('connection', (ws) => {
