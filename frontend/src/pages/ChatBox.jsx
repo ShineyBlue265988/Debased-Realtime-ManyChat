@@ -37,6 +37,35 @@ const ChatBox = ({ username, walletAddress }) => {
     adjustTextareaHeight();
   }, [text]);
 
+  async function fetchFromIPFSGateways(cid) {
+    const gateways = [
+      `https://cloudflare-ipfs.com/ipfs/${cid}`,
+      `https://gateway.pinata.cloud/ipfs/${cid}`,
+      `https://ipfs.io/ipfs/${cid}`,
+      `https://dweb.link/ipfs/${cid}`
+    ];
+  
+    for (const url of gateways) {
+      try {
+        const response = await axios.get(url);
+        if (response.status === 200) {
+          console.log(`Fetched data from ${url}`);
+          return response.data;
+        }
+      } catch (error) {
+        console.error(`Failed to fetch from ${url}:`, error.message);
+      }
+    }
+    throw new Error(`Content not available on any public gateway for CID: ${cid}`);
+  }
+
+  const getText=async(cid)=>{
+    fetchFromIPFSGateways(cid)
+.then(data => console.log('Data:', data.text))
+.catch(console.error);
+  }
+
+
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -186,7 +215,8 @@ const ChatBox = ({ username, walletAddress }) => {
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
-      setMessages(prev => [...prev, message]);
+      
+      setMessages(prev => [...prev, getText(message.cid)]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
