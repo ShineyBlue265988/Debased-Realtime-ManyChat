@@ -36,16 +36,7 @@ const ChatBox = ({ username, walletAddress }) => {
   useEffect(() => {
     adjustTextareaHeight();
   }, [text]);
-  const fetchMessageFromIPFS = async (cid) => {
-    try {
-      const response = await fetch(`https://gateway.ipfs.io/ipfs/${cid}`);
-      if (!response.ok) throw new Error('Network response was not ok');
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching message from IPFS:', error);
-      return { text: 'Error fetching message' };
-    }
-  };
+
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -194,9 +185,9 @@ const ChatBox = ({ username, walletAddress }) => {
       setNewMessageCount(0); // Reset unread count
       scrollToBottom(true);
     } else {
-      const content = fetchMessageFromIPFS(message.cid);
       // For others' messages: check scroll position
-      setMessages(prev => [...prev, { ...message, text: content.text }]);      // console.log('Added own message:', message);
+      setMessages(prev => [...prev, message]);
+      // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
       if (!bottomstate) {
@@ -230,13 +221,7 @@ const ChatBox = ({ username, walletAddress }) => {
         const data = JSON.parse(event.data);
         console.log('Received message:', data);
         if (data.type === 'history') {
-          const messagesWithContent = Promise.all(
-            data.messages.map(async (msg) => {
-              const content = await fetchMessageFromIPFS(msg.cid);
-              return { ...msg, text: content.text };
-            })
-          );
-          setMessages(messagesWithContent);
+          setMessages(data.messages);
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
