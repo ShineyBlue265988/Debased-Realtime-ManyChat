@@ -3,7 +3,6 @@ const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
-const { create } = require('kubo-rpc-client');
 const fs = require("fs");
 const https = require("https");
 
@@ -25,14 +24,23 @@ const projectId = '0882917bbbbe443f8d259cf345a90ab7';
 const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
 const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
-const ipfs = create({
-  host: 'ipfs.infura.io',
-  port: 5001,
-  protocol: 'https',
-  headers: {
-    authorization: auth
-  }
-});
+// Define `ipfs` as a global variable to be initialized later
+let ipfs;
+
+(async () => {
+  // Dynamically import `create` from `kubo-rpc-client`
+  const { create } = await import('kubo-rpc-client');
+
+  // Initialize IPFS client
+  ipfs = create({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+      authorization: auth
+    }
+  });
+})();
 
 const clients = new Map();
 const BATCH_SIZE = 10; // Number of messages to batch
