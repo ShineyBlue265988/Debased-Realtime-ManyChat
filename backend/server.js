@@ -143,7 +143,7 @@ wss.on('connection', (ws) => {
         },
         { upsert: true }
       );
-      const returnedMessage = {
+      let returnedMessage = {
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
@@ -157,7 +157,7 @@ wss.on('connection', (ws) => {
           }));
         }
       });
-
+      returnedMessage={}
       // Store message content on IPFS
       const cid = await storeMessage({
         text: data.text,
