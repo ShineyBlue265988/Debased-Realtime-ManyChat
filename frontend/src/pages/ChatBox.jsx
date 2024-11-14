@@ -61,11 +61,13 @@ const ChatBox = ({ username, walletAddress }) => {
     throw new Error(`Content not available on any public gateway for CID: ${cid}`);
   }
 
-  const getText=async(cid)=>{
-    fetchFromIPFSGateways(cid)
+  const getText=async(message)=>{
+    fetchFromIPFSGateways(message.cid)
 .then(data => console.log('Data:', data.text))
 .catch(console.error);
-return data.text;
+const receiveMessage={...message, text:data.text}
+console.log("receiveMessage", receiveMessage);
+return receiveMessage;
   }
 
 
@@ -219,7 +221,7 @@ return data.text;
     } else {
       // For others' messages: check scroll position
       
-      setMessages(prev => [...prev, getText(message.cid)]);
+      setMessages(prev => [...prev, getText(message)]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
