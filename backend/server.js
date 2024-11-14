@@ -149,6 +149,7 @@ wss.on('connection', (ws) => {
         timestamp: new Date(),
         text: data.text,
       });
+      await returnedMessage.save();
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
           client.send(JSON.stringify({
