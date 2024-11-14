@@ -36,22 +36,7 @@ const ChatBox = ({ username, walletAddress }) => {
   useEffect(() => {
     adjustTextareaHeight();
   }, [text]);
-//   const getTextFromIPFS = async (cid) => {
-//     const gatewayUrl = 'https://gateway.pinata.cloud/'; // You can change this to another gateway if needed
-//     const url = `${gatewayUrl}/ipfs/${cid}`;
 
-//     try {
-//         const response = await fetch(url);
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-//         const text = await response.text(); // Use .json() if the content is JSON
-//         return text;
-//     } catch (error) {
-//         console.error('Error fetching from IPFS:', error);
-//         return null;
-//     }
-// };
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -101,24 +86,6 @@ const ChatBox = ({ username, walletAddress }) => {
     else return false;
 
   };
-
-//   const fetchTextFromIPFS = async (cid) => {
-//     const gatewayUrl = 'https://gateway.ipfs.io'; // You can change this to another gateway if needed
-//     const url = `${gatewayUrl}/ipfs/${cid}`;
-
-//     try {
-//         const response = await fetch(url);
-//         if (!response.ok) {
-//             throw new Error('Network response was not ok');
-//         }
-//         const text = await response.text(); // Use .json() if the content is JSON
-//         return text;
-//     } catch (error) {
-//         console.error('Error fetching from IPFS:', error);
-//         return null;
-//     }
-// };
-
   const handleEmojiSelect = (emoji) => {
     setText(text + emoji.native);
     setShowEmojiPicker(false);
@@ -219,7 +186,6 @@ const ChatBox = ({ username, walletAddress }) => {
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
-      // text=fetchTextFromIPFS(message.cid)
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
@@ -260,6 +226,7 @@ const ChatBox = ({ username, walletAddress }) => {
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
+          console.log('Added message:', data.message);
         }
       } catch (error) {
         console.log('Message processing error:', error);
@@ -470,3 +437,4 @@ const ChatBox = ({ username, walletAddress }) => {
 };
 
 export default ChatBox;
+
