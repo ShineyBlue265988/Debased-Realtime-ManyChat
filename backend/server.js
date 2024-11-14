@@ -143,12 +143,17 @@ wss.on('connection', (ws) => {
         },
         { upsert: true }
       );
-
+      const returnedMessage = {
+        username: data.username,
+        publicKey: data.publicKey,
+        timestamp: new Date(),
+        text: data.text,
+      };
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
           client.send(JSON.stringify({
             type: 'message',
-            message: data.text,
+            message: returnedMessage,
           }));
         }
       });
