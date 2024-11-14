@@ -65,9 +65,7 @@ const ChatBox = ({ username, walletAddress }) => {
     fetchFromIPFSGateways(message.cid)
 .then(data => console.log('Data:', data.text))
 .catch(console.error);
-const receiveMessage={...message, text:data.text}
-console.log("receiveMessage", receiveMessage);
-return receiveMessage;
+return data.text;
   }
 
 
@@ -220,8 +218,10 @@ return receiveMessage;
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
-      
-      setMessages(prev => [...prev, getText(message)]);
+      const receivedMessage = {
+        ...message,text: getText(message)}
+        console.log("receivedMessage", receivedMessage);
+      setMessages(prev => [...prev, receivedMessage]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
