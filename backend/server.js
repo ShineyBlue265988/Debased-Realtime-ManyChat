@@ -143,21 +143,7 @@ wss.on('connection', (ws) => {
         },
         { upsert: true }
       );
-      const returnedMessage = new Message( returnedMessage = {
-        username: data.username,
-        publicKey: data.publicKey,
-        timestamp: new Date(),
-        text: data.text,
-      });
-      await returnedMessage.save();
-      clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN && id !== clientId) {
-          client.send(JSON.stringify({
-            type: 'message',
-            message: returnedMessage,
-          }));
-        }
-      });
+
       // Store message content on IPFS
       const cid = await storeMessage({
         text: data.text,
@@ -180,7 +166,14 @@ wss.on('connection', (ws) => {
       //   text: getMessage(cid).then(content => content.text),
       // };
       // Broadcast messages to all connected clients
-
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+          client.send(JSON.stringify({
+            type: 'message',
+            message: newMessage,
+          }));
+        }
+      });
 
       // Add the new message to the batch
       // messageBatch.push(newMessage);
