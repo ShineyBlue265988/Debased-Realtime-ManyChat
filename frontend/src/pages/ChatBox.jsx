@@ -11,6 +11,7 @@ import BasenameDisplay from '../components/ui/basename'; // Import the new compo
 import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import { base } from 'viem/chains';
+import { get } from "mongoose";
 const ChatBox = ({ username, walletAddress }) => {
   const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
@@ -36,7 +37,22 @@ const ChatBox = ({ username, walletAddress }) => {
   useEffect(() => {
     adjustTextareaHeight();
   }, [text]);
+  const fetchTextFromIPFS = async (cid) => {
+    const gatewayUrl = 'https://gateway.ipfs.io'; // You can change this to another gateway if needed
+    const url = `${gatewayUrl}/ipfs/${cid}`;
 
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const text = await response.text(); // Use .json() if the content is JSON
+        return text;
+    } catch (error) {
+        console.error('Error fetching from IPFS:', error);
+        return null;
+    }
+};
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -244,6 +260,11 @@ const ChatBox = ({ username, walletAddress }) => {
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
+          console.log('Added message:', data.message.cid);
+          getTextFromIPFS(data.message.cid)
+          .then ((text) => {
+            data.message.text = text
+          })
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
         }
