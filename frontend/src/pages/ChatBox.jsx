@@ -51,6 +51,7 @@ const ChatBox = ({ username, walletAddress }) => {
         const response = await axios.get(url);
         if (response.status === 200) {
           console.log(`Fetched data from ${url}`);
+          console.log("response.data", response.data);
           return response.data;
         }
       } catch (error) {
