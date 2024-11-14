@@ -259,15 +259,16 @@ const ChatBox = ({ username, walletAddress }) => {
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
-          console.log('Added message:', data.message);
-          console.log('Added cid:', data.message.cid);
-          console.log('Added message.message.cid:', data.message.message.cid);
-          getTextFromIPFS(data.message.cid)
-          .then ((text) => {
-            data.message.text = text
-          })
-          handleNewMessage(data.message);
-          console.log('Added message:', data.message);
+          if (data.message.cid) {
+            console.log('Added cid:', data.message.cid);
+            getTextFromIPFS(data.message.cid)
+            .then((text) => {
+                data.message.text = text;
+                handleNewMessage(data.message);
+            });
+        } else {
+            console.warn('No cid found in message:', data.message);
+        }
         }
       } catch (error) {
         console.log('Message processing error:', error);
