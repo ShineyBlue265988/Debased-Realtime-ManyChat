@@ -37,7 +37,7 @@ const ChatBox = ({ username, walletAddress }) => {
     adjustTextareaHeight();
   }, [text]);
   const getTextFromIPFS = async (cid) => {
-    const gatewayUrl = 'https://gateway.ipfs.io'; // You can change this to another gateway if needed
+    const gatewayUrl = 'https://gateway.pinata.cloud/'; // You can change this to another gateway if needed
     const url = `${gatewayUrl}/ipfs/${cid}`;
 
     try {
