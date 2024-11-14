@@ -170,27 +170,27 @@ wss.on('connection', (ws) => {
       });
 
       // Add the new message to the batch
-      messageBatch.push(newMessage);
+      // messageBatch.push(newMessage);
       // If batch size is reached, save the batch to IPFS and MongoDB
-      if (messageBatch.length >= BATCH_SIZE) {
-        const batchCid = await storeMessagesBatch(messageBatch);
+      // if (messageBatch.length >= BATCH_SIZE) {
+      //   const batchCid = await storeMessagesBatch(messageBatch);
 
-        // Save metadata and CID in MongoDB for each message
-        for (let msg of messageBatch) {
-          const mongoMessage = new Message({
-            username: msg.username,
-            publicKey: msg.publicKey,
-            timestamp: msg.timestamp,
-            cid: batchCid // Store the same CID for all batched messages
-          });
-          await mongoMessage.save();
-        }
+      //   // Save metadata and CID in MongoDB for each message
+      //   for (let msg of messageBatch) {
+      //     const mongoMessage = new Message({
+      //       username: msg.username,
+      //       publicKey: msg.publicKey,
+      //       timestamp: msg.timestamp,
+      //       cid: batchCid // Store the same CID for all batched messages
+      //     });
+      //     await mongoMessage.save();
+      //   }
 
-        // Clear the batch after saving
-        messageBatch.length = 0;
+      //   // Clear the batch after saving
+      //   messageBatch.length = 0;
 
-        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
-      }
+      //   console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
+      // }
 
     } catch (error) {
       console.error('Error handling message:', error);
