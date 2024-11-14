@@ -64,6 +64,7 @@ const ChatBox = ({ username, walletAddress }) => {
     fetchFromIPFSGateways(cid)
 .then(data => console.log('Data:', data.text))
 .catch(console.error);
+return data.text;
   }
 
 
