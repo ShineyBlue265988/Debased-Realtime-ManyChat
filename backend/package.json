@@ -14,6 +14,7 @@
     "express": "^4.21.1",
     "fs": "^0.0.1-security",
     "https": "^1.0.0",
+    "ipfs-core": "^0.18.1",
     "ipfs-http-client": "^50.1.2",
     "kubo-rpc-client": "^5.0.2",
     "mongoose": "^8.8.0",
