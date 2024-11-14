@@ -143,12 +143,12 @@ wss.on('connection', (ws) => {
         },
         { upsert: true }
       );
-      let returnedMessage = {
+      const returnedMessage = new Message( returnedMessage = {
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
         text: data.text,
-      };
+      });
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
           client.send(JSON.stringify({
@@ -157,7 +157,6 @@ wss.on('connection', (ws) => {
           }));
         }
       });
-      returnedMessage={}
       // Store message content on IPFS
       const cid = await storeMessage({
         text: data.text,
