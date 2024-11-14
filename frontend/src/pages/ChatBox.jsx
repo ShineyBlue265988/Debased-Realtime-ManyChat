@@ -11,6 +11,7 @@ import BasenameDisplay from '../components/ui/basename'; // Import the new compo
 import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import { base } from 'viem/chains';
+import axios from 'axios';
 const ChatBox = ({ username, walletAddress }) => {
   const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
