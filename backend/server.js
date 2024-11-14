@@ -68,6 +68,7 @@ async function storeMessagesBatch(batch) {
 async function getMessage(cid) {
   try {
     const response = await axios.get(`https://gateway.pinata.cloud/ipfs/${cid}`);
+    console.log("Fetched message from IPFS via Pinata gateway:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching message from IPFS via Pinata gateway:", error);
