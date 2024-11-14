@@ -87,22 +87,22 @@ const ChatBox = ({ username, walletAddress }) => {
 
   };
 
-  const fetchTextFromIPFS = async (cid) => {
-    const gatewayUrl = 'https://gateway.ipfs.io'; // You can change this to another gateway if needed
-    const url = `${gatewayUrl}/ipfs/${cid}`;
+//   const fetchTextFromIPFS = async (cid) => {
+//     const gatewayUrl = 'https://gateway.ipfs.io'; // You can change this to another gateway if needed
+//     const url = `${gatewayUrl}/ipfs/${cid}`;
 
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const text = await response.text(); // Use .json() if the content is JSON
-        return text;
-    } catch (error) {
-        console.error('Error fetching from IPFS:', error);
-        return null;
-    }
-};
+//     try {
+//         const response = await fetch(url);
+//         if (!response.ok) {
+//             throw new Error('Network response was not ok');
+//         }
+//         const text = await response.text(); // Use .json() if the content is JSON
+//         return text;
+//     } catch (error) {
+//         console.error('Error fetching from IPFS:', error);
+//         return null;
+//     }
+// };
 
   const handleEmojiSelect = (emoji) => {
     setText(text + emoji.native);
@@ -204,8 +204,8 @@ const ChatBox = ({ username, walletAddress }) => {
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
-      const text=fetchTextFromIPFS(message.cid)
-      setMessages(prev => [...prev, text]);
+      // text=fetchTextFromIPFS(message.cid)
+      setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);

@@ -164,7 +164,7 @@ wss.on('connection', (ws) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
           client.send(JSON.stringify({
             type: 'message',
-            message: newMessage
+            message: getMessage(newMessage.cid)
           }));
         }
       });
