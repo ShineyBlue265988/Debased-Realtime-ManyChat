@@ -21,7 +21,7 @@
     "ipfs-core": "^0.18.1",
     "ipfs-http-client": "^50.1.2",
     "kubo-rpc-client": "^5.0.2",
-    "mongoose": "^8.8.0",
+    "mongoose": "^8.8.1",
     "multiformats": "^13.3.1",
     "node-cache": "^5.1.2",
     "ws": "^8.18.0"
