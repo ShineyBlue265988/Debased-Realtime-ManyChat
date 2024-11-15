@@ -201,6 +201,7 @@ wss.on('connection', (ws) => {
       messageBatch.push(messageToSend);
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
+        messageBatch .reverse();
         const batchCid = await storeMessagesBatch(messageBatch);
 
         // // Save metadata and CID in MongoDB for each message
