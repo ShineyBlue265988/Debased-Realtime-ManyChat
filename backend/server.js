@@ -129,10 +129,13 @@ wss.on('connection', (ws) => {
         messagesWithSameCid.forEach(meta => {
           console.log("meta", meta);
           console.log("content", content);
-          console.log("content.text", content.text);
-          fullMessages.push({
-            ...meta.toObject(),
-            text: content.text // Assuming content has a 'text' field
+          console.log("content.batch", content.batch);
+          content.batch.forEach(message => {
+            console.log("message", message);
+            fullMessages.push({
+              ...meta.toObject(),
+              text: message.text // Assuming content has a 'text' field
+            });
           });
         });
       })});
