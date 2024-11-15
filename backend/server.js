@@ -105,9 +105,11 @@ async function storeMessagesBatch(batch,retries = 5) {
     return response.data.IpfsHash;
   } catch (error) {
     if (error.response && error.response.status === 429 && retries > 0) {
-      const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      retryAfter = 3;
       console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      console.log("Retrying...");
       return storeMessagesBatch(batch, retries - 1);
     } else {
       console.error("Error storing message batch on Pinata:", error);
@@ -124,9 +126,11 @@ async function getMessages(cids,retries = 5) {
     return responses.map(response => response.data);
   } catch (error) {
     if (error.response && error.response.status === 429 && retries > 0) {
-      const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      retryAfter = 3;
       console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      console.log("Retrying...");
       return getMessages(cids, retries - 1);
     } else {
       console.error("Error fetching messages from IPFS via Pinata gateway:", error);
