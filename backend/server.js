@@ -141,10 +141,11 @@ wss.on('connection', (ws) => {
         });
       })});
     
-
-    // Send the full messages to the client
+  }).then(() => {
+    // Send full messages to the client
     ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-  });
+    console.log("JSON.stringify({ type: 'history', messages: fullMessages })", JSON.stringify({ type: 'history', messages: fullMessages }));
+  })
 
 
   ws.on('error', (error) => {
