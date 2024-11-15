@@ -148,7 +148,7 @@ wss.on('connection', (ws) => {
     })
     .then(() => {
       // Send full messages to the client, ensuring fullMessages is populated
-      fullMessages=[...fullMessages,...messageBatch];
+      fullMessages=[...messageBatch,...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
