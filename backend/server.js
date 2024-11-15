@@ -103,23 +103,40 @@ wss.on('connection', (ws) => {
 
   // Send existing messages to new client
   Message.find().sort({ timestamp: -1 }).limit(500)
-    .then(async existingMessages => {
-      const fullMessages = await Promise.all(existingMessages.map(async (meta) => {
-        if (!meta.cid) {
-          console.error('Missing CID for message:', meta);
-          return null; // Handle missing CID
-        }
-        const content = await getMessage(meta.cid);
-        return {
-          ...meta.toObject(),
-          text: content.text
-        };
-      }));
-
-      // Filter out null messages
-      const validMessages = fullMessages.filter(message => message !== null);
-      ws.send(JSON.stringify({ type: 'history', messages: validMessages }));
+  .then(async existingMessages => {
+    // Create a map to store messages by CID
+    const cidMap = new Map();
+    
+    existingMessages.forEach(meta => {
+      if (!meta.cid) {
+        console.error('Missing CID for message:', meta);
+        return; // Handle missing CID
+      }
+      if (!cidMap.has(meta.cid)) {
+        cidMap.set(meta.cid, []);
+      }
+      cidMap.get(meta.cid).push(meta);
     });
+
+    // Retrieve messages from IPFS for all unique CIDs
+    const messageContents = await getMessages(Array.from(cidMap.keys()));
+
+    // Construct full messages
+    const fullMessages = [];
+    messageContents.forEach((content, index) => {
+      const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
+      messagesWithSameCid.forEach(meta => {
+        fullMessages.push({
+          ...meta.toObject(),
+          text: content.text // Assuming content has a 'text' field
+        });
+      });
+    });
+
+    // Send the full messages to the client
+    ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
+  });
+
 
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
@@ -162,44 +179,27 @@ wss.on('connection', (ws) => {
         }
       });
     
-      // Store message content on IPFS
-      const cid = await storeMessage({
-        text: data.text,
-        timestamp: new Date()
-      });
-    
-      // Store metadata and CID in MongoDB
-      const newMessage = new Message({
-        username: data.username,
-        publicKey: data.publicKey,
-        timestamp: new Date(),
-        cid: cid
-      });
-    
-      await newMessage.save();
-    
-      // Add the new message to the batch
-      // messageBatch.push(newMessage);
+      messageBatch.push(messageToStore);
+
       // If batch size is reached, save the batch to IPFS and MongoDB
-      // if (messageBatch.length >= BATCH_SIZE) {
-      //   const batchCid = await storeMessagesBatch(messageBatch);
+      if (messageBatch.length >= BATCH_SIZE) {
+        const batchCid = await storeMessagesBatch(messageBatch);
 
-      //   // Save metadata and CID in MongoDB for each message
-      //   for (let msg of messageBatch) {
-      //     const mongoMessage = new Message({
-      //       username: msg.username,
-      //       publicKey: msg.publicKey,
-      //       timestamp: msg.timestamp,
-      //       cid: batchCid // Store the same CID for all batched messages
-      //     });
-      //     await mongoMessage.save();
-      //   }
+        // Save metadata and CID in MongoDB for each message
+        for (let msg of messageBatch) {
+          const mongoMessage = new Message({
+            username: msg.username,
+            publicKey: msg.publicKey,
+            timestamp: msg.timestamp,
+            cid: batchCid // Store the same CID for all batched messages
+          });
+          await mongoMessage.save();
+        }
 
-      //   // Clear the batch after saving
-      //   messageBatch.length = 0;
+        // Clear the batch after saving
+        messageBatch.length = 0;
 
-      //   console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
-      // }
+        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);}
 
     } catch (error) {
       console.error('Error handling message:', error);
