@@ -107,7 +107,7 @@ async function storeMessagesBatch(batch,retries = 5) {
     if (error.response && error.response.status === 429 && retries > 0) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
-      console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+      console.log(`Store Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
       await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
       console.log("Retrying...");
       return storeMessagesBatch(batch, retries - 1);
@@ -128,7 +128,7 @@ async function getMessages(cids,retries = 5) {
     if (error.response && error.response.status === 429 && retries > 0) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
-      console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+      console.log(`Get Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
       await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
       console.log("Retrying...");
       return getMessages(cids, retries - 1);
