@@ -121,13 +121,13 @@ wss.on('connection', (ws) => {
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
     .then(messageContents => {
-      console.log("history messageContents", messageContents);
+      // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
       
       // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
-        console.log("messagesWithSameCid", messagesWithSameCid);
+        // console.log("messagesWithSameCid", messagesWithSameCid);
         
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
@@ -138,7 +138,7 @@ wss.on('connection', (ws) => {
                 ...meta.toObject(),
                 text: message.text // Assuming content has a 'text' field
               });
-              console.log("fullMessages", fullMessages);
+              // console.log("fullMessages", fullMessages);
             });
           });
         } else {
@@ -149,7 +149,7 @@ wss.on('connection', (ws) => {
     .then(() => {
       // Send full messages to the client, ensuring fullMessages is populated
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-      console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
+      // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
