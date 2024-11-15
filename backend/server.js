@@ -136,6 +136,7 @@ wss.on('connection', (ws) => {
               ...meta.toObject(),
               text: message.text // Assuming content has a 'text' field
             });
+            console.log("fullMessages", fullMessages);
           });
         });
       })});
