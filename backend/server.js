@@ -119,19 +119,20 @@ wss.on('connection', (ws) => {
     });
 
     // Retrieve messages from IPFS for all unique CIDs
-    const messageContents = await getMessages(Array.from(cidMap.keys()));
-
-    // Construct full messages
-    const fullMessages = [];
-    messageContents.forEach((content, index) => {
-      const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
-      messagesWithSameCid.forEach(meta => {
-        fullMessages.push({
-          ...meta.toObject(),
-          text: content.text // Assuming content has a 'text' field
+    getMessages(Array.from(cidMap.keys()))
+    .then(messageContents => {
+      // Construct full messages
+      const fullMessages = [];
+      messageContents.forEach((content, index) => {
+        const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
+        messagesWithSameCid.forEach(meta => {
+          fullMessages.push({
+            ...meta.toObject(),
+            text: content.text // Assuming content has a 'text' field
+          });
         });
-      });
-    });
+      })});
+    
 
     // Send the full messages to the client
     ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
