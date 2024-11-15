@@ -100,13 +100,11 @@ wss.on('connection', (ws) => {
   const clientId = generateUniqueId();
   clients.set(clientId, ws);
   const fullMessages = [];
-
+  // Create a map to store messages by CID
+  const cidMap = new Map();
   // Send existing messages to new client
   Message.find().sort({ timestamp: -1 }).limit(500)
     .then(async existingMessages => {
-      // Create a map to store messages by CID
-      const cidMap = new Map();
-      
       existingMessages.forEach(meta => {
         if (!meta.cid) {
           console.error('Missing CID for message:', meta);
