@@ -221,7 +221,7 @@ wss.on('connection', (ws) => {
       console.error('Invalid message format');
       return;
     }
-    console.log('Received message:', data);
+    // console.log('Received message:', data);
 
     try {
       await User.findOneAndUpdate(
