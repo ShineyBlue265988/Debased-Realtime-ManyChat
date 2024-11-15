@@ -117,11 +117,12 @@ wss.on('connection', (ws) => {
       cidMap.get(meta.cid).push(meta);
     });
     const fullMessages = [];
+    console.log("cidMap", cidMap);
     // Retrieve messages from IPFS for all unique CIDs
     getMessages(Array.from(cidMap.keys()))
     .then(messageContents => {
       // Construct full messages
-
+      console.log("history messageContents", messageContents);
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
         messagesWithSameCid.forEach(meta => {
