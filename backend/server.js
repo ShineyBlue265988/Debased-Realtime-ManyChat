@@ -99,7 +99,7 @@ async function storeMessage(message) {
 wss.on('connection', (ws) => {
   const clientId = generateUniqueId();
   clients.set(clientId, ws);
-
+  const fullMessages = [];
   // Send existing messages to new client
   Message.find().sort({ timestamp: -1 }).limit(500)
   .then(async existingMessages => {
@@ -116,7 +116,6 @@ wss.on('connection', (ws) => {
       }
       cidMap.get(meta.cid).push(meta);
     });
-    const fullMessages = [];
     console.log("cidMap", cidMap);
     // Retrieve messages from IPFS for all unique CIDs
     getMessages(Array.from(cidMap.keys()))
