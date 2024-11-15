@@ -104,8 +104,16 @@ async function storeMessagesBatch(batch) {
     console.log(`Stored batch of messages on IPFS with CID: ${response.data.IpfsHash}`);
     return response.data.IpfsHash;
   } catch (error) {
-    console.error("Error storing message batch on Pinata:", error);
-    throw error;
+    if (error.response && error.response.status === 429 && retries > 0) {
+      const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      return storeMessagesBatch(batch, retries - 1);
+    } else {
+      console.error("Error storing message batch on Pinata:", error);
+      throw error;
+    }
+
   }
 }
 
@@ -115,8 +123,15 @@ async function getMessages(cids) {
     const responses = await Promise.all(cids.map(cid => axios.get(`https://gateway.pinata.cloud/ipfs/${cid}`)));
     return responses.map(response => response.data);
   } catch (error) {
-    console.error("Error fetching messages from IPFS via Pinata gateway:", error);
-    throw error;
+    if (error.response && error.response.status === 429 && retries > 0) {
+      const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+      console.log(`Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      return getMessages(cids, retries - 1);
+    } else {
+      console.error("Error fetching messages from IPFS via Pinata gateway:", error);
+      throw error;
+    }
   }
 }
 
