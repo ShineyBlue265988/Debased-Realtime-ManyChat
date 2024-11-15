@@ -144,12 +144,29 @@ wss.on('connection', (ws) => {
         { upsert: true }
       );
 
+      const messageToSend = {
+        username: data.username,
+        publicKey: data.publicKey,
+        timestamp: new Date(),
+        text: data.text // Include the message text here
+      };
+    
+      // Broadcast the message to all connected clients
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+          client.send(JSON.stringify({
+            type: 'message',
+            message: messageToSend,
+          }));
+        }
+      });
+    
       // Store message content on IPFS
       const cid = await storeMessage({
         text: data.text,
         timestamp: new Date()
       });
-
+    
       // Store metadata and CID in MongoDB
       const newMessage = new Message({
         username: data.username,
@@ -157,24 +174,9 @@ wss.on('connection', (ws) => {
         timestamp: new Date(),
         cid: cid
       });
-
+    
       await newMessage.save();
-      // const returnedMessage = {
-      //   username: data.username,
-      //   publicKey: data.publicKey,
-      //   timestamp: new Date(),
-      //   text: getMessage(cid).then(content => content.text),
-      // };
-      // Broadcast messages to all connected clients
-      clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN && id !== clientId) {
-          client.send(JSON.stringify({
-            type: 'message',
-            message: newMessage,
-          }));
-        }
-      });
-
+    
       // Add the new message to the batch
       // messageBatch.push(newMessage);
       // If batch size is reached, save the batch to IPFS and MongoDB

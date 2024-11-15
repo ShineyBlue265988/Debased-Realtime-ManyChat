@@ -38,35 +38,35 @@ const ChatBox = ({ username, walletAddress }) => {
     adjustTextareaHeight();
   }, [text]);
 
-  async function fetchFromIPFSGateways(cid) {
-    const gateways = [
-      `https://cloudflare-ipfs.com/ipfs/${cid}`,
-      `https://gateway.pinata.cloud/ipfs/${cid}`,
-      `https://ipfs.io/ipfs/${cid}`,
-      `https://dweb.link/ipfs/${cid}`
-    ];
+//   async function fetchFromIPFSGateways(cid) {
+//     const gateways = [
+//       `https://cloudflare-ipfs.com/ipfs/${cid}`,
+//       `https://gateway.pinata.cloud/ipfs/${cid}`,
+//       `https://ipfs.io/ipfs/${cid}`,
+//       `https://dweb.link/ipfs/${cid}`
+//     ];
   
-    for (const url of gateways) {
-      try {
-        const response = await axios.get(url);
-        if (response.status === 200) {
-          console.log(`Fetched data from ${url}`);
-          console.log("response.data", response.data);
-          return response.data;
-        }
-      } catch (error) {
-        console.error(`Failed to fetch from ${url}:`, error.message);
-      }
-    }
-    throw new Error(`Content not available on any public gateway for CID: ${cid}`);
-  }
+//     for (const url of gateways) {
+//       try {
+//         const response = await axios.get(url);
+//         if (response.status === 200) {
+//           console.log(`Fetched data from ${url}`);
+//           console.log("response.data", response.data);
+//           return response.data;
+//         }
+//       } catch (error) {
+//         console.error(`Failed to fetch from ${url}:`, error.message);
+//       }
+//     }
+//     throw new Error(`Content not available on any public gateway for CID: ${cid}`);
+//   }
 
-  const getText=async(message)=>{
-    fetchFromIPFSGateways(message.cid)
-.then(data => console.log('Data:', data.text))
-.catch(console.error);
-return data.text;
-  }
+//   const getText=async(message)=>{
+//     fetchFromIPFSGateways(message.cid)
+// .then(data => console.log('Data:', data.text))
+// .catch(console.error);
+// return data.text;
+//   }
 
 
   const adjustTextareaHeight = () => {
@@ -218,10 +218,10 @@ return data.text;
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
-      const receivedMessage = {
-        ...message,text: getText(message)}
-        console.log("receivedMessage", receivedMessage);
-      setMessages(prev => [...prev, receivedMessage]);
+      // const receivedMessage = {
+      //   ...message,text: getText(message)}
+        console.log("receivedMessage", message);
+      setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
