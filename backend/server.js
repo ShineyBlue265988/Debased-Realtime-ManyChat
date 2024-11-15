@@ -132,8 +132,8 @@ wss.on('connection', (ws) => {
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
             messagesWithSameCid.forEach(meta => {
-              console.log("meta", meta);
-              console.log("content", content);
+              // console.log("meta", meta);
+              // console.log("content", content);
               fullMessages.push({
                 ...meta.toObject(),
                 text: message.text // Assuming content has a 'text' field
@@ -148,7 +148,7 @@ wss.on('connection', (ws) => {
     })
     .then(() => {
       // Send full messages to the client, ensuring fullMessages is populated
-      fullMessages = [...messageBatch, ...fullMessages];
+      fullMessages = [...messageBatch.reverse(), ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
