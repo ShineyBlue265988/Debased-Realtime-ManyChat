@@ -179,7 +179,7 @@ wss.on('connection', (ws) => {
         }
       });
     
-      messageBatch.push(messageToStore);
+      messageBatch.push(messageToSend);
 
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
