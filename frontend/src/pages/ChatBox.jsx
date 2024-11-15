@@ -221,7 +221,7 @@ const ChatBox = ({ username, walletAddress }) => {
       // const receivedMessage = {
       //   ...message,text: getText(message)}
         console.log("receivedMessage", message);
-      setMessages(prev => [ message,...prev]);
+      setMessages(prev => [ ...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
