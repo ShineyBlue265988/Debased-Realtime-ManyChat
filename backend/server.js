@@ -194,7 +194,7 @@ wss.on('connection', (ws) => {
     .then(() => {
       console.log("fullMessages", fullMessages);
       console.log("MessageBatch", messageBatch);
-      let reversedMessageBatch = messageBatch.reverse();
+      let reversedMessageBatch = messageBatch.slice().reverse();
       console.log("reversedMessageBatch", reversedMessageBatch);
       // Send full messages to the client, ensuring fullMessages is populated
       fullMessages = [...reversedMessageBatch, ...fullMessages];
