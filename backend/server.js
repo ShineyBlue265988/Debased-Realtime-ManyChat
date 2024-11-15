@@ -125,7 +125,11 @@ wss.on('connection', (ws) => {
       console.log("history messageContents", messageContents);
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
+        console.log("messagesWithSameCid", messagesWithSameCid);
         messagesWithSameCid.forEach(meta => {
+          console.log("meta", meta);
+          console.log("content", content);
+          console.log("content.text", content.text);
           fullMessages.push({
             ...meta.toObject(),
             text: content.text // Assuming content has a 'text' field
