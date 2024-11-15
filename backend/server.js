@@ -42,8 +42,53 @@ let messageBatch = []; // Array to store batched messages
 
 const wss = new WebSocket.Server({ server });
 
+async function unpinFile(cid) {
+  try {
+    await axios.delete(`https://api.pinata.cloud/pinning/unpin/${cid}`, {
+      headers: {
+        pinata_api_key: PINATA_API_KEY,
+        pinata_secret_api_key: PINATA_API_SECRET,
+      },
+    });
+    console.log(`Unpinned file with CID: ${cid}`);
+  } catch (error) {
+    console.error(`Error unpinning file with CID ${cid}:`, error);
+  }
+}
+
+// Function to get pinned files
+async function getPinnedFiles() {
+  try {
+    const response = await axios.get('https://api.pinata.cloud/data/pinList', {
+      headers: {
+        pinata_api_key: PINATA_API_KEY,
+        pinata_secret_api_key: PINATA_API_SECRET,
+      },
+    });
+    return response.data.rows; // This will return an array of pinned files
+  } catch (error) {
+    console.error('Error fetching pinned files:', error);
+  }
+}
+
+// Function to manage pinning
+async function managePinning() {
+  const pinnedFiles = await getPinnedFiles();
+
+  if (pinnedFiles.length >= 500) {
+    // Sort by timestamp or other criteria to find the oldest
+    const filesToUnpin = pinnedFiles.sort((a, b) => a.timestamp - b.timestamp).slice(0, 10); // Adjust the number as needed
+
+    for (const file of filesToUnpin) {
+      await unpinFile(file.ipfs_pin_hash); // Use the correct property for the CID
+    }
+  }
+}
+
+
 // IPFS functions
 async function storeMessagesBatch(batch) {
+  await managePinning(); // Manage pinning before storing new messages
   try {
     const response = await axios.post(
       'https://api.pinata.cloud/pinning/pinJSONToIPFS',
