@@ -198,7 +198,7 @@ wss.on('connection', (ws) => {
       });
     
       messageBatch.push(messageToSend);
-
+      messageBatch.reverse();
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
         const batchCid = await storeMessagesBatch(messageBatch);
