@@ -193,8 +193,9 @@ wss.on('connection', (ws) => {
     })
     .then(() => {
       console.log("fullMessages", fullMessages);
-      // console.log("reversedMessageBatch", messageBatch.reverse());
+      console.log("MessageBatch", messageBatch);
       let reversedMessageBatch = messageBatch.reverse();
+      console.log("reversedMessageBatch", reversedMessageBatch);
       // Send full messages to the client, ensuring fullMessages is populated
       fullMessages = [...reversedMessageBatch, ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
@@ -250,7 +251,9 @@ wss.on('connection', (ws) => {
       messageBatch.push(messageToSend);
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
+        console.log("messageBatch", messageBatch);
         messageBatch .reverse();
+        console.log("reversedMessageBatch", messageBatch);
         const batchCid = await storeMessagesBatch(messageBatch);
 
         // // Save metadata and CID in MongoDB for each message
@@ -276,7 +279,8 @@ wss.on('connection', (ws) => {
 
 
         // Clear the batch after saving
-        messageBatch.length = 0;
+        messageBatch =[];
+        console.log("messageBatch", messageBatch);
 
         console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
       }
