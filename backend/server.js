@@ -143,8 +143,9 @@ wss.on('connection', (ws) => {
         },
         { upsert: true }
       );
-
+      const temporaryId = new mongoose.Types.ObjectId();
       const messageToSend = {
+        _id: temporaryId, // Add the temporary _id
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
