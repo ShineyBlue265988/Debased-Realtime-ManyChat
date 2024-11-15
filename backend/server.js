@@ -123,12 +123,12 @@ wss.on('connection', (ws) => {
     .then(messageContents => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
-      
+
       // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
         // console.log("messagesWithSameCid", messagesWithSameCid);
-        
+
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
             messagesWithSameCid.forEach(meta => {
@@ -148,7 +148,7 @@ wss.on('connection', (ws) => {
     })
     .then(() => {
       // Send full messages to the client, ensuring fullMessages is populated
-      fullMessages=[...messageBatch,...fullMessages];
+      fullMessages = [...messageBatch, ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
@@ -187,7 +187,7 @@ wss.on('connection', (ws) => {
         timestamp: new Date(),
         text: data.text // Include the message text here
       };
-    
+
       // Broadcast the message to all connected clients
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
@@ -197,7 +197,7 @@ wss.on('connection', (ws) => {
           }));
         }
       });
-    
+
       messageBatch.push(messageToSend);
       messageBatch.reverse();
       // If batch size is reached, save the batch to IPFS and MongoDB
@@ -221,7 +221,7 @@ wss.on('connection', (ws) => {
           timestamp: new Date(), // Timestamp for when the batch was saved
           cid: batchCid // Store the same CID for the entire batch
         });
-  
+
         // Save the single message to MongoDB
         await mongoMessage.save();
 
@@ -229,7 +229,8 @@ wss.on('connection', (ws) => {
         // Clear the batch after saving
         messageBatch.length = 0;
 
-        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);}
+        console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
+      }
 
     } catch (error) {
       console.error('Error handling message:', error);
