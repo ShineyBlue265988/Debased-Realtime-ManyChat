@@ -185,16 +185,27 @@ wss.on('connection', (ws) => {
       if (messageBatch.length >= BATCH_SIZE) {
         const batchCid = await storeMessagesBatch(messageBatch);
 
-        // Save metadata and CID in MongoDB for each message
-        for (let msg of messageBatch) {
-          const mongoMessage = new Message({
-            username: msg.username,
-            publicKey: msg.publicKey,
-            timestamp: msg.timestamp,
-            cid: batchCid // Store the same CID for all batched messages
-          });
-          await mongoMessage.save();
-        }
+        // // Save metadata and CID in MongoDB for each message
+        // for (let msg of messageBatch) {
+        //   const mongoMessage = new Message({
+        //     username: msg.username,
+        //     publicKey: msg.publicKey,
+        //     timestamp: msg.timestamp,
+        //     cid: batchCid // Store the same CID for all batched messages
+        //   });
+        //   await mongoMessage.save();
+        // }
+
+        const mongoMessage = new Message({
+          username: messageBatch[0].username, // You can choose to store the first user's info
+          publicKey: messageBatch[0].publicKey, // Similarly, you can store the first user's public key
+          timestamp: new Date(), // Timestamp for when the batch was saved
+          cid: batchCid // Store the same CID for the entire batch
+        });
+  
+        // Save the single message to MongoDB
+        await mongoMessage.save();
+
 
         // Clear the batch after saving
         messageBatch.length = 0;
