@@ -180,7 +180,11 @@ wss.on('connection', (ws) => {
               // console.log("meta", meta);
               // console.log("content", content);
               fullMessages.push({
-                ...meta.toObject(),
+                username: message.username,
+                publicKey: message.publicKey,
+                timestamp: message.timestamp,
+                read: message.read,
+                mentions: message.mentions,
                 text: message.text // Assuming content has a 'text' field
               });
               // console.log("fullMessages", fullMessages);
