@@ -87,7 +87,7 @@ async function managePinning() {
 
 
 // IPFS functions
-async function storeMessagesBatch(batch) {
+async function storeMessagesBatch(batch,retries = 5) {
   await managePinning(); // Manage pinning before storing new messages
   try {
     const response = await axios.post(
@@ -118,7 +118,7 @@ async function storeMessagesBatch(batch) {
 }
 
 
-async function getMessages(cids) {
+async function getMessages(cids,retries = 5) {
   try {
     const responses = await Promise.all(cids.map(cid => axios.get(`https://gateway.pinata.cloud/ipfs/${cid}`)));
     return responses.map(response => response.data);
