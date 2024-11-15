@@ -99,7 +99,7 @@ async function storeMessage(message) {
 wss.on('connection', (ws) => {
   const clientId = generateUniqueId();
   clients.set(clientId, ws);
-  const fullMessages = [];
+  let fullMessages = [];
   // Create a map to store messages by CID
   const cidMap = new Map();
   // Send existing messages to new client
