@@ -100,51 +100,62 @@ wss.on('connection', (ws) => {
   const clientId = generateUniqueId();
   clients.set(clientId, ws);
   const fullMessages = [];
+
   // Send existing messages to new client
   Message.find().sort({ timestamp: -1 }).limit(500)
-  .then(async existingMessages => {
-    // Create a map to store messages by CID
-    const cidMap = new Map();
-    
-    existingMessages.forEach(meta => {
-      if (!meta.cid) {
-        console.error('Missing CID for message:', meta);
-        return; // Handle missing CID
-      }
-      if (!cidMap.has(meta.cid)) {
-        cidMap.set(meta.cid, []);
-      }
-      cidMap.get(meta.cid).push(meta);
-    });
-    console.log("cidMap", cidMap);
-    // Retrieve messages from IPFS for all unique CIDs
-    getMessages(Array.from(cidMap.keys()))
+    .then(async existingMessages => {
+      // Create a map to store messages by CID
+      const cidMap = new Map();
+      
+      existingMessages.forEach(meta => {
+        if (!meta.cid) {
+          console.error('Missing CID for message:', meta);
+          return; // Handle missing CID
+        }
+        if (!cidMap.has(meta.cid)) {
+          cidMap.set(meta.cid, []);
+        }
+        cidMap.get(meta.cid).push(meta);
+      });
+      console.log("cidMap", cidMap);
+
+      // Retrieve messages from IPFS for all unique CIDs
+      return getMessages(Array.from(cidMap.keys())); // Return the promise
+    })
     .then(messageContents => {
-      // Construct full messages
       console.log("history messageContents", messageContents);
+      const cidKeys = Array.from(cidMap.keys());
+      
+      // Construct full messages
       messageContents.forEach((content, index) => {
-        const messagesWithSameCid = cidMap.get(Array.from(cidMap.keys())[index]);
+        const messagesWithSameCid = cidMap.get(cidKeys[index]);
         console.log("messagesWithSameCid", messagesWithSameCid);
-        messagesWithSameCid.forEach(meta => {
-          console.log("meta", meta);
-          console.log("content", content);
-          console.log("content.batch", content.batch);
+        
+        if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
-            console.log("message", message);
-            fullMessages.push({
-              ...meta.toObject(),
-              text: message.text // Assuming content has a 'text' field
+            messagesWithSameCid.forEach(meta => {
+              console.log("meta", meta);
+              console.log("content", content);
+              fullMessages.push({
+                ...meta.toObject(),
+                text: message.text // Assuming content has a 'text' field
+              });
+              console.log("fullMessages", fullMessages);
             });
-            console.log("fullMessages", fullMessages);
           });
-        });
-      })});
-    
-  }).then(() => {
-    // Send full messages to the client
-    ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-    console.log("JSON.stringify({ type: 'history', messages: fullMessages })", JSON.stringify({ type: 'history', messages: fullMessages }));
-  })
+        } else {
+          console.error(`No batch found for CID: ${cidKeys[index]}`);
+        }
+      });
+    })
+    .then(() => {
+      // Send full messages to the client, ensuring fullMessages is populated
+      ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
+      console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
+    })
+    .catch(error => {
+      console.error('Error retrieving or sending messages:', error);
+    });
 
 
   ws.on('error', (error) => {
