@@ -257,8 +257,8 @@ const ChatBox = ({ username, walletAddress }) => {
         console.log('Received message:', data);
         if (data.type === 'history') {
           const reversedMessages = data.messages.reverse();
-          reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
-          setMessages(reversedMessages);
+          const historyMessage=reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
+          setMessages(historyMessage);
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
