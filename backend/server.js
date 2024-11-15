@@ -160,7 +160,7 @@ wss.on('connection', (ws) => {
         }
         cidMap.get(meta.cid).push(meta);
       });
-      console.log("cidMap", cidMap);
+      // console.log("cidMap", cidMap);
 
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
