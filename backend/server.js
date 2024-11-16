@@ -23,9 +23,9 @@ const server = https.createServer(options, app).listen(443, "167.71.99.132", () 
 // Connect to MongoDB
 connectDB();
 
-const projectId = '0882917bbbbe443f8d259cf345a90ab7';
-const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
-const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+// const projectId = '0882917bbbbe443f8d259cf345a90ab7';
+// const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
+// const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 // const ipfs = create({
 //   host: 'ipfs.infura.io',
@@ -35,6 +35,11 @@ const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('b
 //     authorization: auth
 //   }
 // });
+const { Web3Storage, File } = require('web3.storage');
+
+// Initialize Web3.Storage client
+const WEB3_STORAGE_TOKEN = 'z6MkkAGfzzepLAYsr88jVrReJjZ5fUBEzZDzA2HWDJ1wHiEe';
+const web3Client = new Web3Storage({ token: WEB3_STORAGE_TOKEN });
 
 const clients = new Map();
 const BATCH_SIZE = 10; // Number of messages to batch
@@ -88,22 +93,17 @@ async function managePinning() {
 
 // IPFS functions
 async function storeMessagesBatch(batch,retries = 5) {
-  await managePinning(); // Manage pinning before storing new messages
+  // await managePinning(); // Manage pinning before storing new messages
   try {
-    const response = await axios.post(
-      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
-      { batch },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          pinata_api_key: PINATA_API_KEY,
-          pinata_secret_api_key: PINATA_API_SECRET
-        }
-      }
-    );
-    console.log(`Stored batch of messages on IPFS with CID: ${response.data.IpfsHash}`);
-    return response.data.IpfsHash;
-  } catch (error) {
+    const batchJSON = JSON.stringify(batch); // Convert batch to JSON
+    const file = new File([batchJSON], 'messages-batch.json', { type: 'application/json' });
+
+    // Store file using Web3.Storage
+    const cid = await web3Client.put([file]);
+    console.log(`Stored batch of messages on Web3.Storage with CID: ${cid}`);
+    return cid; // Return the CID
+
+    } catch (error) {
     if (error.response && error.response.status === 429 && retries > 0) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
@@ -119,11 +119,14 @@ async function storeMessagesBatch(batch,retries = 5) {
   }
 }
 
+const fetch = require('node-fetch');
 
 async function getMessages(cids,retries = 5) {
   try {
-    const responses = await Promise.all(cids.map(cid => axios.get(`https://gateway.pinata.cloud/ipfs/${cid}`)));
-    return responses.map(response => response.data);
+    const responses = await Promise.all(
+      cids.map(cid => fetch(`https://w3s.link/ipfs/${cid}`).then(res => res.json()))
+    );
+    return responses; // Return the fetched data
   } catch (error) {
     if (error.response && error.response.status === 429 && retries > 0) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
