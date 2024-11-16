@@ -23,9 +23,9 @@ const server = https.createServer(options, app).listen(443, "167.71.99.132", () 
 // Connect to MongoDB
 connectDB();
 
-// const projectId = '0882917bbbbe443f8d259cf345a90ab7';
-// const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
-// const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
+const projectId = '0882917bbbbe443f8d259cf345a90ab7';
+const projectSecret = 'lZDmFq8EvlR1vf/H/M3gK0wePTBuE6GyB9nQ1FqX4fJqTgs6fAnqOw';
+const auth = 'Basic ' + Buffer.from(projectId + ':' + projectSecret).toString('base64');
 
 // const ipfs = create({
 //   host: 'ipfs.infura.io',
@@ -61,7 +61,6 @@ async function unpinFile(cid) {
   }
 }
 
-// Function to get pinned files
 async function getPinnedFiles() {
   try {
     const response = await axios.get('https://api.pinata.cloud/data/pinList', {
@@ -76,7 +75,7 @@ async function getPinnedFiles() {
   }
 }
 
-// Function to manage pinning
+
 async function managePinning() {
   const pinnedFiles = await getPinnedFiles();
 
@@ -92,18 +91,50 @@ async function managePinning() {
 
 
 // IPFS functions
+// async function storeMessagesBatch(batch,retries = 5) {
+//   // await managePinning(); // Manage pinning before storing new messages
+//   try {
+//     const batchJSON = JSON.stringify(batch); // Convert batch to JSON
+//     const file = new File([batchJSON], 'messages-batch.json', { type: 'application/json' });
+
+//     // Store file using Web3.Storage
+//     const cid = await web3Client.put([file]);
+//     console.log(`Stored batch of messages on Web3.Storage with CID: ${cid}`);
+//     return cid; // Return the CID
+
+//     } catch (error) {
+//     if (error.response && error.response.status === 429 && retries > 0) {
+//       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
+//       retryAfter = 3;
+//       console.log(`Store Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
+//       await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+//       console.log("Retrying...");
+//       return storeMessagesBatch(batch, retries - 1);
+//     } else {
+//       console.error("Error storing message batch on Pinata:", error);
+//       throw error;
+//     }
+
+//   }
+// }
+
 async function storeMessagesBatch(batch,retries = 5) {
-  // await managePinning(); // Manage pinning before storing new messages
+  await managePinning(); // Manage pinning before storing new messages
   try {
-    const batchJSON = JSON.stringify(batch); // Convert batch to JSON
-    const file = new File([batchJSON], 'messages-batch.json', { type: 'application/json' });
-
-    // Store file using Web3.Storage
-    const cid = await web3Client.put([file]);
-    console.log(`Stored batch of messages on Web3.Storage with CID: ${cid}`);
-    return cid; // Return the CID
-
-    } catch (error) {
+    const response = await axios.post(
+      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+      { batch },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          pinata_api_key: PINATA_API_KEY,
+          pinata_secret_api_key: PINATA_API_SECRET
+        }
+      }
+    );
+    console.log(`Stored batch of messages on IPFS with CID: ${response.data.IpfsHash}`);
+    return response.data.IpfsHash;
+  } catch (error) {
     if (error.response && error.response.status === 429 && retries > 0) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
@@ -136,32 +167,32 @@ async function getMessages(cids,retries = 5) {
       console.log("Retrying...");
       return getMessages(cids, retries - 1);
     } else {
-      console.error("Error fetching messages from IPFS via Pinata gateway:", error);
+      console.error("Error fetching messages from IPFS via IPFS gateway:", error);
       throw error;
     }
   }
 }
 
-async function storeMessage(message) {
-  try {
-    const response = await axios.post(
-      'https://api.pinata.cloud/pinning/pinJSONToIPFS',
-      message,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          pinata_api_key: PINATA_API_KEY,
-          pinata_secret_api_key: PINATA_API_SECRET
-        }
-      }
-    );
-    console.log("Stored message CID:", response.data.IpfsHash);
-    return response.data.IpfsHash;
-  } catch (error) {
-    console.error("Error storing message on Pinata:", error);
-    throw error;
-  }
-}
+// async function storeMessage(message) {
+//   try {
+//     const response = await axios.post(
+//       'https://api.pinata.cloud/pinning/pinJSONToIPFS',
+//       message,
+//       {
+//         headers: {
+//           'Content-Type': 'application/json',
+//           pinata_api_key: PINATA_API_KEY,
+//           pinata_secret_api_key: PINATA_API_SECRET
+//         }
+//       }
+//     );
+//     console.log("Stored message CID:", response.data.IpfsHash);
+//     return response.data.IpfsHash;
+//   } catch (error) {
+//     console.error("Error storing message on Web3:", error);
+//     throw error;
+//   }
+// }
 
 wss.on('connection', (ws) => {
   const clientId = generateUniqueId();
