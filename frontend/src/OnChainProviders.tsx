@@ -30,7 +30,8 @@ function OnchainProviders({ children }: Props) {
         <OnchainKitProvider
           //   apiKey={process.env.CDP_API_KEY}
           // apiKey='KkgONfLFgUZKI8nnrttLbI78U2vyhtXg'
-          chain={base}
+          chain={base}    
+            
         >
         <RainbowKitProvider >
           {/* <ConnectButton /> */}

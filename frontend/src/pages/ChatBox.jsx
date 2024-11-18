@@ -341,7 +341,7 @@ const ChatBox = ({ username, walletAddress }) => {
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       <div className="flex items-center justify-between p-2 ">
         <div className="flex items-center">
-          <span>
+          <span className="bg-white">
             <Identity
               address={walletAddress}
               schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"

@@ -16,7 +16,7 @@ const formatSubscriptionDate = (timestamp) => {
   
 };
 
-const SubscriptionPages = () => {
+const SubscriptionPages = (address) => {
   const { primaryWallet } = useDynamicContext();
   const [selectedDuration, setSelectedDuration] = useState('1 Month');
   const CONTRACT_ADDRESS = "0xFBeF9631bff614C602c09C806FDA7eeceBf30bC7";
@@ -59,7 +59,7 @@ const SubscriptionPages = () => {
         const provider = await getWeb3Provider(primaryWallet);
         const signer = await getSigner(primaryWallet);
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-        const endDate = await contract.subscriptionEndDate(primaryWallet.address);
+        const endDate = await contract.subscriptionEndDate(address);
         if (endDate > 0) {
           setSubscriptionEndDate(formatSubscriptionDate(endDate));
         }
