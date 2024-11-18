@@ -38,35 +38,35 @@ const ChatBox = ({ username, walletAddress }) => {
     adjustTextareaHeight();
   }, [text]);
 
-//   async function fetchFromIPFSGateways(cid) {
-//     const gateways = [
-//       `https://cloudflare-ipfs.com/ipfs/${cid}`,
-//       `https://gateway.pinata.cloud/ipfs/${cid}`,
-//       `https://ipfs.io/ipfs/${cid}`,
-//       `https://dweb.link/ipfs/${cid}`
-//     ];
-  
-//     for (const url of gateways) {
-//       try {
-//         const response = await axios.get(url);
-//         if (response.status === 200) {
-//           console.log(`Fetched data from ${url}`);
-//           console.log("response.data", response.data);
-//           return response.data;
-//         }
-//       } catch (error) {
-//         console.error(`Failed to fetch from ${url}:`, error.message);
-//       }
-//     }
-//     throw new Error(`Content not available on any public gateway for CID: ${cid}`);
-//   }
+  //   async function fetchFromIPFSGateways(cid) {
+  //     const gateways = [
+  //       `https://cloudflare-ipfs.com/ipfs/${cid}`,
+  //       `https://gateway.pinata.cloud/ipfs/${cid}`,
+  //       `https://ipfs.io/ipfs/${cid}`,
+  //       `https://dweb.link/ipfs/${cid}`
+  //     ];
 
-//   const getText=async(message)=>{
-//     fetchFromIPFSGateways(message.cid)
-// .then(data => console.log('Data:', data.text))
-// .catch(console.error);
-// return data.text;
-//   }
+  //     for (const url of gateways) {
+  //       try {
+  //         const response = await axios.get(url);
+  //         if (response.status === 200) {
+  //           console.log(`Fetched data from ${url}`);
+  //           console.log("response.data", response.data);
+  //           return response.data;
+  //         }
+  //       } catch (error) {
+  //         console.error(`Failed to fetch from ${url}:`, error.message);
+  //       }
+  //     }
+  //     throw new Error(`Content not available on any public gateway for CID: ${cid}`);
+  //   }
+
+  //   const getText=async(message)=>{
+  //     fetchFromIPFSGateways(message.cid)
+  // .then(data => console.log('Data:', data.text))
+  // .catch(console.error);
+  // return data.text;
+  //   }
 
 
   const adjustTextareaHeight = () => {
@@ -123,7 +123,7 @@ const ChatBox = ({ username, walletAddress }) => {
     setShowEmojiPicker(false);
   };
   const handleTextChange = (e) => {
-    const newText = e.target.value.slice(0,140);
+    const newText = e.target.value.slice(0, 140);
     setText(newText);
     // Log words starting with @
     const mentionedWords = newText.split(' ').filter(word => word.startsWith('@'));
@@ -187,6 +187,13 @@ const ChatBox = ({ username, walletAddress }) => {
       const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
 
       isNearBottomRef.current = isNearBottom;
+
+      // Prevent navigation if at the top
+      if (scrollTop === 0) {
+        // Do nothing or handle as needed
+        return;
+      }
+
       setShowScrollButton(!isNearBottom);
 
       if (isNearBottom && newMessageCount > 0) {
@@ -220,8 +227,8 @@ const ChatBox = ({ username, walletAddress }) => {
       // For others' messages: check scroll position
       // const receivedMessage = {
       //   ...message,text: getText(message)}
-        console.log("receivedMessage", message);
-      setMessages(prev => [ ...prev, message]);
+      console.log("receivedMessage", message);
+      setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
       console.log("bottomstate", bottomstate);
@@ -257,7 +264,7 @@ const ChatBox = ({ username, walletAddress }) => {
         console.log('Received message:', data);
         if (data.type === 'history') {
           const reversedMessages = data.messages.reverse();
-          const historyMessage=reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
+          const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
           setMessages(historyMessage);
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
@@ -348,7 +355,7 @@ const ChatBox = ({ username, walletAddress }) => {
               chain={base}
               className="bg-transparent"
             >
-                <Avatar className='w-8 h-8 bg-transparent' />
+              <Avatar className='w-8 h-8 bg-transparent' />
             </Identity>
           </span>
           <span className="text-green-700 text-xl bg-green-50 px-2 py-1">CurrentUser: {username}</span>
@@ -425,14 +432,14 @@ const ChatBox = ({ username, walletAddress }) => {
             <AtSign className="h-6 w-6" />
           </button>
           <textarea
-          ref={textareaRef}
-          value={text}
-          onChange={handleTextChange}
-          id="inputMessage"
-          placeholder="Type your message..."
-          className="flex-1 p-2 rounded-lg focus:outline-gray-300 outline-none w-full bg-inherit resize-none overflow-hidden"
-          rows={1}
-        />
+            ref={textareaRef}
+            value={text}
+            onChange={handleTextChange}
+            id="inputMessage"
+            placeholder="Type your message..."
+            className="flex-1 p-2 rounded-lg focus:outline-gray-300 outline-none w-full bg-inherit resize-none overflow-hidden"
+            rows={1}
+          />
           <button
             type="button"
             onClick={() => setShowEmojiPicker(!showEmojiPicker)}
