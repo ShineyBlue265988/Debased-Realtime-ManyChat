@@ -346,7 +346,7 @@ const ChatBox = ({ username, walletAddress }) => {
 
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
-      <div className="flex items-center justify-between p-2 ">
+      {/* <div className="flex items-center justify-between p-2 ">
         <div className="flex items-center">
           <span className="bg-transparent">
             <Identity
@@ -360,7 +360,7 @@ const ChatBox = ({ username, walletAddress }) => {
           </span>
           <span className="text-green-700 text-xl bg-green-50 px-2 py-1">CurrentUser: {username}</span>
         </div>
-      </div>
+      </div> */}
 
       {/* </div> */}
       {/* <ScrollArea 
