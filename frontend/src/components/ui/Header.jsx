@@ -65,15 +65,17 @@ const Header = () => {
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <img
+            {/* <img
               src={debased}
               alt="Logo"
               width={40}
               height={40}
               onClick={() => navigate('/')}
               className="hover:scale-105 cursor-pointer"
-            />
-
+            /> */}
+            <div className='text-5xl font-bold text-blue-600 cursor-pointer hover:scale-105' onClick={() => navigate('/')} id='debase'>
+              deBase
+            </div>
             <div className="md:hidden">
               <button onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
                 {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
@@ -120,7 +122,7 @@ const Header = () => {
                     Go to Wallet Dashboard
                   </WalletDropdownLink>
                   <div onClick={handleLogOutClick}>
-                  <WalletDropdownDisconnect  />
+                    <WalletDropdownDisconnect />
                   </div>
                 </WalletDropdown>
               </Wallet>}

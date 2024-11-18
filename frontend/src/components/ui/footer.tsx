@@ -10,7 +10,7 @@ function Footer() {
             {/* Base Logo */}
             <div className="flex items-center gap-4">
               <img src={base} alt="Base Logo" className="w-12 h-12 " />
-              <span className="text-5xl font-bold bg-gradient-to-b from-gray-300 to-gray-900 bg-gray-100 bg-clip-text text-transparent">
+              <span className="text-5xl font-bold text-blue-600 cursor-pointer hover:scale-105">
                 deBase
               </span>
             </div>
