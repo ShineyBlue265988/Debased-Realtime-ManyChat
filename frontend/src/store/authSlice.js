@@ -103,7 +103,7 @@ const authSlice = createSlice({
   reducers: {
     setAuth: (state, action) => {
       state.isAuthenticated = true;
-      state.walletAddress = action.payload;
+      state.walletAddress = action.payload.address;
     },
     setPublicKey: (state, action) => {
       state.publicKey = action.payload;

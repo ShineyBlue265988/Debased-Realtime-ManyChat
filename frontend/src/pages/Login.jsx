@@ -37,7 +37,7 @@ const Login = () => {
 
             {/* Dotted background pattern */}
             <div className="absolute top-[15vh] md:left-[30vw] w-full h-full">
-              <video autoPlay="true" className='md:w-[50vw] h-[80vh] w-[80vw]' muted loop playsInline >
+              <video autoPlay={true} className='md:w-[50vw] h-[80vh] w-[80vw]' muted loop playsInline >
                 <source src="/123.webm" type="video/webm" />
                 Your browser does not support the video tag.
               </video>

@@ -7,20 +7,20 @@ import { Provider, useSelector } from 'react-redux';
 import { store } from './store/store'; // Ensure you import your store
 import SubscriptionPages from './pages/SubscriptionPages';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DynamicContextProvider, useDynamicContext,useRpcProviders } from '@dynamic-labs/sdk-react-core';
+import { DynamicContextProvider, useDynamicContext, useRpcProviders } from '@dynamic-labs/sdk-react-core';
 import { evmProvidersSelector } from '@dynamic-labs/ethereum-core'
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { base, baseSepolia } from 'viem/chains';
 import Header from './components/ui/Header';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
 import { getName } from '@coinbase/onchainkit/identity';
- 
 
-const walletAddress="";
-const ProtectedRoute = ({address, children }) => {
+
+const walletAddress = "";
+const ProtectedRoute = ({ address, children }) => {
   let username = useSelector(state => state.auth.username);
   const isSubscribed = useSelector(state => state.auth.isSubscribed); // Fixed: Added the correct state property
-  const loading = useSelector(state=>state.auth.loading);
+  const loading = useSelector(state => state.auth.loading);
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -49,7 +49,7 @@ function App() {
   const walletAddress = useSelector(state => state.auth.walletAddress);
   const dynamicSettings = {
     environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",
-    walletConnectors: [EthereumWalletConnectors],
+    walletConnectors: [EthereumWalletConnectors,],
     enableEnsLookup: true,
     evmNetworks: [
       {
@@ -106,41 +106,41 @@ function App() {
   console.log("Wallet Address:", walletAddress);
   return (
     <Router>
-      <Provider store={store}>
-        <DynamicContextProvider settings={dynamicSettings}>
-          <div className="max-h-100vh overflow-y-hidden">
-            <Header />
-            <QueryClientProvider client={queryClient}>
-              <div className=" bg-gradient-to-br from-gray-50 to-indigo-100 flex items-center justify-center overflow-y-auto">
-                <Routes>
-                  <Route
-                    path="/"
-                    element={<Login />}
-                  />
-                  <Route path="/subscription" element={<SubscriptionPages />} />
-                  <Route
-                    path="/chat"
-                    element={
-                      <div style={{
-                        backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pattern-01-qX0NjZaOV8g9QrnkzzOeFWx1ByjbJH.png')`,
-                        backgroundRepeat: 'repeat',
-                        height: '92vh',
-                        width: '100vw',
-                      }}>
-                        {
-                          <ProtectedRoute address={walletAddress}>
-                          <ChatBox username={username} walletAddress={walletAddress} />
-                          </ProtectedRoute>
-                          }
-                      </div>
-}
-                  />
-                </Routes>
-              </div>
-            </QueryClientProvider>
+      {/* <Provider store={store}> */}
+      <DynamicContextProvider settings={dynamicSettings}>
+        <div className="max-h-100vh overflow-y-hidden">
+          <Header />
+          {/* <QueryClientProvider client={queryClient}> */}
+          <div className=" bg-gradient-to-br from-gray-50 to-indigo-100 flex items-center justify-center overflow-y-auto">
+            <Routes>
+              <Route
+                path="/"
+                element={<Login />}
+              />
+              <Route path="/subscription" element={<SubscriptionPages address={walletAddress} />} />
+              <Route
+                path="/chat"
+                element={
+                  <div style={{
+                    backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pattern-01-qX0NjZaOV8g9QrnkzzOeFWx1ByjbJH.png')`,
+                    backgroundRepeat: 'repeat',
+                    height: '92vh',
+                    width: '100vw',
+                  }}>
+                    {
+                      <ProtectedRoute address={walletAddress}>
+                        <ChatBox username={username} walletAddress={walletAddress} />
+                      </ProtectedRoute>
+                    }
+                  </div>
+                }
+              />
+            </Routes>
           </div>
-        </DynamicContextProvider>
-      </Provider>
+          {/* </QueryClientProvider> */}
+        </div>
+      </DynamicContextProvider>
+      {/* </Provider> */}
 
     </Router>
   );

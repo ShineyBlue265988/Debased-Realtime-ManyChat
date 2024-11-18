@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@coinbase/onchainkit": "^0.35.3",
+    "@coinbase/onchainkit": "^0.35.5",
     "@dynamic-labs/ethereum": "^3.4.6",
     "@dynamic-labs/ethereum-core": "^3.4.6",
     "@dynamic-labs/ethers-v6": "^3.5.0",
@@ -31,6 +31,7 @@
     "ethers": "^6.13.4",
     "framer-motion": "^11.11.11",
     "lucide-react": "^0.454.0",
+    "onchainkit": "^0.0.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-icons": "^5.3.0",

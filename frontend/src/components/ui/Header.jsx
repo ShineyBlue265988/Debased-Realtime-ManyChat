@@ -5,14 +5,25 @@ import { FiMenu, FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuth, logout, fetchUserName, getSubscriptionState, fetchPublicKey } from '../../store/authSlice';
 import debased from '../icons/debased.png';
-
-
+import { Avatar } from "@coinbase/onchainkit/identity";
+import {
+  ConnectWallet,
+  Wallet,
+  WalletDropdown,
+  WalletDropdownBasename,
+  WalletDropdownLink,
+  WalletDropdownDisconnect,
+} from "@coinbase/onchainkit/wallet";
+import { Address, Name, Badge, Identity } from "@coinbase/onchainkit/identity";
+import { ConnectButton } from '@rainbow-me/rainbowkit';
+import { useAccount } from "wagmi";
 const Header = () => {
-  const { primaryWallet, handleLogOut } = useDynamicContext();
+  // const { primaryWallet, handleLogOut } = useDynamicContext();
+  // console.log("Primary Wallet:", primaryWallet);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
+  const { primaryWallet, handleLogOut } = useDynamicContext();
   const { isAuthenticated, username } = useSelector(state => state.auth);
 
   // Navigation items
@@ -21,17 +32,25 @@ const Header = () => {
     { label: 'ChatRoom', path: '/chat' },
     { label: 'Pricing', path: '/subscription' },
   ];
-
+  let { address } = useAccount();
+  const account = useAccount();
+  console.log("Account: ", account);
+  console.log("Address: ", address);
   // Effect to handle wallet connection
+  // console.log("primaryWallet: ", primaryWallet);
   useEffect(() => {
     if (primaryWallet) {
-      dispatch(setAuth(primaryWallet.address));
+      dispatch(setAuth(primaryWallet));
       dispatch(fetchUserName(primaryWallet));
       dispatch(fetchPublicKey(primaryWallet));
       dispatch(getSubscriptionState(primaryWallet));
+      // address=primaryWallet.address;
     }
   }, [primaryWallet, dispatch]);
-
+  const subscriptionEndDate = useSelector(state => state.auth.subscriptionEndDate);
+  const isSubscribed = useSelector(state => state.auth.isSubscribed);
+  console.log("subscriptionEndDate: ", subscriptionEndDate);
+  console.log("isSubscribed: ", isSubscribed);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle menu on click
 
   const handleLogOutClick = () => {
@@ -39,6 +58,7 @@ const Header = () => {
     dispatch(logout()); // Clear Redux state
     navigate('/'); // Redirect to home after logout
   };
+
 
   return (
     <header className="bg-white shadow-md w-full border-b-4 border-gray-200">
@@ -74,19 +94,49 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <DynamicWidget />
-            {isAuthenticated && (
-              <>
-                {/* Uncomment if you want to show username */}
-                {/* <span className="text-gray-600">{username}</span> */}
-                <button
-                  onClick={handleLogOutClick}
-                  className="text-red-600 hover:text-red-700 hidden md:block"
-                >
-                  Log Out
-                </button>
-              </>
-            )}
+            <div className="flex justify-end">
+              {/* {!address&&<ConnectButton/>} */}
+              {!address && <DynamicWidget />}
+              {address && <Wallet >
+                <ConnectWallet>
+                  <Avatar className="h-6 w-6" />
+                  <Name className='text-black' />
+                </ConnectWallet>
+                <WalletDropdown >
+                  <Identity
+                    className="px-4 pt-3 pb-2"
+                    hasCopyAddressOnClick
+                    schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                    address={address}
+                  >
+                    <Avatar />
+                    <Name>
+                      <Badge />
+                    </Name>
+                    <Address />
+                  </Identity>
+                  <WalletDropdownBasename />
+                  <WalletDropdownLink icon="wallet" href="https://wallet.coinbase.com">
+                    Go to Wallet Dashboard
+                  </WalletDropdownLink>
+                  <div onClick={handleLogOutClick}>
+                  <WalletDropdownDisconnect  />
+                  </div>
+                </WalletDropdown>
+              </Wallet>}
+              {/* {address && (
+                <>
+
+                  <button
+                    onClick={handleLogOutClick}
+                    className="text-red-600 hover:text-red-700 hidden md:block"
+                  >
+                    Log Out
+                  </button>
+                </>
+              )} */}
+            </div>
+
           </div>
         </div>
 
@@ -102,16 +152,17 @@ const Header = () => {
                 {item.label}
               </Link>
             ))}
-            {isAuthenticated && (
-              <button
-                onClick={handleLogOutClick}
-                className="text-red-600 hover:text-red-700"
-              >
-                Log Out
-              </button>
-            )}
+
           </nav>
         )}
+        {/* {isAuthenticated && (
+          <button
+            onClick={handleLogOutClick}
+            className="text-red-600 hover:text-red-700"
+          >
+            Log Out
+          </button>
+        )} */}
       </div>
     </header>
   );
