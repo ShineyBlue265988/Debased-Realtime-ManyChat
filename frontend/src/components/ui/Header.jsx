@@ -73,7 +73,7 @@ const Header = () => {
               onClick={() => navigate('/')}
               className="hover:scale-105 cursor-pointer"
             /> */}
-            <div className='text-5xl font-bold text-blue-600 cursor-pointer hover:scale-105' onClick={() => navigate('/')} id='debase'>
+            <div className='text-3xl font-bold text-blue-600 cursor-pointer hover:scale-105' onClick={() => navigate('/')} id='debase'>
               deBase
             </div>
             <div className="md:hidden">
