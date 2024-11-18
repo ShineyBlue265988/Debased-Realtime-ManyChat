@@ -341,13 +341,14 @@ const ChatBox = ({ username, walletAddress }) => {
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       <div className="flex items-center justify-between p-2 ">
         <div className="flex items-center">
-          <span className="bg-white">
+          <span className="bg-transparent">
             <Identity
               address={walletAddress}
               schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
               chain={base}
+              className="bg-transparent"
             >
-                <Avatar className='w-8 h-8' />
+                <Avatar className='w-8 h-8 bg-transparent' />
             </Identity>
           </span>
           <span className="text-green-700 text-xl bg-green-50 px-2 py-1">CurrentUser: {username}</span>
