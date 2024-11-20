@@ -124,6 +124,11 @@ const ChatBox = ({ username, walletAddress }) => {
   };
   const handleTextChange = (e) => {
     const newText = e.target.value.slice(0, 140);
+      // Prevent consecutive "@" symbols
+  if (newText.endsWith("@@")) {
+    setText(newText.slice(0, -1));
+    return;
+  }
     setText(newText);
     // Log words starting with @
     const mentionedWords = newText.split(' ').filter(word => word.startsWith('@'));
@@ -377,7 +382,7 @@ const ChatBox = ({ username, walletAddress }) => {
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col">
             <div className="flex items-start gap-2">
-              <div className={`py-1 px-2 rounded-lg inline-block ${msg.username === username
+              <div className={`py-2 px-3 rounded-lg inline-block ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
