@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FaArrowDown, FaEllipsisH, FaPaperPlane } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
+import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import chaticon from '../components/icons/baseChat.jpg'
@@ -33,6 +33,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
+  const [likedMessages, setLikedMessages] = useState(new Set());
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -68,7 +69,17 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
 
-
+  const handleLike = (messageId) => {
+    setLikedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
+  };
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -124,11 +135,11 @@ const ChatBox = ({ username, walletAddress }) => {
   };
   const handleTextChange = (e) => {
     const newText = e.target.value.slice(0, 140);
-      // Prevent consecutive "@" symbols
-  if (newText.endsWith("@@")) {
-    setText(newText.slice(0, -1));
-    return;
-  }
+    // Prevent consecutive "@" symbols
+    if (newText.endsWith("@@")) {
+      setText(newText.slice(0, -1));
+      return;
+    }
     setText(newText);
     // Log words starting with @
     const mentionedWords = newText.split(' ').filter(word => word.startsWith('@'));
@@ -402,6 +413,15 @@ const ChatBox = ({ username, walletAddress }) => {
                   <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
+                  <div className="flex items-center mt-1">
+                    <button
+                      onClick={() => handleLike(msg._id)}
+                      className={`text-xs ${likedMessages.has(msg._id) ? 'text-red-500' : 'text-gray-500'} hover:text-red-500 transition-colors`}
+                    >
+                      <FaHeart className="inline mr-1" />
+                      {likedMessages.has(msg._id) ? 'Liked' : 'Like'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
