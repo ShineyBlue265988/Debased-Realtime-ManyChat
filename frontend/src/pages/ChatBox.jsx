@@ -404,7 +404,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {msg.username}
                   </div>
                 )}
-                <div className="break-words flex justify-end">
+                <div className="break-words">
                   {isOnlyEmojis(msg.text) ? (
                     <span className="text-6xl">{msg.text}</span>
                   ) : (
@@ -413,16 +413,14 @@ const ChatBox = ({ username, walletAddress }) => {
                   <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
-                  {/* <div className="flex items-center mt-1 flex justify-end"> */}
-                  <span>
+                  <div className="flex items-center mt-1 flex justify-end">
                     <button
                       onClick={() => handleLike(msg._id)}
-                      className={`text-xl ${likedMessages.has(msg._id) ? 'text-red-500' : 'text-transparent'} hover:text-red-500 hover:scale-110 transition-colors`}
+                      className={`text-xl ${likedMessages.has(msg._id) ? 'text-red-500' : 'text-transparent'} hover:text-red-500 hover:scale-105 transition-colors`}
                     >
                       <FaHeart className="inline mr-1 w-5 h-5" />
                     </button>
-                  {/* </div> */}
-                  </span>
+                  </div>
                 </div>
               </div>
             </div>
