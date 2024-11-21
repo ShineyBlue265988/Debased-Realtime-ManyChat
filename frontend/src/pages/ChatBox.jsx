@@ -416,7 +416,7 @@ const ChatBox = ({ username, walletAddress }) => {
                   </span>
                 </div>
               </div>
-              <div className="flex items-center mt-1 flex justify-end absolute bottom-0 right-0">
+              <div className={`flex items-center mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1' : 'left-1'} `}>
                 <motion.button
                   onClick={() => handleLike(msg._id)}
                   className={`text-xl relative`}
