@@ -416,25 +416,25 @@ const ChatBox = ({ username, walletAddress }) => {
                   </span>
                 </div>
               </div>
-              <div className={`flex items-center mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1' : 'left-1'} `}>
+              <div className={`flex items-center mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
                 <motion.button
                   onClick={() => handleLike(msg._id)}
                   className={`text-xl relative`}
-                  whileHover={{ scale: 1.1 }}
+                  whileHover={{ scale: 1.3 }}
                   whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
                   transition={{ duration: 0.3 }} // Increase duration for smoother effect
                 >
-                  <AnimatePresence>
+                  {/* <AnimatePresence> */}
                     {likedMessages.has(msg._id) ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 w-5 h-5" />
+                        <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
+                        <FaHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-5 h-5" />
                       </motion.div>
                     )}
-                  </AnimatePresence>
+                  {/* </AnimatePresence> */}
                 </motion.button>
               </div>
             </div>
