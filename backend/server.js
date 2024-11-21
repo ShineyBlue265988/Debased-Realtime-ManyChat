@@ -2,6 +2,7 @@ const express = require("express");
 const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
+const Likes = require('./models/Likes');
 const User = require('./models/User');
 // import {create} from 'kubo-rpc-client';
 const fs = require("fs");
@@ -118,7 +119,7 @@ async function managePinning() {
 //   }
 // }
 
-async function storeMessagesBatch(batch,retries = 5) {
+async function storeMessagesBatch(batch, retries = 5) {
   await managePinning(); // Manage pinning before storing new messages
   try {
     const response = await axios.post(
@@ -139,7 +140,7 @@ async function storeMessagesBatch(batch,retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Store Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
       console.log("Retrying...");
       return storeMessagesBatch(batch, retries - 1);
     } else {
@@ -152,7 +153,7 @@ async function storeMessagesBatch(batch,retries = 5) {
 
 const fetch = require('node-fetch');
 
-async function getMessages(cids,retries = 5) {
+async function getMessages(cids, retries = 5) {
   try {
     const responses = await Promise.all(
       cids.map(cid => fetch(`https://w3s.link/ipfs/${cid}`).then(res => res.json()))
@@ -163,7 +164,7 @@ async function getMessages(cids,retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Get Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
       console.log("Retrying...");
       return getMessages(cids, retries - 1);
     } else {
@@ -229,9 +230,8 @@ wss.on('connection', (ws) => {
 
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
+            const likesForMessage = likesData.find(like => like.messageId === message._id.toString()) || { likedBy: [], likes: 0 };
             messagesWithSameCid.forEach(meta => {
-              // console.log("meta", meta);
-              // console.log("content", content);
               fullMessages.push({
                 _id: message._id,
                 username: message.username,
@@ -239,9 +239,10 @@ wss.on('connection', (ws) => {
                 timestamp: message.timestamp,
                 read: message.read,
                 mentions: message.mentions,
-                text: message.text // Assuming content has a 'text' field
+                text: message.text,
+                likes: likesForMessage.likes, // Include likes count
+                likedBy: likesForMessage.likedBy // Include list of users who liked
               });
-              // console.log("fullMessages", fullMessages);
             });
           });
         } else {
@@ -250,24 +251,19 @@ wss.on('connection', (ws) => {
       });
     })
     .then(() => {
-      // console.log("fullMessages", fullMessages);
-      // console.log("MessageBatch", messageBatch);
       let reversedMessageBatch = messageBatch.slice().reverse();
-      // console.log("reversedMessageBatch", reversedMessageBatch);
-      // Send full messages to the client, ensuring fullMessages is populated
       fullMessages = [...reversedMessageBatch, ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       reversedMessageBatch = [];
-      // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
     });
 
-
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
   });
+
 
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
@@ -310,7 +306,7 @@ wss.on('connection', (ws) => {
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
         // console.log("messageBatch", messageBatch);
-        messageBatch .reverse();
+        messageBatch.reverse();
         // console.log("reversedMessageBatch", messageBatch);
         const batchCid = await storeMessagesBatch(messageBatch);
 
@@ -337,7 +333,7 @@ wss.on('connection', (ws) => {
 
 
         // Clear the batch after saving
-        messageBatch =[];
+        messageBatch = [];
         // console.log("messageBatch", messageBatch);
 
         console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
@@ -346,7 +342,52 @@ wss.on('connection', (ws) => {
     } catch (error) {
       console.error('Error handling message:', error);
     }
+    if (data.type === 'like') {
+      const { messageId, liked, username } = data;
+
+      try {
+        // Find or create the like entry for the message
+        let messageLike = await Likes.findOne({ messageId });
+
+        if (!messageLike) {
+          // If no like entry exists, create one
+          messageLike = new Likes({ messageId, likedBy: [], likes: 0 });
+        }
+
+        // Check if user has already liked
+        const hasLiked = messageLike.likedBy.includes(username);
+
+        if (liked && !hasLiked) {
+          // User is liking the message
+          messageLike.likedBy.push(username);
+          messageLike.likes += 1;
+        } else if (!liked && hasLiked) {
+          // User is unliking the message
+          messageLike.likedBy = messageLike.likedBy.filter(user => user !== username);
+          messageLike.likes -= 1;
+        }
+
+        // Save the updated likes information to MongoDB
+        await messageLike.save();
+
+        // Broadcast updated like information to all clients
+        clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({
+              type: 'like-update',
+              messageId,
+              likes: messageLike.likes,
+              likedBy: messageLike.likedBy,
+            }));
+          }
+        });
+      } catch (error) {
+        console.error('Error processing like:', error);
+      }
+    }
   });
+
+
 
   ws.on('close', () => {
     clients.delete(clientId);
