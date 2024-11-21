@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef, useCallback } from "react";
 import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
@@ -69,7 +70,7 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
 
-  const handleLike = (messageId) => {
+  const handleLike = useCallback((messageId) => {
     setLikedMessages(prev => {
       const newSet = new Set(prev);
       if (newSet.has(messageId)) {
@@ -79,7 +80,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }
       return newSet;
     });
-  };
+  }, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -414,12 +415,36 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                   <div className="flex items-center mt-1 flex justify-end">
-                    <button
+                    <motion.button
                       onClick={() => handleLike(msg._id)}
-                      className={`text-xl ${likedMessages.has(msg._id) ? 'text-red-500' : 'text-transparent'} hover:text-red-500 hover:scale-105 transition-colors`}
+                      className={`text-xl relative`}
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <FaHeart className="inline mr-1 w-5 h-5" />
-                    </button>
+                      <AnimatePresence>
+                        {likedMessages.has(msg._id) ? (
+                          <motion.div
+                            key="liked"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FaHeart className="text-red-500 w-5 h-5" />
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="unliked"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.button>
                   </div>
                 </div>
               </div>
