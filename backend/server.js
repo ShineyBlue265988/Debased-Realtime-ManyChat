@@ -222,7 +222,7 @@ wss.on('connection', (ws) => {
     .then(messageContents => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
-
+      const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages
       // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
@@ -253,6 +253,7 @@ wss.on('connection', (ws) => {
     .then(() => {
       let reversedMessageBatch = messageBatch.slice().reverse();
       fullMessages = [...reversedMessageBatch, ...fullMessages];
+      console.log('Sending history messages:', fullMessages);
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       reversedMessageBatch = [];
     })
