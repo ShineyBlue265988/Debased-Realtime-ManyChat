@@ -233,6 +233,7 @@ wss.on('connection', (ws) => {
               // console.log("meta", meta);
               // console.log("content", content);
               fullMessages.push({
+                _id: message._id,
                 username: message.username,
                 publicKey: message.publicKey,
                 timestamp: message.timestamp,

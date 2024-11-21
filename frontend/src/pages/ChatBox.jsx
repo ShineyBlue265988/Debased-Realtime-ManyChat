@@ -394,7 +394,7 @@ const ChatBox = ({ username, walletAddress }) => {
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-1">
             <div className="flex items-start gap-2 ">
-              <div className={`py-2 px-3 rounded-lg inline-block pr-3 relative ${msg.username === username
+              <div className={`py-2 pl-3 rounded-lg inline-block pr-6 relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
@@ -415,7 +415,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-[-1rem] bottom-1' : 'right-[-1rem] bottom-1'} `}>
+                <div className={`flex items-end mt-1 flex justify-end absolute bottom-0  ${(msg.username === username) ? 'right-0 bottom-0' : 'right-0 bottom-0'} `}>
                     <motion.button
                       onClick={() => handleLike(msg._id)}
                       className={`text-xl relative`}
