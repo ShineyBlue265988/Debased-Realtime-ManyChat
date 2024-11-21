@@ -70,14 +70,27 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
 
+
+
   const handleLike = useCallback((messageId) => {
     setLikedMessages(prev => {
       const newSet = new Set(prev);
-      if (newSet.has(messageId)) {
+      const isLiked = newSet.has(messageId);
+      if (isLiked) {
         newSet.delete(messageId);
       } else {
         newSet.add(messageId);
       }
+
+      // Send the like status to the backend
+      if (wsRef.current?.readyState === WebSocket.OPEN) {
+        wsRef.current.send(JSON.stringify({
+          type: 'like',
+          messageId: messageId,
+          liked: !isLiked // Send the opposite of the current state
+        }));
+      }
+
       return newSet;
     });
   }, []);
@@ -393,49 +406,29 @@ const ChatBox = ({ username, walletAddress }) => {
       >
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-1">
-            <div className="flex items-start gap-2 ">
-              <div className={`py-2 pl-3 rounded-lg inline-block pr-6 relative ${msg.username === username
-                ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
-                : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
-                } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
+            <div className="flex items-start gap-2">
+              <div className={`py-2 pl-3 rounded-lg inline-block pr-[1.5rem] relative ${msg.username === username ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white' : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'}`}>
                 {msg.username !== username && (
-                  <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800"
-                    onClick={() => handleUsernameClick(msg.username)}
-                  >
+                  <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800" onClick={() => handleUsernameClick(msg.username)}>
                     {msg.username}
                   </div>
                 )}
-                <div className="break-words ">
-                  {isOnlyEmojis(msg.text) ? (
-                    <span className="text-6xl">{msg.text}</span>
-                  ) : (
-                    formatMessageWithMentions(msg.text, msg.username === username)
-                  )}
-                  <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
+                <div className="break-words">
+                  {formatMessageWithMentions(msg.text, msg.username === username)}
+                  <span className={`text-xs mt-1 ${msg.username === username ? 'text-white/70' : 'text-gray-500'}`}>
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-0  ${(msg.username === username) ? 'right-0 bottom-0' : 'right-0 bottom-0'} `}>
-                    <motion.button
-                      onClick={() => handleLike(msg._id)}
-                      className={`text-xl relative`}
-                      whileHover={{ scale: 1.3 }}
-                      whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
-                      transition={{ duration: 0.3 }} // Increase duration for smoother effect
-                    >
-                      {/* <AnimatePresence> */}
-                      {likedMessages.has(msg._id) ? (
-                        <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                          <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
-                        </motion.div>
-                      ) : (
-                        <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                          <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
-                        </motion.div>
-                      )}
-                      {/* </AnimatePresence> */}
-                    </motion.button>
-                  </div>
+                <div className={`flex items-end mt-1 flex justify-end absolute bottom-0`}>
+                  <motion.button onClick={() => handleLike(msg._id)} className={`text-xl relative`} whileHover={{ scale: 1.3 }} whileTap={{ scale: 0.95 }} transition={{ duration: 0.3 }}>
+                    {likedMessages.has(msg._id) ? (
+                      <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                    ) : (
+                      <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
+                    )}
+                    <span className="ml-1 text-sm text-gray-600">{msg.likes}</span> {/* Display the number of likes */}
+                  </motion.button>
+                </div>
               </div>
             </div>
           </div>
