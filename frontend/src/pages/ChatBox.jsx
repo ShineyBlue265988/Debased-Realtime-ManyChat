@@ -392,7 +392,7 @@ const ChatBox = ({ username, walletAddress }) => {
         className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-100 scroll-smooth [scroll-behavior:smooth] [transition:all_10ms_ease-in-out]"
       >
         {messages.map((msg, index) => (
-          <div key={index} className="flex flex-col">
+          <div key={index} className="flex flex-col pr-3">
             <div className="flex items-start gap-2">
               <div className={`py-2 px-3 rounded-lg inline-block relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
