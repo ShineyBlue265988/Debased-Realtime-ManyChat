@@ -404,7 +404,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {msg.username}
                   </div>
                 )}
-                <div className="break-words">
+                <div className="break-words flex justify-end">
                   {isOnlyEmojis(msg.text) ? (
                     <span className="text-6xl">{msg.text}</span>
                   ) : (
@@ -419,7 +419,7 @@ const ChatBox = ({ username, walletAddress }) => {
                       onClick={() => handleLike(msg._id)}
                       className={`text-xl ${likedMessages.has(msg._id) ? 'text-red-500' : 'text-transparent'} hover:text-red-500 hover:scale-110 transition-colors`}
                     >
-                      <FaHeart className="inline mr-1 w-3 h-3" />
+                      <FaHeart className="inline mr-1 w-5 h-5" />
                     </button>
                   {/* </div> */}
                   </span>
