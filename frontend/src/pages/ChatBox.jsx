@@ -434,16 +434,16 @@ const ChatBox = ({ username, walletAddress }) => {
                             <FaHeart className="text-red-500 w-5 h-5" />
                           </motion.div>
                         ) : (
-                          // <motion.div
-                          //   key="unliked"
-                          //   initial={{ scale: 0 }}
-                          //   animate={{ scale: 1 }}
-                          //   exit={{ scale: 0 }}
-                          //   transition={{ duration: 0.2 }}
-                          // >
-                          //   <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
-                          // </motion.div>
-                          <></>
+                          <motion.div
+                            key="unliked"
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            exit={{ scale: 0 }}
+                            transition={{ duration: 0.2 }}
+                          >
+                            <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
+                          </motion.div>
+
                         )}
                       </AnimatePresence>
                     </motion.button>
