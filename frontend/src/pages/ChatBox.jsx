@@ -392,12 +392,12 @@ const ChatBox = ({ username, walletAddress }) => {
         className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-100 scroll-smooth [scroll-behavior:smooth] [transition:all_10ms_ease-in-out]"
       >
         {messages.map((msg, index) => (
-          <div key={index} className="flex flex-row">
-            <div className="flex items-start gap-2 relative">
-              <div className={`py-2 px-3 rounded-lg inline-block ${msg.username === username
+          <div key={index} className="flex flex-row ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
-                } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
+                }">
+            <div className="flex items-start relative">
+              <div className={`py-2 px-3 rounded-lg inline-block  ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
                 {msg.username !== username && (
                   <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800"
                     onClick={() => handleUsernameClick(msg.username)}
@@ -425,15 +425,15 @@ const ChatBox = ({ username, walletAddress }) => {
                   transition={{ duration: 0.3 }} // Increase duration for smoother effect
                 >
                   {/* <AnimatePresence> */}
-                    {likedMessages.has(msg._id) ? (
-                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    )}
+                  {likedMessages.has(msg._id) ? (
+                    <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                      <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                    </motion.div>
+                  ) : (
+                    <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                      <FaHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-5 h-5" />
+                    </motion.div>
+                  )}
                   {/* </AnimatePresence> */}
                 </motion.button>
               </div>
