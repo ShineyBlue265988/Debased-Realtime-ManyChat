@@ -393,8 +393,8 @@ const ChatBox = ({ username, walletAddress }) => {
       >
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-1">
-            <div className="flex items-start gap-2 pr-3">
-              <div className={`py-2 px-3 rounded-lg inline-block relative ${msg.username === username
+            <div className="flex items-start gap-2 ">
+              <div className={`py-2 px-3 rounded-lg inline-block pr-3 relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
