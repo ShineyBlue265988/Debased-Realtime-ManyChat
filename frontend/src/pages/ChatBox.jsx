@@ -414,6 +414,7 @@ const ChatBox = ({ username, walletAddress }) => {
                   <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
+                </div>
                   <div className="flex items-center mt-1 flex justify-end">
                     <motion.button
                       onClick={() => handleLike(msg._id)}
@@ -433,20 +434,20 @@ const ChatBox = ({ username, walletAddress }) => {
                             <FaHeart className="text-red-500 w-5 h-5" />
                           </motion.div>
                         ) : (
-                          <motion.div
-                            key="unliked"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
-                          </motion.div>
+                          // <motion.div
+                          //   key="unliked"
+                          //   initial={{ scale: 0 }}
+                          //   animate={{ scale: 1 }}
+                          //   exit={{ scale: 0 }}
+                          //   transition={{ duration: 0.2 }}
+                          // >
+                          //   <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
+                          // </motion.div>
+                          <></>
                         )}
                       </AnimatePresence>
                     </motion.button>
                   </div>
-                </div>
               </div>
             </div>
           </div>
