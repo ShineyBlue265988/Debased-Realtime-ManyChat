@@ -421,30 +421,18 @@ const ChatBox = ({ username, walletAddress }) => {
                   onClick={() => handleLike(msg._id)}
                   className={`text-xl relative`}
                   whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
+                  transition={{ duration: 0.3 }} // Increase duration for smoother effect
                 >
                   <AnimatePresence>
                     {likedMessages.has(msg._id) ? (
-                      <motion.div
-                        key="liked"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
+                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-red-500 w-5 h-5" />
                       </motion.div>
                     ) : (
-                      <motion.div
-                        key="unliked"
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        exit={{ scale: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
+                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
                       </motion.div>
-
                     )}
                   </AnimatePresence>
                 </motion.button>
