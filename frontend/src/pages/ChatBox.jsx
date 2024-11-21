@@ -393,7 +393,7 @@ const ChatBox = ({ username, walletAddress }) => {
       >
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col">
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2 relative">
               <div className={`py-2 px-3 rounded-lg inline-block ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
@@ -415,39 +415,39 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                  <div className="flex items-center mt-1 flex justify-end">
-                    <motion.button
-                      onClick={() => handleLike(msg._id)}
-                      className={`text-xl relative`}
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                    >
-                      <AnimatePresence>
-                        {likedMessages.has(msg._id) ? (
-                          <motion.div
-                            key="liked"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <FaHeart className="text-red-500 w-5 h-5" />
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="unliked"
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            exit={{ scale: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
-                          </motion.div>
+              </div>
+              <div className="flex items-center mt-1 flex justify-end absolute bottom-0 right-0">
+                <motion.button
+                  onClick={() => handleLike(msg._id)}
+                  className={`text-xl relative`}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <AnimatePresence>
+                    {likedMessages.has(msg._id) ? (
+                      <motion.div
+                        key="liked"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <FaHeart className="text-red-500 w-5 h-5" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="unliked"
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <FaHeart className="text-gray-300 hover:text-red-500 w-5 h-5" />
+                      </motion.div>
 
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
-                  </div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
               </div>
             </div>
           </div>
