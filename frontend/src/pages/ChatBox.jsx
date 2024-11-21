@@ -414,28 +414,28 @@ const ChatBox = ({ username, walletAddress }) => {
                   <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
+                  <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
+                    <motion.button
+                      onClick={() => handleLike(msg._id)}
+                      className={`text-xl relative`}
+                      whileHover={{ scale: 1.3 }}
+                      whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
+                      transition={{ duration: 0.3 }} // Increase duration for smoother effect
+                    >
+                      {/* <AnimatePresence> */}
+                      {likedMessages.has(msg._id) ? (
+                        <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                          <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                        </motion.div>
+                      ) : (
+                        <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                          <FaHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-5 h-5" />
+                        </motion.div>
+                      )}
+                      {/* </AnimatePresence> */}
+                    </motion.button>
+                  </div>
                 </div>
-              <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
-                <motion.button
-                  onClick={() => handleLike(msg._id)}
-                  className={`text-xl relative`}
-                  whileHover={{ scale: 1.3 }}
-                  whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
-                  transition={{ duration: 0.3 }} // Increase duration for smoother effect
-                >
-                  {/* <AnimatePresence> */}
-                    {likedMessages.has(msg._id) ? (
-                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    )}
-                  {/* </AnimatePresence> */}
-                </motion.button>
-              </div>
               </div>
             </div>
           </div>
