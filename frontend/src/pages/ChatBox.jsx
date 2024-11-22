@@ -323,10 +323,10 @@ function hasUserLiked(messageID, username) {
         }
         else if (data.type === "likes") {
           console.log("data", data);
-          const { messageID, likes } = data;
+          const { messageId, likes } = data.message;
           console.log("likes", likes);
-          console.log("messageID", messageID);
-          updateLikes(messageID, likes);
+          console.log("messageId", messageId);
+          updateLikes(messageId, likes);
           // console.log("likes", messageLikes);
         }
       } catch (error) {
