@@ -5,7 +5,6 @@ import Footer from '../components/ui/footer';
 import Face from "../components/icons/face.svg";
 import Hand from "../components/icons/hand.svg";
 import Star from "../components/icons/star.svg";
-import User from "../components/icons/jaEpYJA.webp";
 import { FaOpenid } from 'react-icons/fa';
 import { GiTalk } from 'react-icons/gi';
 import { FaRegSmileBeam } from 'react-icons/fa';
