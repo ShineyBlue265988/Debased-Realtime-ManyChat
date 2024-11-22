@@ -472,7 +472,7 @@ function hasUserLiked(messageId, username) {
                     transition={{ duration: 0.3 }} // Increase duration for smoother effect
                   >
                     {/* <AnimatePresence> */}
-                    {messageLikes[msg._id].length>0 ? (
+                    {messageLikes[msg._id]?.length>0 ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
@@ -484,7 +484,7 @@ function hasUserLiked(messageId, username) {
                     {/* </AnimatePresence> */}
                     
                   </motion.button>
-                  {messageLikes[msg._id].length > 0 && <span className={`absolute top-0 right-[-0.75rem] text-xs text-gray-500 ${msg.username === username ? 'text-white' : ''}`}>{messageLikes[msg._id].length}</span>}
+                  {messageLikes[msg._id]?.length > 0 && <span className={`absolute top-0 right-[-0.75rem] text-xs text-gray-500 ${msg.username === username ? 'text-white' : ''}`}>{messageLikes[msg._id]?.length}</span>}
                 </div>
               </div>
             </div>
