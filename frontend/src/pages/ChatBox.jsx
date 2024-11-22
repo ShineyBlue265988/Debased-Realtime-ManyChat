@@ -403,7 +403,9 @@ const ChatBox = ({ username, walletAddress }) => {
                     onClick={() => handleUsernameClick(msg.username)}
                   >
                     {msg.username}
+                    <img src='../public/bluebadge.jpg' className="w-4 h-4" alt="Verified" />
                   </div>
+                  
                 )}
                 <div className="break-words ">
                   {isOnlyEmojis(msg.text) ? (
