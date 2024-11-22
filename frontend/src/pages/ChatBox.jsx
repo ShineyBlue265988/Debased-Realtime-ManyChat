@@ -72,30 +72,30 @@ const ChatBox = ({ username, walletAddress }) => {
 
 
 
-  const handleLike = useCallback((messageId) => {
-    setLikedMessages(prev => {
-      const newSet = new Set(prev);
-      const isLiked = newSet.has(messageId);
+  // const handleLike = useCallback((messageId) => {
+  //   setLikedMessages(prev => {
+  //     const newSet = new Set(prev);
+  //     const isLiked = newSet.has(messageId);
 
-      // Send the like status to the backend
-      if (wsRef.current?.readyState === WebSocket.OPEN) {
-        wsRef.current.send(JSON.stringify({
-          type: 'like',
-          username: username,
-          messageId: messageId,
-          liked: !isLiked // Send the opposite of the current state
-        }));
-      }
+  //     // Send the like status to the backend
+  //     if (wsRef.current?.readyState === WebSocket.OPEN) {
+  //       wsRef.current.send(JSON.stringify({
+  //         type: 'like',
+  //         username: username,
+  //         messageId: messageId,
+  //         liked: !isLiked // Send the opposite of the current state
+  //       }));
+  //     }
 
-      if (isLiked) {
-        newSet.delete(messageId); // Remove from liked messages
-      } else {
-        newSet.add(messageId); // Add to liked messages
-      }
+  //     if (isLiked) {
+  //       newSet.delete(messageId); // Remove from liked messages
+  //     } else {
+  //       newSet.add(messageId); // Add to liked messages
+  //     }
 
-      return newSet;
-    });
-  }, []);
+  //     return newSet;
+  //   });
+  // }, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -439,7 +439,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute  right-0 bottom-0  ${(msg.likedBy.has(username)) ? 'border-1 p-1 border-violet-500' : ''} `}>
+                {/* <div className={`flex items-end mt-1 flex justify-end absolute  right-0 bottom-0  ${(msg.likedBy.has(username)) ? 'border-1 p-1 border-violet-500' : ''} `}>
                   <motion.button
                     onClick={() => handleLike(msg._id)}
                     className={`text-xl relative`}
@@ -458,7 +458,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     )}
                   </motion.button>
                     {msg.likes}
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
