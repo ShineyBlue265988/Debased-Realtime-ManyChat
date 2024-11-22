@@ -400,7 +400,7 @@ const ChatBox = ({ username, walletAddress }) => {
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
                 {msg.username !== username && (
-                  <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800"
+                  <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800 flex items-center"
                     onClick={() => handleUsernameClick(msg.username)}
                   >
                     {msg.username}
