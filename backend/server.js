@@ -292,7 +292,7 @@ wss.on('connection', (ws) => {
     try {
       let likes = await Likes.findOne({messageId: data.messageId});
       if (likes) {
-        if (likes.likes.indexOf(data.username) === -1) {
+        if (!likes.likes.includes(data.username)) {
           likes.likes.push(data.username);
         } else {
           likes.likes = likes.likes.filter(username => username !== data.username);
@@ -306,20 +306,15 @@ wss.on('connection', (ws) => {
         await likes.save();
       }
   
-      const likesData = {
-        messageId: data.messageId,
-        likes: likes.likes
-      };
-  
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
           client.send(JSON.stringify({
             type: 'likes',
-            message: likesData
+            message: {messageId: data.messageId, likes: likes.likes},
           }));
         }
       });
-      console.log("send likes", likesData);
+      console.log("send likes", likes);
     } catch (error) {
       console.error("Error handling like:", error);
     }
@@ -337,7 +332,7 @@ wss.on('connection', (ws) => {
       );
       const temporaryId = new mongoose.Types.ObjectId();
       const messageToSend = {
-        _id: temporaryId, // Add the temporary _id
+        _id: new mongoose.Types.ObjectId(),
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
