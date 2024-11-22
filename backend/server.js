@@ -277,10 +277,10 @@ wss.on('connection', (ws) => {
 
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
-    if (!data.username || !data.text || !data.publicKey) {
-      console.error('Invalid message format');
-      return;
-    }
+    // if (!data.username || !data.text || !data.publicKey) {
+    //   console.error('Invalid message format');
+    //   return;
+    // }
     console.log('Received message:', data);
     if(data.type == 'message'){
       handleNewMessage(data);}
