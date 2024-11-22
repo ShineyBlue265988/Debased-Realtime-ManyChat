@@ -71,16 +71,21 @@ const ChatBox = ({ username, walletAddress }) => {
   //   }
 
   const handleLike = useCallback((messageId) => {
+    // Update local liked messages state
     setLikedMessages(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(messageId)) {
-        newSet.delete(messageId);
-      } else {
-        newSet.add(messageId);
-      }
-      return newSet;
+        const newSet = new Set(prev);
+        if (newSet.has(messageId)) {
+            newSet.delete(messageId);
+            // Optionally send a "unlike" message to the backend
+        } else {
+            newSet.add(messageId);
+            // Send a "like" message to the backend
+            // wsRef.current.send(JSON.stringify({ type: 'like', messageId }));
+        }
+        wsRef.current.send(JSON.stringify({ type: 'like', messageId, username }));
+        return newSet;
     });
-  }, []);
+}, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -289,6 +294,13 @@ const ChatBox = ({ username, walletAddress }) => {
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
         }
+        else if (data.type === 'updateLikes') {
+          setMessages((prevMessages) =>
+            prevMessages.map((msg) =>
+              msg._id === data.message._id ? data.message : msg
+            )
+          );
+        }
       } catch (error) {
         console.log('Message processing error:', error);
       }
@@ -342,6 +354,7 @@ const ChatBox = ({ username, walletAddress }) => {
     console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
+        type: 'newMessage',
         username,
         publicKey: walletAddress,
         text: text.trim(),
@@ -435,6 +448,9 @@ const ChatBox = ({ username, walletAddress }) => {
                       )}
                       {/* </AnimatePresence> */}
                     </motion.button>
+                    <span className="text-xs absolute top-full left-1/2 transform -translate-x-1/2">
+                    {msg.likes.length}
+                  </span>
                   </div>
               </div>
             </div>
