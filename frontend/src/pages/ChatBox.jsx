@@ -14,11 +14,9 @@ import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/ide
 import { base } from 'viem/chains';
 import axios from 'axios';
 import badge from '../components/icons/bluebadge.jpg'
-import badge1 from '../components/icons/1.jpg'
-import badge2 from '../components/icons/2.jpg'
-import badge3 from '../components/icons/3.jpg'
-import badge4 from '../components/icons/4.jpg'
-import badge5 from '../components/icons/5.jpg'
+import medal1 from '../components/icons/medal1.jpg'
+import medal2 from '../components/icons/medal2.jpg'
+import medal3 from '../components/icons/medal3.jpg'
 const ChatBox = ({ username, walletAddress }) => {
   const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
@@ -410,7 +408,8 @@ const ChatBox = ({ username, walletAddress }) => {
                   >
                     {msg.username}
                     <div className='flex items-center p-1'>
-                      {(msg.username==='bshark.base.eth' || msg.username==='valcour.base.eth') && (<img src={badge5} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={medal3} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='valcour.base.eth') && (<img src={medal1} className="w-4 h-4 inline-block " alt="Admin1" />)}
                       {(msg.username!=='bshark.base.eth' && msg.username!=='valcour.base.eth') &&<img src={badge} className="w-4 h-4 inline-block " alt="Verified" />}
                     </div>
                   </div>
