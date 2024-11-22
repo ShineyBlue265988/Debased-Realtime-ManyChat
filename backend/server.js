@@ -281,7 +281,7 @@ wss.on('connection', (ws) => {
       console.error('Invalid message format');
       return;
     }
-    // console.log('Received message:', data);
+    console.log('Received message:', data);
     if(data.type == 'message'){
       handleNewMessage(data);}
 
