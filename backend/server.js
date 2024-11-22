@@ -151,6 +151,7 @@ async function storeMessagesBatch(batch, retries = 5) {
 }
 
 const fetch = require('node-fetch');
+const Likes = require("./models/Likes");
 
 async function getMessages(cids, retries = 5) {
   try {
@@ -243,7 +244,8 @@ wss.on('connection', (ws) => {
                 read: message.read,
                 mentions: message.mentions,
                 text: message.text, // Assuming content has a 'text' field
-                badge: message.badge ? message.badge : 'blue'
+                badge: User.findOne({ username: message.username }).select('badge'),
+                likes: Likes.findOne({ messageId: message._id }).select('likes'),
               });
               // console.log("fullMessages", fullMessages);
             });
@@ -280,7 +282,39 @@ wss.on('connection', (ws) => {
       return;
     }
     // console.log('Received message:', data);
+    data.type == 'message' && handleNewMessage(data);
+    data.type == 'like' && handleLike(data);
 
+  });
+  async function handleLike(data) {
+    Likes.findOne(data.messageId).then((likes) => {
+      if (likes) {
+        if (likes.likes.indexOf(data.username) === -1) {
+          likes.likes.push(data.username);
+        }
+        else {
+          likes.likes.pull(data.username);
+        }
+        likes.save();
+      }
+      else {
+        const newLikes = new Likes({
+          messageId: data.messageId,
+          likes: [data.username]
+        });
+        newLikes.save();
+      }
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+          client.send(JSON.stringify({
+            type: 'likes',
+            message: {messageId: data.messageId, likes: likes.likes},
+          }));
+        }
+      });
+    })
+  }
+  async function handleNewMessage(data) {
     try {
       await User.findOneAndUpdate(
         { username: data.username },
@@ -351,7 +385,7 @@ wss.on('connection', (ws) => {
     } catch (error) {
       console.error('Error handling message:', error);
     }
-  });
+  }
 
   ws.on('close', () => {
     clients.delete(clientId);

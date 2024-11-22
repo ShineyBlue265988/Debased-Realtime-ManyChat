@@ -401,8 +401,8 @@ const ChatBox = ({ username, walletAddress }) => {
           <div key={index} className="flex flex-col pr-3">
             <div className="flex items-start gap-2">
               <div className={`py-2 pl-3 pr-6 rounded-lg inline-block relative ${msg.username === username
-                ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
-                : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
+                ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
+                : 'bg-[#FFFFFF] mr-auto max-w-[80%] '
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
                 {msg.username !== username && (
                   <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800 flex items-center"
