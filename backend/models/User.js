@@ -14,6 +14,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  badge: {
+    type: String,
+    default: 'blue'
+  },
   createdAt: {
     type: Date,
     default: Date.now

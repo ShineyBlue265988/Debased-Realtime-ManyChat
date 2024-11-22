@@ -118,7 +118,7 @@ async function managePinning() {
 //   }
 // }
 
-async function storeMessagesBatch(batch,retries = 5) {
+async function storeMessagesBatch(batch, retries = 5) {
   await managePinning(); // Manage pinning before storing new messages
   try {
     const response = await axios.post(
@@ -139,7 +139,7 @@ async function storeMessagesBatch(batch,retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Store Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
       console.log("Retrying...");
       return storeMessagesBatch(batch, retries - 1);
     } else {
@@ -152,7 +152,7 @@ async function storeMessagesBatch(batch,retries = 5) {
 
 const fetch = require('node-fetch');
 
-async function getMessages(cids,retries = 5) {
+async function getMessages(cids, retries = 5) {
   try {
     const responses = await Promise.all(
       cids.map(cid => fetch(`https://w3s.link/ipfs/${cid}`).then(res => res.json()))
@@ -163,7 +163,7 @@ async function getMessages(cids,retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Get Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
+      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
       console.log("Retrying...");
       return getMessages(cids, retries - 1);
     } else {
@@ -214,7 +214,10 @@ wss.on('connection', (ws) => {
         cidMap.get(meta.cid).push(meta);
       });
       // console.log("cidMap", cidMap);
-
+      // Fetch user information for all messages
+      // const usernames = [...new Set(existingMessages.map(msg => msg.username))];
+      // const users = await User.find({ username: { $in: usernames } });
+      // const userMap = new Map(users.map(user => [user.username, user]));
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
@@ -239,7 +242,8 @@ wss.on('connection', (ws) => {
                 timestamp: message.timestamp,
                 read: message.read,
                 mentions: message.mentions,
-                text: message.text // Assuming content has a 'text' field
+                text: message.text, // Assuming content has a 'text' field
+                badge: message.badge ? message.badge : 'blue'
               });
               // console.log("fullMessages", fullMessages);
             });
@@ -283,7 +287,7 @@ wss.on('connection', (ws) => {
         {
           username: data.username,
           publicKey: data.publicKey,
-          lastSeen: new Date()
+          lastSeen: new Date(),
         },
         { upsert: true }
       );
@@ -293,7 +297,8 @@ wss.on('connection', (ws) => {
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
-        text: data.text // Include the message text here
+        text: data.text, // Include the message text here
+        badge: User.findOne({ username: data.username }).badge || 'blue'
       };
 
       // Broadcast the message to all connected clients
@@ -310,7 +315,7 @@ wss.on('connection', (ws) => {
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
         // console.log("messageBatch", messageBatch);
-        messageBatch .reverse();
+        messageBatch.reverse();
         // console.log("reversedMessageBatch", messageBatch);
         const batchCid = await storeMessagesBatch(messageBatch);
 
@@ -337,7 +342,7 @@ wss.on('connection', (ws) => {
 
 
         // Clear the batch after saving
-        messageBatch =[];
+        messageBatch = [];
         // console.log("messageBatch", messageBatch);
 
         console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
