@@ -40,7 +40,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
-  const [likedMessages, setLikedMessages] = useState(new Set());
+  const [messageLikes, setMessageLikes] = useState({});
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -77,15 +77,15 @@ const ChatBox = ({ username, walletAddress }) => {
   //   }
 
   const handleLike = useCallback((messageId) => {
-    setLikedMessages(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(messageId)) {
-        newSet.delete(messageId);
-      } else {
-        newSet.add(messageId);
-      }
-      return newSet;
-    });
+    // setLikedMessages(prev => {
+    //   const newSet = new Set(prev);
+    //   if (newSet.has(messageId)) {
+    //     newSet.delete(messageId);
+    //   } else {
+    //     newSet.add(messageId);
+    //   }
+    //   return newSet;
+    // });
     wsRef.current.send(JSON.stringify({
       type: 'like',
       username,
@@ -93,7 +93,7 @@ const ChatBox = ({ username, walletAddress }) => {
     }));
     console.log("This is liked messageId", messageId);
   }, []);
-  
+
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -273,6 +273,12 @@ const ChatBox = ({ username, walletAddress }) => {
       }
     }
   };
+  function updateLikes(messageID, userList) {
+    setMessageLikes(prevLikes => ({
+        ...prevLikes,
+        [messageID]: userList
+    }));
+}
   const connectWebSocket = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
@@ -302,9 +308,10 @@ const ChatBox = ({ username, walletAddress }) => {
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
         }
-        else if(data.type ==="likes"){
-          setLikedMessages(data.likes);
-          console.log("likes",likedMessages);
+        else if (data.type === "likes") {
+          const { messageID, likes } = data;
+          updateLikes(messageID, likes);
+          console.log("likes", messageLikes);
         }
       } catch (error) {
         console.log('Message processing error:', error);
@@ -455,7 +462,7 @@ const ChatBox = ({ username, walletAddress }) => {
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaRegHeart  className="text-gray-300 hover:text-red-500 hover:scale-105 w-4 h-4" />
+                        <FaRegHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
                     )}
                     {/* </AnimatePresence> */}
