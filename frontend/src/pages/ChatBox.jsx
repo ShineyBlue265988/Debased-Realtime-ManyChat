@@ -274,9 +274,12 @@ const ChatBox = ({ username, walletAddress }) => {
     }
   };
   function updateLikes(messageID, userList) {
+    console.log('messageID', messageID);
+    console.log('userList', userList);
     setMessageLikes(prevLikes => {
       const _prevLikes = { ...prevLikes };
       _prevLikes[messageID] = userList;
+      console.log('_prevLikes', _prevLikes);
       return _prevLikes;
     });
     // setMessageLikes(prevLikes => ({
@@ -321,8 +324,10 @@ function hasUserLiked(messageID, username) {
         else if (data.type === "likes") {
           console.log("data", data);
           const { messageID, likes } = data;
+          console.log("likes", likes);
+          console.log("messageID", messageID);
           updateLikes(messageID, likes);
-          console.log("likes", messageLikes);
+          // console.log("likes", messageLikes);
         }
       } catch (error) {
         console.log('Message processing error:', error);
