@@ -40,7 +40,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
-  const [likedMessages, setLikedMessages] = useState({});
+  const [likedMessages, setLikedMessages] = useState(new Set());
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -77,15 +77,15 @@ const ChatBox = ({ username, walletAddress }) => {
   //   }
 
   const handleLike = useCallback((messageId) => {
-    // setLikedMessages(prev => {
-    //   const newSet = new Set(prev);
-    //   if (newSet.has(messageId)) {
-    //     newSet.delete(messageId);
-    //   } else {
-    //     newSet.add(messageId);
-    //   }
-    //   return newSet;
-    // });
+    setLikedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
     wsRef.current.send(JSON.stringify({
       type: 'like',
       username,
@@ -302,13 +302,9 @@ const ChatBox = ({ username, walletAddress }) => {
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
         }
-        else if (data.type === "likes") {
-          setLikedMessages(prevLikedMessages => ({
-            ...prevLikedMessages,
-            [data.messageId]: data.likes
-          }));
-          console.log('Added like:', data.messageId);
-          console.log('likes', data.likes);
+        else if(data.type ==="likes"){
+          setLikedMessages(data.likes);
+          console.log("likes",likedMessages);
         }
       } catch (error) {
         console.log('Message processing error:', error);
