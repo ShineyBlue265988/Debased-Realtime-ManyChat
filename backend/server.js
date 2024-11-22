@@ -282,8 +282,10 @@ wss.on('connection', (ws) => {
       return;
     }
     // console.log('Received message:', data);
-    data.type == 'message' && handleNewMessage(data);
-    data.type == 'like' && handleLike(data);
+    if(data.type == 'message'){
+      handleNewMessage(data);}
+
+    if(data.type == 'like') handleLike(data);
 
   });
   async function handleLike(data) {

@@ -86,6 +86,11 @@ const ChatBox = ({ username, walletAddress }) => {
       }
       return newSet;
     });
+    wsRef.current.send(JSON.stringify({
+      type: 'like',
+      username,
+      messageId,
+    }));
   }, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -348,6 +353,7 @@ const ChatBox = ({ username, walletAddress }) => {
     console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
+        type: 'message',
         username,
         publicKey: walletAddress,
         text: text.trim(),
