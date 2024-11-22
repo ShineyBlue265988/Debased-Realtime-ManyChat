@@ -202,63 +202,63 @@ wss.on('connection', (ws) => {
   // Create a map to store messages by CID
   const cidMap = new Map();
   // Send existing messages to new client
-  Message.find().sort({ timestamp: -1 }).limit(500)
-    .then( existingMessages => {
-      existingMessages.forEach(meta => {
-        if (!meta.cid) {
-          console.error('Missing CID for message:', meta);
-          return; // Handle missing CID
-        }
-        if (!cidMap.has(meta.cid)) {
-          cidMap.set(meta.cid, []);
-        }
-        cidMap.get(meta.cid).push(meta);
-      });
-      // console.log("cidMap", cidMap);
+  // Message.find().sort({ timestamp: -1 }).limit(500)
+  //   .then( existingMessages => {
+  //     existingMessages.forEach(meta => {
+  //       if (!meta.cid) {
+  //         console.error('Missing CID for message:', meta);
+  //         return; // Handle missing CID
+  //       }
+  //       if (!cidMap.has(meta.cid)) {
+  //         cidMap.set(meta.cid, []);
+  //       }
+  //       cidMap.get(meta.cid).push(meta);
+  //     });
+  //     // console.log("cidMap", cidMap);
 
-      // Retrieve messages from IPFS for all unique CIDs
-      return getMessages(Array.from(cidMap.keys())); // Return the promise
-    })
-    .then(  messageContents => {
-      // console.log("history messageContents", messageContents);
-      const cidKeys = Array.from(cidMap.keys());
-      // const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
-      messageContents.forEach((content, index) => {
-        const messagesWithSameCid = cidMap.get(cidKeys[index]);
-        // console.log("messagesWithSameCid", messagesWithSameCid);
+  //     // Retrieve messages from IPFS for all unique CIDs
+  //     return getMessages(Array.from(cidMap.keys())); // Return the promise
+  //   })
+  //   .then(  messageContents => {
+  //     // console.log("history messageContents", messageContents);
+  //     const cidKeys = Array.from(cidMap.keys());
+  //     // const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
+  //     messageContents.forEach((content, index) => {
+  //       const messagesWithSameCid = cidMap.get(cidKeys[index]);
+  //       // console.log("messagesWithSameCid", messagesWithSameCid);
 
-        if (content.batch) { // Check if content has a batch
-          content.batch.forEach(message => {
-            // const likesForMessage = likesData.find(like => like.messageId === message._id.toString()) || { likedBy: [], likes: 0 };
-            messagesWithSameCid.forEach(meta => {
-              fullMessages.push({
-                _id: message._id,
-                username: message.username,
-                publicKey: message.publicKey,
-                timestamp: message.timestamp,
-                read: message.read,
-                mentions: message.mentions,
-                text: message.text,
-                // likes: likesForMessage.likes, // Include likes count
-                // likedBy: likesForMessage.likedBy // Include list of users who liked
-              });
-            });
-          });
-        } else {
-          console.error(`No batch found for CID: ${cidKeys[index]}`);
-        }
-      });
-    })
-    .then(() => {
-      let reversedMessageBatch = messageBatch.slice().reverse();
-      fullMessages = [...reversedMessageBatch, ...fullMessages];
-      console.log('Sending history messages:', fullMessages);
-      ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-      reversedMessageBatch = [];
-    })
-    .catch(error => {
-      console.error('Error retrieving or sending messages:', error);
-    });
+  //       if (content.batch) { // Check if content has a batch
+  //         content.batch.forEach(message => {
+  //           // const likesForMessage = likesData.find(like => like.messageId === message._id.toString()) || { likedBy: [], likes: 0 };
+  //           messagesWithSameCid.forEach(meta => {
+  //             fullMessages.push({
+  //               _id: message._id,
+  //               username: message.username,
+  //               publicKey: message.publicKey,
+  //               timestamp: message.timestamp,
+  //               read: message.read,
+  //               mentions: message.mentions,
+  //               text: message.text,
+  //               // likes: likesForMessage.likes, // Include likes count
+  //               // likedBy: likesForMessage.likedBy // Include list of users who liked
+  //             });
+  //           });
+  //         });
+  //       } else {
+  //         console.error(`No batch found for CID: ${cidKeys[index]}`);
+  //       }
+  //     });
+  //   })
+  //   .then(() => {
+  //     let reversedMessageBatch = messageBatch.slice().reverse();
+  //     fullMessages = [...reversedMessageBatch, ...fullMessages];
+  //     console.log('Sending history messages:', fullMessages);
+  //     ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
+  //     reversedMessageBatch = [];
+  //   })
+  //   .catch(error => {
+  //     console.error('Error retrieving or sending messages:', error);
+  //   });
 
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
