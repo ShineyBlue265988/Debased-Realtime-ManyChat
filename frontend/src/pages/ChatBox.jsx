@@ -284,6 +284,9 @@ const ChatBox = ({ username, walletAddress }) => {
       try {
         const data = JSON.parse(event.data);
         console.log('Received message:', data);
+        if (data.messages===null) {
+          return;
+        }
         if (data.type === 'history') {
           const reversedMessages = data.messages.reverse();
           const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);

@@ -259,7 +259,7 @@ wss.on('connection', (ws) => {
       fullMessages = [...reversedMessageBatch, ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       reversedMessageBatch = [];
-      // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
+      console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
