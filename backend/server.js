@@ -298,6 +298,7 @@ wss.on('connection', (ws) => {
           likes.likes.pull(data.username);
         }
         likes.save();
+        console.log("likes", likes);
       }
       else {
         const newLikes = new Likes({
@@ -305,6 +306,7 @@ wss.on('connection', (ws) => {
           likes: [data.username]
         });
         newLikes.save();
+        console.log("newLikes", newLikes);
       }
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {
@@ -313,6 +315,7 @@ wss.on('connection', (ws) => {
             message: {messageId: data.messageId, likes: likes.likes},
           }));
         }
+        console.log("send likes", likes);
       });
     })
   }
