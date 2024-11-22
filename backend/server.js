@@ -219,11 +219,10 @@ wss.on('connection', (ws) => {
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
-    .then(messageContents => {
+    .then( async messageContents => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
-      const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages
-      // Construct full messages
+      const likesData =await Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
         // console.log("messagesWithSameCid", messagesWithSameCid);
