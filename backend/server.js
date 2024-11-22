@@ -308,16 +308,16 @@ wss.on('connection', (ws) => {
         newLikes.save();
         console.log("newLikes", newLikes);
       }
-      clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN && id !== clientId) {
-          client.send(JSON.stringify({
-            type: 'likes',
-            message: {messageId: data.messageId, likes: likes.likes},
-          }));
-        }
-        console.log("send likes", likes);
-      });
     })
+    clients.forEach((client, id) => {
+      if (client.readyState === WebSocket.OPEN && id !== clientId) {
+        client.send(JSON.stringify({
+          type: 'likes',
+          message: {messageId: data.messageId, likes: Likes.findOne({messageId: data.messageId}).select('likes')},
+        }));
+      }
+      console.log("send likes", likes);
+    });
   }
   async function handleNewMessage(data) {
     try {
