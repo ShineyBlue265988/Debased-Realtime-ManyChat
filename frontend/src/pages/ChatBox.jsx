@@ -439,7 +439,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-0  ${(msg.username === username) ? 'right-0 bottom-0' : 'right-0 bottom-0'} `}>
+                <div className={`flex items-end mt-1 flex justify-end absolute  right-0 bottom-0  ${(msg.likedBy.has(username)) ? 'border-1 p-1 border-violet-500' : ''} `}>
                   <motion.button
                     onClick={() => handleLike(msg._id)}
                     className={`text-xl relative`}
@@ -453,10 +453,11 @@ const ChatBox = ({ username, walletAddress }) => {
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
+                        <FaHeart className="text-red-500 hover:text-red-500 hover:scale-105 w-5 h-5" />
                       </motion.div>
                     )}
                   </motion.button>
+                    {msg.likes}
                 </div>
               </div>
             </div>

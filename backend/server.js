@@ -349,7 +349,7 @@ wss.on('connection', (ws) => {
       try {
         // Find or create the like entry for the message
         let messageLike = await Likes.findOne({ messageId });
-
+        console.log("messageLike", messageLike);
         if (!messageLike) {
           // If no like entry exists, create one
           messageLike = new Likes({ messageId, likedBy: [], likes: 0 });
@@ -357,7 +357,7 @@ wss.on('connection', (ws) => {
 
         // Check if user has already liked
         const hasLiked = messageLike.likedBy.includes(username);
-
+        console.log("hasLiked", hasLiked);
         if (liked && !hasLiked) {
           // User is liking the message
           messageLike.likedBy.push(username);
