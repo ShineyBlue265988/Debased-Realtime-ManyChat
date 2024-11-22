@@ -403,3 +403,11 @@ function generateUniqueId() {
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
+app.get('/test-likes', async (req, res) => {
+  try {
+      const likes = await Likes.find();
+      res.json(likes);
+  } catch (error) {
+      res.status(500).json({ error: 'Error fetching likes' });
+  }
+});
