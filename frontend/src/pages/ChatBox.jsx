@@ -400,7 +400,7 @@ const ChatBox = ({ username, walletAddress }) => {
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-3">
             <div className="flex items-start gap-2">
-              <div className={`py-2 px-3 rounded-lg inline-block relative ${msg.username === username
+              <div className={`py-2 pl-3 pr-6 rounded-lg inline-block relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
@@ -411,7 +411,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {msg.username}
                     <div className='flex items-center p-1'>
 
-                      {(msg.username === 'golden') && (<img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
+                      {(msg.badge == 'golden') && (<img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
                       {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
                       {(msg.badge == "blue" && <img src={badge} className="w-5 h-5 inline-block " alt="Verified" />)}
                     </div>
@@ -428,7 +428,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-[-1rem] bottom-1' : 'right-[-1rem] bottom-1'} `}>
+                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
                   <motion.button
                     onClick={() => handleLike(msg._id)}
                     className={`text-xl relative`}
@@ -443,7 +443,7 @@ const ChatBox = ({ username, walletAddress }) => {
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
+                        <FaHeart className="text-transparent border-2 border-gray-500 hover:text-red-500 hover:scale-105 w-5 h-5" />
                       </motion.div>
                     )}
                     {/* </AnimatePresence> */}
