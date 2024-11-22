@@ -14,9 +14,14 @@ import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/ide
 import { base } from 'viem/chains';
 import axios from 'axios';
 import badge from '../components/icons/bluebadge.jpg'
-import medal1 from '../components/icons/medal1.jpg'
-import medal2 from '../components/icons/medal2.jpg'
-import medal3 from '../components/icons/medal3.jpg'
+import golden1 from '../components/icons/golden1.jpg'
+import golden2 from '../components/icons/golden2.jpg'
+import golden3 from '../components/icons/golden3.jpg'
+import golden4 from '../components/icons/golden4.jpg'
+import golden5 from '../components/icons/golden5.jpg'
+import golden6 from '../components/icons/golden6.jpg'
+
+
 const ChatBox = ({ username, walletAddress }) => {
   const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
@@ -408,8 +413,13 @@ const ChatBox = ({ username, walletAddress }) => {
                   >
                     {msg.username}
                     <div className='flex items-center p-1'>
-                      {(msg.username==='bshark.base.eth') && (<img src={medal3} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='valcour.base.eth') && (<img src={medal1} className="w-4 h-4 inline-block " alt="Admin1" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden1} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden2} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden3} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden4} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden5} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden6} className="w-4 h-4 inline-block " alt="Admin2" />)}
+                      {(msg.username==='valcour.base.eth') && (<img src={badge} className="w-4 h-4 inline-block " alt="Admin1" />)}
                       {(msg.username!=='bshark.base.eth' && msg.username!=='valcour.base.eth') &&<img src={badge} className="w-4 h-4 inline-block " alt="Verified" />}
                     </div>
                   </div>
