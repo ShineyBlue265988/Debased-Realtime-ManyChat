@@ -222,14 +222,14 @@ wss.on('connection', (ws) => {
     .then(  messageContents => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
-      const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
+      // const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
         // console.log("messagesWithSameCid", messagesWithSameCid);
 
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
-            const likesForMessage = likesData.find(like => like.messageId === message._id.toString()) || { likedBy: [], likes: 0 };
+            // const likesForMessage = likesData.find(like => like.messageId === message._id.toString()) || { likedBy: [], likes: 0 };
             messagesWithSameCid.forEach(meta => {
               fullMessages.push({
                 _id: message._id,
@@ -239,8 +239,8 @@ wss.on('connection', (ws) => {
                 read: message.read,
                 mentions: message.mentions,
                 text: message.text,
-                likes: likesForMessage.likes, // Include likes count
-                likedBy: likesForMessage.likedBy // Include list of users who liked
+                // likes: likesForMessage.likes, // Include likes count
+                // likedBy: likesForMessage.likedBy // Include list of users who liked
               });
             });
           });
