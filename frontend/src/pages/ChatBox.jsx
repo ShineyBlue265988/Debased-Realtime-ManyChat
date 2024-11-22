@@ -40,7 +40,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
-  const [likedMessages, setLikedMessages] = useState(new Set());
+  const [likedMessages, setLikedMessages] = useState({});
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -77,15 +77,15 @@ const ChatBox = ({ username, walletAddress }) => {
   //   }
 
   const handleLike = useCallback((messageId) => {
-    setLikedMessages(prev => {
-      const newSet = new Set(prev);
-      if (newSet.has(messageId)) {
-        newSet.delete(messageId);
-      } else {
-        newSet.add(messageId);
-      }
-      return newSet;
-    });
+    // setLikedMessages(prev => {
+    //   const newSet = new Set(prev);
+    //   if (newSet.has(messageId)) {
+    //     newSet.delete(messageId);
+    //   } else {
+    //     newSet.add(messageId);
+    //   }
+    //   return newSet;
+    // });
     wsRef.current.send(JSON.stringify({
       type: 'like',
       username,
@@ -302,6 +302,14 @@ const ChatBox = ({ username, walletAddress }) => {
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
         }
+        else if (data.type === "likes") {
+          setLikedMessages(prevLikedMessages => ({
+            ...prevLikedMessages,
+            [data.messageId]: data.likes
+          }));
+          console.log('Added like:', data.messageId);
+          console.log('likes', data.likes);
+        }
       } catch (error) {
         console.log('Message processing error:', error);
       }
@@ -436,7 +444,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
+                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(likedMessages.has(msg._id)) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
                   <motion.button
                     onClick={() => handleLike(msg._id)}
                     className={`text-xl relative`}
@@ -456,6 +464,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     )}
                     {/* </AnimatePresence> */}
                   </motion.button>
+                  <span>{msg.likes.length}</span>
                 </div>
               </div>
             </div>
