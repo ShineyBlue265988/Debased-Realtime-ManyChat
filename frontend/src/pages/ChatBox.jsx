@@ -13,6 +13,7 @@ import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import { base } from 'viem/chains';
 import axios from 'axios';
+import badge from '../components/icons/bluebadge.jpg'
 const ChatBox = ({ username, walletAddress }) => {
   const textareaRef = useRef(null);
   const backgroundUrl = import.meta.env.VITE_WS_URL;
@@ -403,7 +404,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     onClick={() => handleUsernameClick(msg.username)}
                   >
                     {msg.username}
-                    <img src='../public/bluebadge.jpg' className="w-4 h-4" alt="Verified" />
+                    <img src={badge} className="w-4 h-4 inline-block" alt="Verified" />
                   </div>
                   
                 )}
