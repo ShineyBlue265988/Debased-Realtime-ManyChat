@@ -1,6 +1,6 @@
 import React from 'react';
 import { Github, Twitter } from 'lucide-react';
-import base from '../icons/base.svg';
+// import base from '../icons/base.svg';
 function Footer() {
   return (
     <footer className="bg-white text-white py-6">

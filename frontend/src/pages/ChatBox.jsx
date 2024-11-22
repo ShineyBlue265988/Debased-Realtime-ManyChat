@@ -274,22 +274,21 @@ const ChatBox = ({ username, walletAddress }) => {
     }
   };
   function updateLikes(messageID, userList) {
-    setMessageLikes(prevLikes => ({
-        ...prevLikes,
-        [messageID]: userList
-    }));
-}
-/*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Check if a user has liked a message.
-   * @param {string} messageID The ID of the message to check.
-   * @param {string} username The username to check.
-   * @returns {boolean} Whether the user has liked the message.
-   */
-/******  7b230d34-915c-4768-b838-eff4ce20e296  *******/
+    setMessageLikes(prevLikes => {
+      const _prevLikes = { ...prevLikes };
+      _prevLikes[messageID] = userList;
+      return _prevLikes;
+    });
+    // setMessageLikes(prevLikes => ({
+    //     ...prevLikes,
+    //     [messageID]: userList
+    // }));
+  }
+  console.log('messageLikes', messageLikes);
 function hasUserLiked(messageID, username) {
-  return messageLikes[messageID]?.includes(username) || false;
+  return messageLikes[messageID]?.includes(username) ? true : false;
 }
+
   const connectWebSocket = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
@@ -320,6 +319,7 @@ function hasUserLiked(messageID, username) {
           console.log('Added message:', data.message);
         }
         else if (data.type === "likes") {
+          console.log("data", data);
           const { messageID, likes } = data;
           updateLikes(messageID, likes);
           console.log("likes", messageLikes);
