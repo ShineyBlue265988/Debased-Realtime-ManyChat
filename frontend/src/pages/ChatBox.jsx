@@ -456,7 +456,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     transition={{ duration: 0.3 }} // Increase duration for smoother effect
                   >
                     {/* <AnimatePresence> */}
-                    {likedMessages.has(msg._id) ? (
+                    {messageLikes.has(msg._id) ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
