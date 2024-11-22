@@ -95,7 +95,7 @@ const ChatBox = ({ username, walletAddress }) => {
 
       return newSet;
     });
-  }, [username]);
+  }, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
