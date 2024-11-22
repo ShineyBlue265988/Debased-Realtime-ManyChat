@@ -289,35 +289,40 @@ wss.on('connection', (ws) => {
 
   });
   async function handleLike(data) {
-    Likes.findOne({messageId: data.messageId}).then((likes) => {
+    try {
+      let likes = await Likes.findOne({messageId: data.messageId});
       if (likes) {
         if (likes.likes.indexOf(data.username) === -1) {
           likes.likes.push(data.username);
+        } else {
+          likes.likes = likes.likes.filter(username => username !== data.username);
         }
-        else {
-          likes.likes.pull(data.username);
-        }
-        likes.save();
-        console.log("likes", likes);
-      }
-      else {
-        const newLikes = new Likes({
+        await likes.save();
+      } else {
+        likes = new Likes({
           messageId: data.messageId,
           likes: [data.username]
         });
-        newLikes.save();
-        console.log("newLikes", newLikes);
+        await likes.save();
       }
-    })
-    clients.forEach((client, id) => {
-      if (client.readyState === WebSocket.OPEN && id !== clientId) {
-        client.send(JSON.stringify({
-          type: 'likes',
-          message: {messageId: data.messageId, likes: Likes.findOne({messageId: data.messageId}).select('likes')},
-        }));
-      }
-      console.log("send likes", likes);
-    });
+  
+      const likesData = {
+        messageId: data.messageId,
+        likes: likes.likes
+      };
+  
+      clients.forEach((client, id) => {
+        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+          client.send(JSON.stringify({
+            type: 'likes',
+            message: likesData
+          }));
+        }
+      });
+      console.log("send likes", likesData);
+    } catch (error) {
+      console.error("Error handling like:", error);
+    }
   }
   async function handleNewMessage(data) {
     try {
