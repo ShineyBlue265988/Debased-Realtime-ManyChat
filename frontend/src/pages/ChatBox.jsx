@@ -70,32 +70,17 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
 
-
-
-  // const handleLike = useCallback((messageId) => {
-  //   setLikedMessages(prev => {
-  //     const newSet = new Set(prev);
-  //     const isLiked = newSet.has(messageId);
-
-  //     // Send the like status to the backend
-  //     if (wsRef.current?.readyState === WebSocket.OPEN) {
-  //       wsRef.current.send(JSON.stringify({
-  //         type: 'like',
-  //         username: username,
-  //         messageId: messageId,
-  //         liked: !isLiked // Send the opposite of the current state
-  //       }));
-  //     }
-
-  //     if (isLiked) {
-  //       newSet.delete(messageId); // Remove from liked messages
-  //     } else {
-  //       newSet.add(messageId); // Add to liked messages
-  //     }
-
-  //     return newSet;
-  //   });
-  // }, []);
+  const handleLike = useCallback((messageId) => {
+    setLikedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(messageId)) {
+        newSet.delete(messageId);
+      } else {
+        newSet.add(messageId);
+      }
+      return newSet;
+    });
+  }, []);
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -303,15 +288,6 @@ const ChatBox = ({ username, walletAddress }) => {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
           console.log('Added message:', data.message);
-        } else if (data.type === 'like-update') {
-          // Update local state for likes
-          setMessages(prevMessages =>
-            prevMessages.map(msg =>
-              msg._id === data.messageId
-                ? { ...msg, likes: data.likes, likedBy: data.likedBy }
-                : msg
-            )
-          );
         }
       } catch (error) {
         console.log('Message processing error:', error);
@@ -416,9 +392,9 @@ const ChatBox = ({ username, walletAddress }) => {
         className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-100 scroll-smooth [scroll-behavior:smooth] [transition:all_10ms_ease-in-out]"
       >
         {messages.map((msg, index) => (
-          <div key={index} className="flex flex-col pr-1">
-            <div className="flex items-start gap-2 ">
-              <div className={`py-2 pl-3 rounded-lg inline-block pr-[1.5rem] relative ${msg.username === username
+          <div key={index} className="flex flex-col pr-3">
+            <div className="flex items-start gap-2">
+              <div className={`py-2 px-3 rounded-lg inline-block relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%] p-2 text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] p-2'
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
@@ -439,26 +415,27 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                {/* <div className={`flex items-end mt-1 flex justify-end absolute  right-0 bottom-0  ${(msg.likedBy.has(username)) ? 'border-1 p-1 border-violet-500' : ''} `}>
-                  <motion.button
-                    onClick={() => handleLike(msg._id)}
-                    className={`text-xl relative`}
-                    whileHover={{ scale: 1.3 }}
-                    whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
-                    transition={{ duration: 0.3 }} // Increase duration for smoother effect
-                  >
-                    {!likedMessages.has(msg._id) ? (
-                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-transparent border-gray-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 hover:text-red-500 hover:scale-105 w-5 h-5" />
-                      </motion.div>
-                    )}
-                  </motion.button>
-                    {msg.likes}
-                </div> */}
+                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-[-1rem] bottom-1' : 'right-[-1rem] bottom-1'} `}>
+                    <motion.button
+                      onClick={() => handleLike(msg._id)}
+                      className={`text-xl relative`}
+                      whileHover={{ scale: 1.3 }}
+                      whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
+                      transition={{ duration: 0.3 }} // Increase duration for smoother effect
+                    >
+                      {/* <AnimatePresence> */}
+                      {likedMessages.has(msg._id) ? (
+                        <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                          <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                        </motion.div>
+                      ) : (
+                        <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                          <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
+                        </motion.div>
+                      )}
+                      {/* </AnimatePresence> */}
+                    </motion.button>
+                  </div>
               </div>
             </div>
           </div>
@@ -543,4 +520,3 @@ const ChatBox = ({ username, walletAddress }) => {
 };
 
 export default ChatBox;
-
