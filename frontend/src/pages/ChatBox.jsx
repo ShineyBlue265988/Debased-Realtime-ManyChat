@@ -404,9 +404,11 @@ const ChatBox = ({ username, walletAddress }) => {
                     onClick={() => handleUsernameClick(msg.username)}
                   >
                     {msg.username}
-                    <img src={badge} className="w-4 h-4 inline-block" alt="Verified" />
+                    <div className='flex items-center p-1'>
+                      <img src={badge} className="w-4 h-4 inline-block " alt="Verified" />
+                    </div>
                   </div>
-                  
+
                 )}
                 <div className="break-words ">
                   {isOnlyEmojis(msg.text) ? (
@@ -419,26 +421,26 @@ const ChatBox = ({ username, walletAddress }) => {
                   </span>
                 </div>
                 <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-[-1rem] bottom-1' : 'right-[-1rem] bottom-1'} `}>
-                    <motion.button
-                      onClick={() => handleLike(msg._id)}
-                      className={`text-xl relative`}
-                      whileHover={{ scale: 1.3 }}
-                      whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
-                      transition={{ duration: 0.3 }} // Increase duration for smoother effect
-                    >
-                      {/* <AnimatePresence> */}
-                      {likedMessages.has(msg._id) ? (
-                        <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                          <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
-                        </motion.div>
-                      ) : (
-                        <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                          <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
-                        </motion.div>
-                      )}
-                      {/* </AnimatePresence> */}
-                    </motion.button>
-                  </div>
+                  <motion.button
+                    onClick={() => handleLike(msg._id)}
+                    className={`text-xl relative`}
+                    whileHover={{ scale: 1.3 }}
+                    whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
+                    transition={{ duration: 0.3 }} // Increase duration for smoother effect
+                  >
+                    {/* <AnimatePresence> */}
+                    {likedMessages.has(msg._id) ? (
+                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                        <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                      </motion.div>
+                    ) : (
+                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
+                        <FaHeart className="text-transparent hover:text-red-500 hover:scale-105 w-5 h-5" />
+                      </motion.div>
+                    )}
+                    {/* </AnimatePresence> */}
+                  </motion.button>
+                </div>
               </div>
             </div>
           </div>
