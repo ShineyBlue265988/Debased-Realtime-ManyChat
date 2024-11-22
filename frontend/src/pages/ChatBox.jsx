@@ -279,6 +279,17 @@ const ChatBox = ({ username, walletAddress }) => {
         [messageID]: userList
     }));
 }
+/*************  ✨ Codeium Command ⭐  *************/
+  /**
+   * Check if a user has liked a message.
+   * @param {string} messageID The ID of the message to check.
+   * @param {string} username The username to check.
+   * @returns {boolean} Whether the user has liked the message.
+   */
+/******  7b230d34-915c-4768-b838-eff4ce20e296  *******/
+function hasUserLiked(messageID, username) {
+  return messageLikes[messageID]?.includes(username) || false;
+}
   const connectWebSocket = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
       return;
@@ -456,7 +467,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     transition={{ duration: 0.3 }} // Increase duration for smoother effect
                   >
                     {/* <AnimatePresence> */}
-                    {messageLikes.has(msg._id) ? (
+                    {hasUserLiked (msg._id, username) ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
