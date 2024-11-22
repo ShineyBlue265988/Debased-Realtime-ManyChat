@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback } from "react";
-import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
+import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import chaticon from '../components/icons/baseChat.jpg'
@@ -439,11 +439,11 @@ const ChatBox = ({ username, walletAddress }) => {
                     {/* <AnimatePresence> */}
                     {likedMessages.has(msg._id) ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 hover:scale-105 w-5 h-5" />
+                        <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-transparent border-2 border-gray-500 hover:text-red-500 hover:scale-105 w-5 h-5" />
+                        <FaRegHeart  className="text-gray-300 hover:text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
                     )}
                     {/* </AnimatePresence> */}
