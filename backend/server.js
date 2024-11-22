@@ -118,7 +118,7 @@ async function managePinning() {
 //   }
 // }
 
-async function storeMessagesBatch(batch, retries = 5) {
+async function storeMessagesBatch(batch,retries = 5) {
   await managePinning(); // Manage pinning before storing new messages
   try {
     const response = await axios.post(
@@ -139,7 +139,7 @@ async function storeMessagesBatch(batch, retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Store Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
       console.log("Retrying...");
       return storeMessagesBatch(batch, retries - 1);
     } else {
@@ -152,7 +152,7 @@ async function storeMessagesBatch(batch, retries = 5) {
 
 const fetch = require('node-fetch');
 
-async function getMessages(cids, retries = 5) {
+async function getMessages(cids,retries = 5) {
   try {
     const responses = await Promise.all(
       cids.map(cid => fetch(`https://w3s.link/ipfs/${cid}`).then(res => res.json()))
@@ -163,7 +163,7 @@ async function getMessages(cids, retries = 5) {
       // const retryAfter = error.response.headers['retry-after'] || 1; // Default to 1 second if not specified
       retryAfter = 3;
       console.log(`Get Rate limit exceeded. Retrying after ${retryAfter} seconds...`);
-      await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+      await new Promise(resolve => setTimeout(resolve, retryAfter*1000 ));
       console.log("Retrying...");
       return getMessages(cids, retries - 1);
     } else {
@@ -239,8 +239,7 @@ wss.on('connection', (ws) => {
                 timestamp: message.timestamp,
                 read: message.read,
                 mentions: message.mentions,
-                text: message.text, // Assuming content has a 'text' field
-                likes: message.likes,
+                text: message.text // Assuming content has a 'text' field
               });
               // console.log("fullMessages", fullMessages);
             });
@@ -259,7 +258,7 @@ wss.on('connection', (ws) => {
       fullMessages = [...reversedMessageBatch, ...fullMessages];
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       reversedMessageBatch = [];
-      console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
+      // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
@@ -272,46 +271,12 @@ wss.on('connection', (ws) => {
 
   ws.on('message', async (message) => {
     const data = JSON.parse(message);
-    console.log('Received message:', data);
     if (!data.username || !data.text || !data.publicKey) {
       console.error('Invalid message format');
       return;
     }
     // console.log('Received message:', data);
-    // Check if the message is a like event
-    if (data.type === 'like' && data.messageId && data.username) {
-      try {
-        // Find the message by ID
-        const existingMessage = await Message.findById(data.messageId);
-        if (existingMessage) {
-          // Toggle like: add if not present, remove if present
-          const index = existingMessage.likes.indexOf(data.username);
-          if (index === -1) {
-            // User is not in likes, add them
-            existingMessage.likes.push(data.username);
-          } else {
-            // User is already in likes, remove them
-            existingMessage.likes.splice(index, 1);
-          }
-          await existingMessage.save(); // Save updated message
 
-          // Broadcast updated likes to all clients
-          clients.forEach((client) => {
-            if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({
-                type: 'updateLikes',
-                messageId: data.messageId,
-                likes: existingMessage.likes
-              }));
-            }
-          });
-        }
-      } catch (error) {
-        console.error('Error updating likes:', error);
-      }
-      return;
-    }
-    if (data.type === 'newMessage' && data.messageId && data.username) {
     try {
       await User.findOneAndUpdate(
         { username: data.username },
@@ -328,8 +293,7 @@ wss.on('connection', (ws) => {
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
-        text: data.text, // Include the message text here
-        likes: [],
+        text: data.text // Include the message text here
       };
 
       // Broadcast the message to all connected clients
@@ -346,7 +310,7 @@ wss.on('connection', (ws) => {
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
         // console.log("messageBatch", messageBatch);
-        messageBatch.reverse();
+        messageBatch .reverse();
         // console.log("reversedMessageBatch", messageBatch);
         const batchCid = await storeMessagesBatch(messageBatch);
 
@@ -373,7 +337,7 @@ wss.on('connection', (ws) => {
 
 
         // Clear the batch after saving
-        messageBatch = [];
+        messageBatch =[];
         // console.log("messageBatch", messageBatch);
 
         console.log(`Stored ${BATCH_SIZE} messages in IPFS with CID: ${batchCid}`);
@@ -381,7 +345,7 @@ wss.on('connection', (ws) => {
 
     } catch (error) {
       console.error('Error handling message:', error);
-    }}
+    }
   });
 
   ws.on('close', () => {
