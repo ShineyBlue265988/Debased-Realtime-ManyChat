@@ -339,7 +339,7 @@ wss.on('connection', (ws) => {
         text: data.text, // Include the message text here
         badge: User.findOne({ username: data.username }).badge || 'blue'
       };
-
+      console.log("This is message ID", messageToSend._id);
       // Broadcast the message to all connected clients
       clients.forEach((client, id) => {
         if (client.readyState === WebSocket.OPEN && id !== clientId) {

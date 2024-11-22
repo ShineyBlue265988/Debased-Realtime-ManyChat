@@ -91,7 +91,9 @@ const ChatBox = ({ username, walletAddress }) => {
       username,
       messageId,
     }));
+    console.log("This is liked messageId", messageId);
   }, []);
+  
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
     if (textarea) {
@@ -340,7 +342,7 @@ const ChatBox = ({ username, walletAddress }) => {
       mentions: text.match(/@[\w]+/g) || []
     }));
     const newMessage = {
-      _id: `temp-${Date.now()}`, // Temporary ID
+      // _id: `temp-${Date.now()}`, // Temporary ID
       username,
       publicKey: walletAddress,
       text: text.trim(),
