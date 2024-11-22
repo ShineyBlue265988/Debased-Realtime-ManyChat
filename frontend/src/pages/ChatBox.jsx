@@ -15,7 +15,7 @@ import { base } from 'viem/chains';
 import axios from 'axios';
 import badge from '../components/icons/bluebadge.jpg'
 import golden1 from '../components/icons/golden1.jpg'
-import golden2 from '../components/icons/golden2.jpg'
+import golden2 from '../components/icons/golden2.png'
 import golden3 from '../components/icons/golden3.jpg'
 import golden4 from '../components/icons/golden4.jpg'
 import golden5 from '../components/icons/golden5.jpg'
@@ -413,14 +413,14 @@ const ChatBox = ({ username, walletAddress }) => {
                   >
                     {msg.username}
                     <div className='flex items-center p-1'>
-                      {(msg.username==='bshark.base.eth') && (<img src={golden1} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='bshark.base.eth') && (<img src={golden2} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='bshark.base.eth') && (<img src={golden3} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='bshark.base.eth') && (<img src={golden4} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='bshark.base.eth') && (<img src={golden5} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='bshark.base.eth') && (<img src={golden6} className="w-4 h-4 inline-block " alt="Admin2" />)}
-                      {(msg.username==='valcour.base.eth') && (<img src={badge} className="w-4 h-4 inline-block " alt="Admin1" />)}
-                      {(msg.username!=='bshark.base.eth' && msg.username!=='valcour.base.eth') &&<img src={badge} className="w-4 h-4 inline-block " alt="Verified" />}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden1} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden2} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden3} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='bshark.base.eth') && (<img src={golden6} className="w-5 h-5 inline-block " alt="Admin2" />)}
+                      {(msg.username==='valcour.base.eth') && (<img src={badge} className="w-5 h-5 inline-block " alt="Admin1" />)}
+                      {(msg.username!=='bshark.base.eth' && msg.username!=='valcour.base.eth') &&<img src={badge} className="w-5 h-5 inline-block " alt="Verified" />}
                     </div>
                   </div>
 
