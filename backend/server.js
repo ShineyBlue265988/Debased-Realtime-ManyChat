@@ -289,7 +289,7 @@ wss.on('connection', (ws) => {
 
   });
   async function handleLike(data) {
-    Likes.findOne(data.messageId).then((likes) => {
+    Likes.findOne({messageId: data.messageId}).then((likes) => {
       if (likes) {
         if (likes.likes.indexOf(data.username) === -1) {
           likes.likes.push(data.username);
