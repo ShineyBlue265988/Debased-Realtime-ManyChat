@@ -203,7 +203,7 @@ wss.on('connection', (ws) => {
   const cidMap = new Map();
   // Send existing messages to new client
   Message.find().sort({ timestamp: -1 }).limit(500)
-    .then(async existingMessages => {
+    .then( existingMessages => {
       existingMessages.forEach(meta => {
         if (!meta.cid) {
           console.error('Missing CID for message:', meta);
@@ -219,10 +219,10 @@ wss.on('connection', (ws) => {
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
-    .then( async messageContents => {
+    .then(  messageContents => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
-      const likesData =await Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
+      const likesData = Likes.find({ messageId: { $in: cidKeys } }); // Fetch likes for messages      // Construct full messages
       messageContents.forEach((content, index) => {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
         // console.log("messagesWithSameCid", messagesWithSameCid);
@@ -342,49 +342,49 @@ wss.on('connection', (ws) => {
     } catch (error) {
       console.error('Error handling message:', error);
     }
-    if (data.type === 'like') {
-      const { messageId, liked, username } = data;
+    // if (data.type === 'like') {
+    //   const { messageId, liked, username } = data;
 
-      try {
-        // Find or create the like entry for the message
-        let messageLike = await Likes.findOne({ messageId });
-        console.log("messageLike", messageLike);
-        if (!messageLike) {
-          // If no like entry exists, create one
-          messageLike = new Likes({ messageId, likedBy: [], likes: 0 });
-        }
+    //   try {
+    //     // Find or create the like entry for the message
+    //     let messageLike = await Likes.findOne({ messageId });
+    //     console.log("messageLike", messageLike);
+    //     if (!messageLike) {
+    //       // If no like entry exists, create one
+    //       messageLike = new Likes({ messageId, likedBy: [], likes: 0 });
+    //     }
 
-        // Check if user has already liked
-        const hasLiked = messageLike.likedBy.includes(username);
-        console.log("hasLiked", hasLiked);
-        if (liked && !hasLiked) {
-          // User is liking the message
-          messageLike.likedBy.push(username);
-          messageLike.likes += 1;
-        } else if (!liked && hasLiked) {
-          // User is unliking the message
-          messageLike.likedBy = messageLike.likedBy.filter(user => user !== username);
-          messageLike.likes -= 1;
-        }
+    //     // Check if user has already liked
+    //     const hasLiked = messageLike.likedBy.includes(username);
+    //     console.log("hasLiked", hasLiked);
+    //     if (liked && !hasLiked) {
+    //       // User is liking the message
+    //       messageLike.likedBy.push(username);
+    //       messageLike.likes += 1;
+    //     } else if (!liked && hasLiked) {
+    //       // User is unliking the message
+    //       messageLike.likedBy = messageLike.likedBy.filter(user => user !== username);
+    //       messageLike.likes -= 1;
+    //     }
 
-        // Save the updated likes information to MongoDB
-        await messageLike.save();
+    //     // Save the updated likes information to MongoDB
+    //     await messageLike.save();
 
-        // Broadcast updated like information to all clients
-        clients.forEach(client => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({
-              type: 'like-update',
-              messageId,
-              likes: messageLike.likes,
-              likedBy: messageLike.likedBy,
-            }));
-          }
-        });
-      } catch (error) {
-        console.error('Error processing like:', error);
-      }
-    }
+    //     // Broadcast updated like information to all clients
+    //     clients.forEach(client => {
+    //       if (client.readyState === WebSocket.OPEN) {
+    //         client.send(JSON.stringify({
+    //           type: 'like-update',
+    //           messageId,
+    //           likes: messageLike.likes,
+    //           likedBy: messageLike.likedBy,
+    //         }));
+    //       }
+    //     });
+    //   } catch (error) {
+    //     console.error('Error processing like:', error);
+    //   }
+    // }
   });
 
 
