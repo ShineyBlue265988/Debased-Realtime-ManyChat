@@ -413,7 +413,7 @@ const ChatBox = ({ username, walletAddress }) => {
 
                       {(msg.username === 'golden') && (<img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
                       {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
-                      {(msg.badge == "blue" && <img src={msg.badge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                      {(msg.badge == "blue" && <img src={badge} className="w-5 h-5 inline-block " alt="Verified" />)}
                     </div>
                   </div>
 
