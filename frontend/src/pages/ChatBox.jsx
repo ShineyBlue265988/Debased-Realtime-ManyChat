@@ -288,8 +288,8 @@ const ChatBox = ({ username, walletAddress }) => {
     // }));
   }
   console.log('messageLikes', messageLikes);
-function hasUserLiked(messageID, username) {
-  return messageLikes[messageID]?.includes(username) ? true : false;
+function hasUserLiked(messageId, username) {
+  return messageLikes[messageId]?.includes(username) ? true : false;
 }
 
   const connectWebSocket = () => {
@@ -435,7 +435,7 @@ function hasUserLiked(messageID, username) {
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-3">
             <div className="flex items-start gap-2">
-              <div className={`py-2 pl-3 pr-6 rounded-lg inline-block relative ${msg.username === username
+              <div className={`py-2 pl-3 pr-10 rounded-lg inline-block relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] '
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
@@ -463,7 +463,7 @@ function hasUserLiked(messageID, username) {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex justify-end absolute bottom-2  ${(msg.username === username) ? 'right-1 bottom-1' : 'right-1 bottom-1'} `}>
+                <div className={`flex items-end mt-1 flex  justify-end absolute bottom-2  ${(msg.username === username) ? 'right-5 bottom-1' : 'right-5 bottom-1'} `}>
                   <motion.button
                     onClick={() => handleLike(msg._id)}
                     className={`text-xl relative`}
@@ -472,7 +472,7 @@ function hasUserLiked(messageID, username) {
                     transition={{ duration: 0.3 }} // Increase duration for smoother effect
                   >
                     {/* <AnimatePresence> */}
-                    {hasUserLiked (msg._id, username) ? (
+                    {messageLikes[msg._id].length>0 ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
                         <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
                       </motion.div>
@@ -482,7 +482,9 @@ function hasUserLiked(messageID, username) {
                       </motion.div>
                     )}
                     {/* </AnimatePresence> */}
+                    
                   </motion.button>
+                  {messageLikes[msg._id].length > 0 && <span className={`absolute top-0 right-[-0.75rem] text-xs text-gray-500 ${msg.username === username ? 'text-white' : ''}`}>{messageLikes[msg._id].length}</span>}
                 </div>
               </div>
             </div>
