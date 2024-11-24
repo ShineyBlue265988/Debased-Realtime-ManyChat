@@ -283,7 +283,7 @@ wss.on('connection', (ws) => {
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       
       // Clear the message batch
-      messageBatch = [];
+      // messageBatch = [];
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
