@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback } from "react";
-import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart, FaHeartBroken } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
+import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import chaticon from '../components/icons/baseChat.jpg'
@@ -450,7 +450,7 @@ const ChatBox = ({ username, walletAddress }) => {
         {messages.map((msg, index) => (
           <div key={index} className="flex flex-col pr-3">
             <div className="flex items-start gap-2">
-              <div className={`py-2 pl-3 pr-10 rounded-lg inline-block relative ${msg.username === username
+              <div className={`py-2 pl-3 pr-12 rounded-lg inline-block relative ${msg.username === username
                 ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
                 : 'bg-[#FFFFFF] mr-auto max-w-[80%] '
                 } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
@@ -478,29 +478,55 @@ const ChatBox = ({ username, walletAddress }) => {
                     {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </span>
                 </div>
-                <div className={`flex items-end mt-1 flex  justify-end absolute bottom-2  ${(msg.username === username) ? 'right-5 bottom-1' : 'right-5 bottom-1'} `}>
-                  <motion.button
-                    onClick={() => handleLike(msg._id)}
-                    className={`text-xl relative`}
-                    whileHover={{ scale: 1.3 }}
-                    whileTap={{ scale: 0.95 }} // Slightly reduce size on tap
-                    transition={{ duration: 0.3 }} // Increase duration for smoother effect
+                <div className={`flex items-end mt-1 p-1 justify-end absolute bottom-0.5 right-1 `}>
+                  <motion.div
+                    className={`relative group flex  ` }
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
                   >
-                    {/* <AnimatePresence> */}
-                    {messageLikes[msg._id]?.length > 0 ? (
-                      <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 group-hover:opacity-0 w-4 h-4" />
-                        <FaHeartBroken className="text-red-500 absolute top-0 left-0 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 w-4 h-4" />
-                      </motion.div>
-                    ) : (
-                      <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaRegHeart className="text-gray-300 hover:text-red-500 hover:scale-105 w-4 h-4" />
+                    <motion.button
+                      onClick={() => handleLike(msg._id)}
+                      className="text-xl relative z-10"
+                    >
+                      <AnimatePresence mode="wait">
+                        {messageLikes[msg._id]?.includes(username) ? (
+                          <motion.div
+                            key="liked"
+                            initial={{ scale: 0, rotate: -180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: 180 }}
+                            transition={{ duration: 0.3, type: "spring" }}
+                          >
+                            <FaHeart className="text-red-500 w-4 h-4" />
+                          </motion.div>
+                        ) : (
+                          <motion.div
+                            key="unliked"
+                            initial={{ scale: 0, rotate: 180 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            exit={{ scale: 0, rotate: -180 }}
+                            transition={{ duration: 0.3, type: "spring" }}
+                          >
+                            <FaRegHeart className="text-gray-400 group-hover:text-pink-400 w-4 h-4" />
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </motion.button>
+
+                    {messageLikes[msg._id]?.length > 0 && (
+                      <motion.div
+                        className={`rounded-full  text-xs font-bold pl-1 flex items-center justify-center 
+                        ${messageLikes[msg._id]?.includes(username) ? 'text-red-500' : 'text-gray-400'}
+                        `}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1, duration: 0.2 }}
+                      >
+                        {messageLikes[msg._id]?.length}
                       </motion.div>
                     )}
-                    {/* </AnimatePresence> */}
-
-                  </motion.button>
-                  {messageLikes[msg._id]?.length > 0 && <span className={`absolute top-0 right-[-0.75rem] text-xs text-gray-500 ${msg.username === username ? 'text-white' : ''}`}>{messageLikes[msg._id]?.length}</span>}
+                  </motion.div>
                 </div>
               </div>
             </div>
