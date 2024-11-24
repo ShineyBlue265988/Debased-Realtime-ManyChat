@@ -363,7 +363,9 @@ wss.on('connection', (ws) => {
       console.log("This is message ID", messageToSend._id);
       // Broadcast the message to all connected clients
       clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+        if (client.readyState === WebSocket.OPEN 
+          // && id !== clientId
+        ) {
           client.send(JSON.stringify({
             type: 'message',
             message: messageToSend,
