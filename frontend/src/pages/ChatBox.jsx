@@ -77,22 +77,29 @@ const ChatBox = ({ username, walletAddress }) => {
   //   }
 
   const handleLike = useCallback((messageId) => {
-    // setLikedMessages(prev => {
-    //   const newSet = new Set(prev);
-    //   if (newSet.has(messageId)) {
-    //     newSet.delete(messageId);
-    //   } else {
-    //     newSet.add(messageId);
-    //   }
-    //   return newSet;
-    // });
+    // Update local state optimistically
+    setMessageLikes(prev => {
+        const updatedLikes = { ...prev };
+        // Check if the message is already liked by this user
+        if (updatedLikes[messageId]) {
+            // If already liked, remove this user from likes
+            updatedLikes[messageId] = updatedLikes[messageId].filter(user => user !== username);
+        } else {
+            // If not liked yet, add this user to likes
+            updatedLikes[messageId] = [...(updatedLikes[messageId] || []), username];
+        }
+        return updatedLikes;
+    });
+
+    // Send like action to WebSocket
     wsRef.current.send(JSON.stringify({
-      type: 'like',
-      username,
-      messageId,
+        type: 'like',
+        username,
+        messageId,
     }));
+
     console.log("This is liked messageId", messageId);
-  }, []);
+}, [username]);
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
