@@ -79,17 +79,19 @@ const ChatBox = ({ username, walletAddress }) => {
   const handleLike = useCallback((messageId) => {
     // Update local state optimistically
     setMessageLikes(prev => {
-        const updatedLikes = { ...prev };
-        // Check if the message is already liked by this user
-        if (updatedLikes[messageId]) {
-            // If already liked, remove this user from likes
-            updatedLikes[messageId] = updatedLikes[messageId].filter(user => user !== username);
-        } else {
-            // If not liked yet, add this user to likes
-            updatedLikes[messageId] = [...(updatedLikes[messageId] || []), username];
-        }
-        return updatedLikes;
-    });
+      const updatedLikes = { ...prev };
+      const currentLikes = updatedLikes[messageId] || [];
+      
+      if (currentLikes.includes(username)) {
+          // If username exists, remove it
+          updatedLikes[messageId] = currentLikes.filter(user => user !== username);
+      } else {
+          // If username doesn't exist, add it
+          updatedLikes[messageId] = [...currentLikes, username];
+      }
+      
+      return updatedLikes;
+  });
 
     // Send like action to WebSocket
     wsRef.current.send(JSON.stringify({
