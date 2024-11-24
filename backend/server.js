@@ -223,24 +223,24 @@ wss.on('connection', (ws) => {
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
-    .then(async  (messageContents) => {
+    .then(async (messageContents) => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
 
       // Construct full messages
       for (const [index, content] of messageContents.entries()) {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
-    
+
         if (content.batch) {
           for (const message of content.batch) {
             // Fetch likes for this message
             const likesDoc = await Likes.findOne({ messageId: message._id }).lean();
             const likes = likesDoc ? likesDoc.likes : [];
-    
+
             // Fetch user badge
             const user = await User.findOne({ username: message.username }).select('badge').lean();
             const badge = user ? user.badge : null;
-    
+
             fullMessages.push({
               _id: message._id,
               username: message.username,
@@ -261,27 +261,27 @@ wss.on('connection', (ws) => {
     .then(async () => {
       // Process batched messages
       let reversedMessageBatch = messageBatch.slice().reverse();
-      
+
       // Add likes and badges to batched messages
       for (const message of reversedMessageBatch) {
         // Fetch likes for this message
         const likesDoc = await Likes.findOne({ messageId: message._id }).lean();
         const likes = likesDoc ? likesDoc.likes : [];
-    
+
         // Fetch user badge
         const user = await User.findOne({ username: message.username }).select('badge').lean();
         const badge = user ? user.badge : null;
-    
+
         message.likes = likes;
         message.badge = badge;
       }
-    
+
       // Combine batched messages with full messages
       fullMessages = [...reversedMessageBatch, ...fullMessages];
-    
+
       // Send full messages to the client
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-      
+
       // Clear the message batch
       // messageBatch = [];
     })
@@ -301,15 +301,16 @@ wss.on('connection', (ws) => {
     //   return;
     // }
     console.log('Received message:', data);
-    if(data.type == 'message'){
-      handleNewMessage(data);}
+    if (data.type == 'message') {
+      handleNewMessage(data);
+    }
 
-    if(data.type == 'like') handleLike(data);
+    if (data.type == 'like') handleLike(data);
 
   });
   async function handleLike(data) {
     try {
-      let likes = await Likes.findOne({messageId: data.messageId});
+      let likes = await Likes.findOne({ messageId: data.messageId });
       if (likes) {
         if (!likes.likes.includes(data.username)) {
           likes.likes.push(data.username);
@@ -324,14 +325,14 @@ wss.on('connection', (ws) => {
         });
         await likes.save();
       }
-  
+
       clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN 
+        if (client.readyState === WebSocket.OPEN
           // && id !== clientId
         ) {
           client.send(JSON.stringify({
             type: 'likes',
-            message: {messageId: data.messageId, likes: likes.likes},
+            message: { messageId: data.messageId, likes: likes.likes },
           }));
         }
       });
@@ -352,18 +353,20 @@ wss.on('connection', (ws) => {
         { upsert: true }
       );
       const temporaryId = new mongoose.Types.ObjectId();
+      const user = await User.findOne({ username: username }).select('badge').lean();
+      const badge = user ? user.badge : 'blue';
       const messageToSend = {
         _id: new mongoose.Types.ObjectId(),
         username: data.username,
         publicKey: data.publicKey,
         timestamp: new Date(),
         text: data.text, // Include the message text here
-        badge: User.findOne({ username: data.username }).badge || 'blue'
+        badge: badge
       };
       console.log("This is message ID", messageToSend._id);
       // Broadcast the message to all connected clients
       clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN 
+        if (client.readyState === WebSocket.OPEN
           // && id !== clientId
         ) {
           client.send(JSON.stringify({

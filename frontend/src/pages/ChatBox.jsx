@@ -325,6 +325,11 @@ function hasUserLiked(messageId, username) {
           const reversedMessages = data.messages.reverse();
           const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
           setMessages(historyMessage);
+          data.messages.forEach((message) => {
+            messageIds.current.add(message._id);
+            updateLikes(message._id, message.likes);
+            // console.log("message", message);
+          });
           setTimeout(() => scrollToBottom(true), 50);
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
