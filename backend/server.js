@@ -233,6 +233,7 @@ wss.on('connection', (ws) => {
 
         if (content.batch) { // Check if content has a batch
           content.batch.forEach(message => {
+            console.log("likes in the history message",Likes.findOne({ messageId: message._id }).select('likes'));
             messagesWithSameCid.forEach(meta => {
               // console.log("meta", meta);
               // console.log("content", content);
@@ -262,6 +263,7 @@ wss.on('connection', (ws) => {
       // console.log("reversedMessageBatch", reversedMessageBatch);
       // Send full messages to the client, ensuring fullMessages is populated
       fullMessages = [...reversedMessageBatch, ...fullMessages];
+
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
       reversedMessageBatch = [];
       // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
