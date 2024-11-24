@@ -307,74 +307,32 @@ function hasUserLiked(messageId, username) {
       wsRef.current = ws;
     };
 
-    const mongoose = require('mongoose');
-    const Likes = require('./path/to/likesModel'); // Adjust the path as necessary
-    
-    wss.on('connection', (ws) => {
-      const clientId = generateUniqueId();
-      clients.set(clientId, ws);
-      let fullMessages = [];
-      const cidMap = new Map();
-    
-      // Send existing messages to new client
-      Message.find().sort({ timestamp: -1 }).limit(500)
-        .then(async existingMessages => {
-          existingMessages.forEach(meta => {
-            if (!meta.cid) {
-              console.error('Missing CID for message:', meta);
-              return; // Handle missing CID
-            }
-            if (!cidMap.has(meta.cid)) {
-              cidMap.set(meta.cid, []);
-            }
-            cidMap.get(meta.cid).push(meta);
-          });
-    
-          // Retrieve messages from IPFS for all unique CIDs
-          return getMessages(Array.from(cidMap.keys()));
-        })
-        .then(async messageContents => {
-          const cidKeys = Array.from(cidMap.keys());
-          
-          // Fetch all likes at once
-          const likesData = await Likes.find({ messageId: { $in: cidKeys } }).select('messageId likes');
-          const likesMap = new Map(likesData.map(like => [like.messageId, like.likes])); // No need to convert to string
-    
-          // Construct full messages
-          messageContents.forEach((content, index) => {
-            const messagesWithSameCid = cidMap.get(cidKeys[index]);
-    
-            if (content.batch) { 
-              content.batch.forEach(message => {
-                const likes = likesMap.get(message._id) || []; // Get likes or default to empty array
-                fullMessages.push({
-                  _id: message._id,
-                  username: message.username,
-                  publicKey: message.publicKey,
-                  timestamp: message.timestamp,
-                  read: message.read,
-                  mentions: message.mentions,
-                  text: message.text,
-                  badge: User.findOne({ username: message.username }).select('badge'),
-                  likes: likes, // Directly use the array of likes
-                });
-              });
-            } else {
-              console.error(`No batch found for CID: ${cidKeys[index]}`);
-            }
-          });
-        })
-        .then(() => {
-          let reversedMessageBatch = messageBatch.slice().reverse();
-          fullMessages = [...reversedMessageBatch, ...fullMessages];
-    
-          ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-          reversedMessageBatch = [];
-        })
-        .catch(error => {
-          console.error('Error retrieving or sending messages:', error);
-        });
-    });
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        console.log('Received message:', data);
+        if (data.type === 'history') {
+          const reversedMessages = data.messages.reverse();
+          const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
+          setMessages(historyMessage);
+          setTimeout(() => scrollToBottom(true), 50);
+        } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
+          messageIds.current.add(data.message._id);
+          handleNewMessage(data.message);
+          console.log('Added message:', data.message);
+        }
+        else if (data.type === "likes") {
+          console.log("data", data);
+          const { messageId, likes } = data.message;
+          console.log("likes", likes);
+          console.log("messageId", messageId);
+          updateLikes(messageId, likes);
+          // console.log("likes", messageLikes);
+        }
+      } catch (error) {
+        console.log('Message processing error:', error);
+      }
+    };
 
 
     ws.onclose = () => {
@@ -488,7 +446,7 @@ function hasUserLiked(messageId, username) {
                     {msg.username}
                     <div className='flex items-center p-1'>
 
-                      {(msg.badge == 'golden' && <img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
+                      {(msg.badge == 'golden') && (<img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
                       {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
                       {(msg.badge == "blue" && <img src={badge} className="w-5 h-5 inline-block " alt="Verified" />)}
                     </div>
