@@ -258,17 +258,32 @@ wss.on('connection', (ws) => {
         }
       }
     })
-    .then(() => {
-      // console.log("fullMessages", fullMessages);
-      // console.log("MessageBatch", messageBatch);
+    .then(async () => {
+      // Process batched messages
       let reversedMessageBatch = messageBatch.slice().reverse();
-      // console.log("reversedMessageBatch", reversedMessageBatch);
-      // Send full messages to the client, ensuring fullMessages is populated
+      
+      // Add likes and badges to batched messages
+      for (const message of reversedMessageBatch) {
+        // Fetch likes for this message
+        const likesDoc = await Likes.findOne({ messageId: message._id }).lean();
+        const likes = likesDoc ? likesDoc.likes : [];
+    
+        // Fetch user badge
+        const user = await User.findOne({ username: message.username }).select('badge').lean();
+        const badge = user ? user.badge : null;
+    
+        message.likes = likes;
+        message.badge = badge;
+      }
+    
+      // Combine batched messages with full messages
       fullMessages = [...reversedMessageBatch, ...fullMessages];
-
+    
+      // Send full messages to the client
       ws.send(JSON.stringify({ type: 'history', messages: fullMessages }));
-      reversedMessageBatch = [];
-      // console.log("Sent history messages:", JSON.stringify({ type: 'history', messages: fullMessages }));
+      
+      // Clear the message batch
+      messageBatch = [];
     })
     .catch(error => {
       console.error('Error retrieving or sending messages:', error);
