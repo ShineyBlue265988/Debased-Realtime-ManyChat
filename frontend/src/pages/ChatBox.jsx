@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect, useRef, useCallback } from "react";
-import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
+import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart, FaHeartBroken } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
 import chaticon from '../components/icons/baseChat.jpg'
@@ -81,27 +81,27 @@ const ChatBox = ({ username, walletAddress }) => {
     setMessageLikes(prev => {
       const updatedLikes = { ...prev };
       const currentLikes = updatedLikes[messageId] || [];
-      
+
       if (currentLikes.includes(username)) {
-          // If username exists, remove it
-          updatedLikes[messageId] = currentLikes.filter(user => user !== username);
+        // If username exists, remove it
+        updatedLikes[messageId] = currentLikes.filter(user => user !== username);
       } else {
-          // If username doesn't exist, add it
-          updatedLikes[messageId] = [...currentLikes, username];
+        // If username doesn't exist, add it
+        updatedLikes[messageId] = [...currentLikes, username];
       }
-      
+
       return updatedLikes;
-  });
+    });
 
     // Send like action to WebSocket
     wsRef.current.send(JSON.stringify({
-        type: 'like',
-        username,
-        messageId,
+      type: 'like',
+      username,
+      messageId,
     }));
 
     console.log("This is liked messageId", messageId);
-}, [username]);
+  }, [username]);
 
   const adjustTextareaHeight = () => {
     const textarea = textareaRef.current;
@@ -298,9 +298,9 @@ const ChatBox = ({ username, walletAddress }) => {
     // }));
   }
   console.log('messageLikes', messageLikes);
-function hasUserLiked(messageId, username) {
-  return messageLikes[messageId]?.includes(username) ? true : false;
-}
+  function hasUserLiked(messageId, username) {
+    return messageLikes[messageId]?.includes(username) ? true : false;
+  }
 
   const connectWebSocket = () => {
     if (wsRef.current?.readyState === WebSocket.OPEN) {
@@ -487,9 +487,10 @@ function hasUserLiked(messageId, username) {
                     transition={{ duration: 0.3 }} // Increase duration for smoother effect
                   >
                     {/* <AnimatePresence> */}
-                    {messageLikes[msg._id]?.length>0 ? (
+                    {messageLikes[msg._id]?.length > 0 ? (
                       <motion.div key="liked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
-                        <FaHeart className="text-red-500 hover:scale-105 w-4 h-4" />
+                        <FaHeart className="text-red-500 group-hover:opacity-0 w-4 h-4" />
+                        <FaHeartBroken className="text-red-500 absolute top-0 left-0 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-300 w-4 h-4" />
                       </motion.div>
                     ) : (
                       <motion.div key="unliked" initial={{ scale: 0 }} animate={{ scale: 1 }} exit={{ scale: 0 }} transition={{ duration: 0.3 }}>
@@ -497,7 +498,7 @@ function hasUserLiked(messageId, username) {
                       </motion.div>
                     )}
                     {/* </AnimatePresence> */}
-                    
+
                   </motion.button>
                   {messageLikes[msg._id]?.length > 0 && <span className={`absolute top-0 right-[-0.75rem] text-xs text-gray-500 ${msg.username === username ? 'text-white' : ''}`}>{messageLikes[msg._id]?.length}</span>}
                 </div>
