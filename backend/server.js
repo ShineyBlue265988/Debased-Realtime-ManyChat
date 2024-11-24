@@ -326,7 +326,9 @@ wss.on('connection', (ws) => {
       }
   
       clients.forEach((client, id) => {
-        if (client.readyState === WebSocket.OPEN && id !== clientId) {
+        if (client.readyState === WebSocket.OPEN 
+          // && id !== clientId
+        ) {
           client.send(JSON.stringify({
             type: 'likes',
             message: {messageId: data.messageId, likes: likes.likes},

@@ -260,6 +260,7 @@ const ChatBox = ({ username, walletAddress }) => {
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       setTimeout(() => scrollToBottom(true), 50); // Add delay to ensure DOM update
+      console.log('messages', message);
       setNewMessageCount(0); // Reset unread count
       scrollToBottom(true);
     } else {
@@ -386,7 +387,7 @@ function hasUserLiked(messageId, username) {
       read: false,
       mentions: text.match(/@[\w]+/g) || []
     };
-    setMessages(prev => [...prev, newMessage]);
+    // setMessages(prev => [...prev, newMessage]);
 
     console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
