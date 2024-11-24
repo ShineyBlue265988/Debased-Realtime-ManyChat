@@ -3,6 +3,8 @@ const WebSocket = require("ws");
 const connectDB = require("./config/db");
 const Message = require("./models/Message");
 const User = require('./models/User');
+const fetch = require('node-fetch');
+const Likes = require("./models/Likes");
 // import {create} from 'kubo-rpc-client';
 const fs = require("fs");
 const https = require("https");
@@ -150,8 +152,7 @@ async function storeMessagesBatch(batch, retries = 5) {
   }
 }
 
-const fetch = require('node-fetch');
-const Likes = require("./models/Likes");
+
 
 async function getMessages(cids, retries = 5) {
   try {
@@ -222,39 +223,40 @@ wss.on('connection', (ws) => {
       // Retrieve messages from IPFS for all unique CIDs
       return getMessages(Array.from(cidMap.keys())); // Return the promise
     })
-    .then(messageContents => {
+    .then(async  (messageContents) => {
       // console.log("history messageContents", messageContents);
       const cidKeys = Array.from(cidMap.keys());
 
       // Construct full messages
-      messageContents.forEach((content, index) => {
+      for (const [index, content] of messageContents.entries()) {
         const messagesWithSameCid = cidMap.get(cidKeys[index]);
-        // console.log("messagesWithSameCid", messagesWithSameCid);
-
-        if (content.batch) { // Check if content has a batch
-          content.batch.forEach(message => {
-            console.log("likes in the history message",Likes.findOne({ messageId: message._id }).select('likes'));
-            messagesWithSameCid.forEach(meta => {
-              // console.log("meta", meta);
-              // console.log("content", content);
-              fullMessages.push({
-                _id: message._id,
-                username: message.username,
-                publicKey: message.publicKey,
-                timestamp: message.timestamp,
-                read: message.read,
-                mentions: message.mentions,
-                text: message.text, // Assuming content has a 'text' field
-                badge: User.findOne({ username: message.username }).select('badge'),
-                likes: Likes.findOne({ messageId: message._id }).select('likes'),
-              });
-              // console.log("fullMessages", fullMessages);
+    
+        if (content.batch) {
+          for (const message of content.batch) {
+            // Fetch likes for this message
+            const likesDoc = await Likes.findOne({ messageId: message._id }).lean();
+            const likes = likesDoc ? likesDoc.likes : [];
+    
+            // Fetch user badge
+            const user = await User.findOne({ username: message.username }).select('badge').lean();
+            const badge = user ? user.badge : null;
+    
+            fullMessages.push({
+              _id: message._id,
+              username: message.username,
+              publicKey: message.publicKey,
+              timestamp: message.timestamp,
+              read: message.read,
+              mentions: message.mentions,
+              text: message.text,
+              badge: badge,
+              likes: likes,
             });
-          });
+          }
         } else {
           console.error(`No batch found for CID: ${cidKeys[index]}`);
         }
-      });
+      }
     })
     .then(() => {
       // console.log("fullMessages", fullMessages);
