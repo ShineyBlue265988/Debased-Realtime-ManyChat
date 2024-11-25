@@ -97,7 +97,7 @@ async function updateUserLevel(user) {
   // Set the next level threshold
   user.nextLevelThreshold = messageContribution + likeContribution;
   if (user.nextLevelThreshold !== null) {
-    let thresholdPercent = (totalContribution / 100) * 100; // Since total is out of 100
+    let thresholdPercent = (user.nextLevelThreshold / 100) * 100; // Since total is out of 100
     user.nextLevelThreshold = parseFloat(thresholdPercent.toFixed(1)); // Format to 1 decimal place
   }
   for (let criteria of levelCriteria) {
