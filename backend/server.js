@@ -104,18 +104,18 @@ async function updateUserLevel(user) {
         user.nextLevelThreshold = messageContribution + likeContribution;
         switch (currentLevel) {
           case 0:
-            user.badge = "verified";
+            user.badge = "VerifiedBadge";
             break;
           case 1:
-            user.badge = 'bronze';
+            user.badge = 'BronzeBadge';
             break;
           case 2:
-            user.badge = 'silver';
+            user.badge = 'SilverBadge';
             break;
           case 3:
-            user.badge = 'gold';
+            user.badge = 'GoldBadge';
           case 10:
-            user.badge = 'admin';
+            user.badge = 'AdminBadge';
             break;
         }
       }
@@ -421,7 +421,7 @@ wss.on('connection', (ws) => {
 
       const temporaryId = new mongoose.Types.ObjectId();
       const user = await User.findOne({ username: data.username }).select('badge').lean();
-      const badge = user ? user.badge : 'verified';
+      const badge = user ? user.badge : 'VerifiedBadge';
       const messageToSend = {
         _id: new mongoose.Types.ObjectId(),
         username: data.username,
