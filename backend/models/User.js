@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
   },
   nextLevelThreshold: {
     type: Number,
-    default: 100 // Example threshold for level progression
+    default: 0 // Example threshold for level progression
   }
 });
 
