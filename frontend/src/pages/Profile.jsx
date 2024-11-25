@@ -85,7 +85,7 @@ const Profile = ({ username, walletAddress }) => {
         }
     }, [username]); // Fetch when username changes
   if (!userData) return <div>Loading...</div>;
-
+    console.log("User Data:", userData);
     return (
         <div className="container max-w-4xl mx-auto bg-white">
             <Card className="relative overflow-hidden max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
@@ -125,7 +125,7 @@ const Profile = ({ username, walletAddress }) => {
                                         <Mail className="w-4 h-4 text-muted-foreground" />
                                         <span className="text-md font-medium">Messages</span>
                                     </div>
-                                    <span className="text-2xl font-bold">{userData.messagesCount}</span>
+                                    <span className="text-2xl font-bold">{userData.messages}</span>
                                 </div>
                             </CardContent>
                         </Card>
@@ -137,7 +137,7 @@ const Profile = ({ username, walletAddress }) => {
                                         <Heart className="w-4 h-4 text-muted-foreground" />
                                         <span className="text-md font-medium">Likes</span>
                                     </div>
-                                    <span className="text-2xl font-bold">{userData.likesCount}</span>
+                                    <span className="text-2xl font-bold">{userData.likes}</span>
                                 </div>
                             </CardContent>
                         </Card>

@@ -20,13 +20,13 @@ const cors = require('cors');
 const allowedOrigins = ['https://debase.pages.dev', 'https://debase.app', 'http://localhost:5173'];
 app.use(cors({
   origin: function (origin, callback) {
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-      if (allowedOrigins.indexOf(origin) === -1) {
-          const msg = 'This site does not have access to this resource';
-          return callback(new Error(msg), false);
-      }
-      return callback(null, true);
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'This site does not have access to this resource';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
   }
 }));
 const options = {
@@ -359,8 +359,10 @@ wss.on('connection', (ws) => {
       if (likes) {
         if (!likes.likes.includes(data.username)) {
           likes.likes.push(data.username);
+          await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: 1 } });
         } else {
           likes.likes = likes.likes.filter(username => username !== data.username);
+          await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: -1 } });
         }
         await likes.save();
       } else {
@@ -382,21 +384,25 @@ wss.on('connection', (ws) => {
         }
       });
       console.log("send likes", likes);
+      let updateUser = await User.findOne({ username: data.username });
+      await updateUserLevel(updateUser);
     } catch (error) {
       console.error("Error handling like:", error);
     }
   }
   async function handleNewMessage(data) {
     try {
-      await User.findOneAndUpdate(
+      let updateUser = await User.findOneAndUpdate(
         { username: data.username },
         {
           username: data.username,
           publicKey: data.publicKey,
           lastSeen: new Date(),
+          $inc: { messagesCount: 1 }
         },
         { upsert: true }
       );
+
       const temporaryId = new mongoose.Types.ObjectId();
       const user = await User.findOne({ username: data.username }).select('badge').lean();
       const badge = user ? user.badge : 'verified';
@@ -420,7 +426,7 @@ wss.on('connection', (ws) => {
           }));
         }
       });
-
+      await updateUserLevel(updateUser)
       messageBatch.push(messageToSend);
       // If batch size is reached, save the batch to IPFS and MongoDB
       if (messageBatch.length >= BATCH_SIZE) {
@@ -498,28 +504,28 @@ app.get('/api/user/:username', async (req, res) => {
   }
 });
 
-userEvents.on('newMessage', async (username) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { username },
-      { $inc: { messagesCount: 1 } },
-      { new: true }
-    );
-    await updateUserLevel(user);
-  } catch (error) {
-    console.error('Error updating message count:', error);
-  }
-});
+// userEvents.on('newMessage', async (username) => {
+//   try {
+//     const user = await User.findOneAndUpdate(
+//       { username },
+//       { $inc: { messagesCount: 1 } },
+//       { new: true }
+//     );
+//     await updateUserLevel(user);
+//   } catch (error) {
+//     console.error('Error updating message count:', error);
+//   }
+// });
 
-userEvents.on('like', async (username, increment) => {
-  try {
-    const user = await User.findOneAndUpdate(
-      { username },
-      { $inc: { likesCount: increment } },
-      { new: true }
-    );
-    await updateUserLevel(user);
-  } catch (error) {
-    console.error('Error updating likes count:', error);
-  }
-});
+// userEvents.on('like', async (username, increment) => {
+//   try {
+//     const user = await User.findOneAndUpdate(
+//       { username },
+//       { $inc: { likesCount: increment } },
+//       { new: true }
+//     );
+//     await updateUserLevel(user);
+//   } catch (error) {
+//     console.error('Error updating likes count:', error);
+//   }
+// });
