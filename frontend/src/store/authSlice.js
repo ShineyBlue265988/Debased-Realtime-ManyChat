@@ -3,8 +3,7 @@ import { ethers } from 'ethers';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
 import { Identity, getName } from '@coinbase/onchainkit/identity';
 import { base, baseSepolia } from 'viem/chains';
-
-const CONTRACT_ADDRESS = "0xd28bBB6f11a722af3CDF909E19525d212eA0f74e";
+const CONTRACT_ADDRESS = "0xb557Fa65aF0f482E34799eFA76176B269Cd88c40";
 const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
 {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"to","type":"address"}],"name":"FeePaid","type":"event"},
 {"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"feeType","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"FeeUpdated","type":"event"},
@@ -20,8 +19,7 @@ const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constr
 {"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscriptionEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},
 {"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},
 {"inputs":[{"internalType":"uint256","name":"_feeType","type":"uint256"},{"internalType":"uint256","name":"_target","type":"uint256"}],"name":"updateFee","outputs":[],"stateMutability":"nonpayable","type":"function"},
-{"inputs":[],"name":"withdrawFee","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
-
+{"inputs":[],"name":"withdrawFee","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}]
 
 export const getSubscriptionState = createAsyncThunk(
   'auth/getSubscriptionState',
