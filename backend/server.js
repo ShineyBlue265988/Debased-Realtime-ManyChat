@@ -83,10 +83,10 @@ async function updateUserLevel(user) {
 
   // Define level-up criteria (example)
   const levelCriteria = [
-    { level: 1, messagesRequired: 100, likesRequired: 50 },
-    { level: 2, messagesRequired: 500, likesRequired: 200 },
-    { level: 3, messagesRequired: 1000, likesRequired: 500 },
-    { level: 4, messagesRequired: 2000, likesRequired: 1000 },
+    { level: 0, messagesRequired: 100, likesRequired: 50 },
+    { level: 1, messagesRequired: 500, likesRequired: 200 },
+    { level: 2, messagesRequired: 1000, likesRequired: 500 },
+    { level: 3, messagesRequired: 2000, likesRequired: 1000 },
     // Add more levels as needed
   ];
 
