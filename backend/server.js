@@ -467,6 +467,7 @@ app.get('/health', (req, res) => {
 
 app.get('/api/user/:username', async (req, res) => {
   try {
+    console.log("getting user", req.params.username);
     const user = await User.findOne({ username: req.params.username });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -479,6 +480,7 @@ app.get('/api/user/:username', async (req, res) => {
       currentLevel: user.currentLevel, // Assuming you have this field
       nextLevelThreshold: user.nextLevelThreshold // Assuming you have this field
     });
+    console.log("user profile", res.json);
   } catch (error) {
     res.status(500).json({ message: 'Server error' });
   }
