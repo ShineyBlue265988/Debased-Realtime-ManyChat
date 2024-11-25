@@ -78,7 +78,7 @@ function App() {
         blockExplorerUrls: [baseSepolia.blockExplorers.default.url],
       },
     ],
-    defaultNetwork: baseSepolia.id,
+    defaultNetwork: base.id,
     cssOverride: {
       colors: {
         primary: '#3B82F6',

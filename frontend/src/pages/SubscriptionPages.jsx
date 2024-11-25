@@ -13,7 +13,7 @@ const formatSubscriptionDate = (timestamp) => {
     month: "2-digit",
     day: "2-digit"
   });
-  
+
 };
 
 const SubscriptionPages = (address) => {
@@ -182,7 +182,7 @@ const SubscriptionPages = (address) => {
               </button>
             ))}
           </div>
-  
+
           {/* Subscription Cards */}
           <div className="flex justify-center">
             {/* Standard Card */}

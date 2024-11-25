@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '../components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '../lib/utils';
-
+import Loading from '../components/ui/loading';
 const BADGES = [
     {
         type: 'verified',
@@ -85,7 +85,7 @@ const Profile = ({ username, walletAddress }) => {
             fetchUserProfile();
         }
     }, [username]); // Fetch when username changes
-  if (!userData) return <div>Loading...</div>;
+  if (!userData) return <Loading/>;
     console.log("User Data:", userData);
     return (
         <div className="container max-w-4xl mx-auto bg-white">

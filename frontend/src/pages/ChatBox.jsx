@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import VerifiedBadge from '../components/icons/bluebadge.jpg'
-
+import Loading from '../components/ui/loading';
 import admin from '../components/icons/admin.jpg'
 
 
@@ -35,6 +35,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
   const [messageLikes, setMessageLikes] = useState({});
+  const dataReceivedFlag=useRef(false);
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -326,6 +327,7 @@ const ChatBox = ({ username, walletAddress }) => {
             // console.log("message", message);
           });
           setTimeout(() => scrollToBottom(true), 50);
+          dataReceivedFlag.current = true;
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
@@ -411,7 +413,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }, 20);
     }
   };
-
+  if (!dataReceivedFlag.current) return <Loading/>;
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       {/* <div className="flex items-center justify-between p-2 ">
