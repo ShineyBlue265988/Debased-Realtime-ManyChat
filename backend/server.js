@@ -89,38 +89,37 @@ async function updateUserLevel(user) {
     { level: 3, messagesRequired: 2000, likesRequired: 1000 },
     // Add more levels as needed
   ];
-
+  let messageContribution = (messagesCount / criteria.messagesRequired) * 60;
+  let likeContribution = (likesCount / criteria.likesRequired) * 40;
+  // Ensure contributions do not exceed their maximum values
+  messageContribution = Math.min(messageContribution, 60);
+  likeContribution = Math.min(likeContribution, 40);
+  // Set the next level threshold
+  user.nextLevelThreshold = messageContribution + likeContribution;
   for (let criteria of levelCriteria) {
     if (messagesCount >= criteria.messagesRequired && likesCount >= criteria.likesRequired) {
       if (currentLevel < criteria.level) {
         user.currentLevel = criteria.level;
-        let messageContribution = (messagesCount / criteria.messagesRequired) * 60;
-        let likeContribution = (likesCount / criteria.likesRequired) * 40;
-
-        // Ensure contributions do not exceed their maximum values
-        messageContribution = Math.min(messageContribution, 60);
-        likeContribution = Math.min(likeContribution, 40);
-        // Set the next level threshold
-        user.nextLevelThreshold = messageContribution + likeContribution;
-        switch (currentLevel) {
-          case 0:
-            user.badge = "VerifiedBadge";
-            break;
-          case 1:
-            user.badge = 'BronzeBadge';
-            break;
-          case 2:
-            user.badge = 'SilverBadge';
-            break;
-          case 3:
-            user.badge = 'GoldBadge';
-          case 10:
-            user.badge = 'AdminBadge';
-            break;
-        }
       }
     }
+    switch (currentLevel) {
+      case 0:
+        user.badge = "VerifiedBadge";
+        break;
+      case 1:
+        user.badge = 'BronzeBadge';
+        break;
+      case 2:
+        user.badge = 'SilverBadge';
+        break;
+      case 3:
+        user.badge = 'GoldBadge';
+      case 10:
+        user.badge = 'AdminBadge';
+        break;
+    }
   }
+
 
   await user.save();
 }
@@ -376,10 +375,10 @@ wss.on('connection', (ws) => {
       if (likes) {
         if (!likes.likes.includes(data.username)) {
           likes.likes.push(data.username);
-          if(data.username!=message.username){await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: 1 } });}
+          if (data.username != message.username) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: 1 } }); }
         } else {
           likes.likes = likes.likes.filter(username => username !== data.username);
-          if(data.username!=message.username){await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: -1 } });}
+          if (data.username != message.username) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: -1 } }); }
 
         }
         await likes.save();
@@ -511,11 +510,11 @@ app.get('/api/user/:username', async (req, res) => {
     res.json({
       username: user.username,
       walletAddress: user.publicKey,
-      messages: user.messagesCount, 
-      likes: user.likesCount, 
-      currentLevel: user.currentLevel, 
-      nextLevelThreshold: user.nextLevelThreshold, 
-      badge: user.badge, 
+      messages: user.messagesCount,
+      likes: user.likesCount,
+      currentLevel: user.currentLevel,
+      nextLevelThreshold: user.nextLevelThreshold,
+      badge: user.badge,
     });
     console.log("user profile", res.json);
   } catch (error) {
