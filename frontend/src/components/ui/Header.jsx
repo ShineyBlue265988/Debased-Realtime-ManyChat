@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { FiMenu, FiX } from 'react-icons/fi';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAuth, logout, fetchUserName, getSubscriptionState, fetchPublicKey } from '../../store/authSlice';
-import debased from '../icons/debased.png';
 import { Avatar } from "@coinbase/onchainkit/identity";
 import {
   ConnectWallet,
@@ -28,7 +27,7 @@ const Header = () => {
 
   // Navigation items
   const navItems = [
-    { label: 'Home', path: '/' },
+    { label: 'Profile', path: '/profile' },
     { label: 'ChatRoom', path: '/chat' },
     { label: 'Pricing', path: '/subscription' },
   ];
@@ -64,7 +63,7 @@ const Header = () => {
     <header className="bg-white shadow-md w-full border-b-4 border-gray-200">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
+          <div className="flex items-center gap-4">
             {/* <img
               src={debased}
               alt="Logo"
@@ -73,16 +72,17 @@ const Header = () => {
               onClick={() => navigate('/')}
               className="hover:scale-105 cursor-pointer"
             /> */}
-            <div className='text-3xl font-bold text-blue-600 cursor-pointer hover:scale-105' onClick={() => navigate('/')} id='debase'>
-              deBase
-            </div>
-            <div className="md:hidden">
+            <div className="md:hidden flex items-center gap-2">
               <button onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
                 {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
             </div>
+            <div className='text-2xl font-bold text-blue-600 cursor-pointer hover:scale-105' onClick={() => navigate('/')} id='debase'>
+              deBase
+            </div>
 
-            <nav className="hidden md:flex gap-6">
+
+            <nav className="hidden md:flex gap-6 ">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
@@ -96,13 +96,13 @@ const Header = () => {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex justify-end">
+            <div className="flex justify-end ">
               {/* {!address&&<ConnectButton/>} */}
               {!address && <DynamicWidget />}
               {address && <Wallet >
-                <ConnectWallet>
-                  <Avatar className="h-6 w-6" />
-                  <Name className='text-black' />
+                <ConnectWallet className='rounded-full  border-gray-200 flex items-center gap-2'>
+                  <Avatar className="h-6 w-6 " />
+                  <Name className='text-black '/>
                 </ConnectWallet>
                 <WalletDropdown >
                   <Identity
@@ -113,7 +113,7 @@ const Header = () => {
                   >
                     <Avatar />
                     <Name>
-                      <Badge />
+                      {/* <Badge /> */}
                     </Name>
                     <Address />
                   </Identity>

@@ -3,19 +3,13 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { FaArrowDown, FaEllipsisH, FaPaperPlane, FaHeart, FaRegHeart } from 'react-icons/fa'; // Import arrow icon and ellipsis icon
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import chaticon from '../components/icons/baseChat.jpg'
-import { Menu } from '@headlessui/react';
 import { Settings, AtSign, SmilePlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { ScrollArea } from "../components/ui/scroll-area";
-import BasenameDisplay from '../components/ui/basename'; // Import the new component
 import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
-import { base } from 'viem/chains';
-import axios from 'axios';
-import badge from '../components/icons/bluebadge.jpg'
+import VerifiedBadge from '../components/icons/bluebadge.jpg'
 
-import golden5 from '../components/icons/golden5.jpg'
+import admin from '../components/icons/admin.jpg'
 
 
 
@@ -461,9 +455,9 @@ const ChatBox = ({ username, walletAddress }) => {
                     {msg.username}
                     <div className='flex items-center p-1'>
 
-                      {(msg.badge == 'golden') && (<img src={golden5} className="w-6 h-6 inline-block " alt="Admin2" />)}
+                      {(msg.badge == 'admin') && (<img src={admin} className="w-6 h-6 inline-block " alt="Admin2" />)}
                       {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
-                      {(msg.badge == "blue" && <img src={badge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                      {(msg.badge == "verified" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
                     </div>
                   </div>
 

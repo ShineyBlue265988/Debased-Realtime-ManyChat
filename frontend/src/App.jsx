@@ -12,6 +12,7 @@ import { evmProvidersSelector } from '@dynamic-labs/ethereum-core'
 import { EthereumWalletConnectors } from "@dynamic-labs/ethereum";
 import { base, baseSepolia } from 'viem/chains';
 import Header from './components/ui/Header';
+import Profile from './pages/Profile';
 import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
 import { getName } from '@coinbase/onchainkit/identity';
 
@@ -118,6 +119,7 @@ function App() {
                 element={<Login />}
               />
               <Route path="/subscription" element={<SubscriptionPages address={walletAddress} />} />
+              <Route path="/Profile" className="max-w-2xl bg-white" element={<Profile username={username} walletAddress={walletAddress} />} />
               <Route
                 path="/chat"
                 element={

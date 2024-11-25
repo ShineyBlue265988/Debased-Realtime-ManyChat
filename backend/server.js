@@ -354,7 +354,7 @@ wss.on('connection', (ws) => {
       );
       const temporaryId = new mongoose.Types.ObjectId();
       const user = await User.findOne({ username: data.username }).select('badge').lean();
-      const badge = user ? user.badge : 'blue';
+      const badge = user ? user.badge : 'verified';
       const messageToSend = {
         _id: new mongoose.Types.ObjectId(),
         username: data.username,
