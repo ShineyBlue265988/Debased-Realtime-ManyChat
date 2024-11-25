@@ -13,6 +13,10 @@ const app = express();
 const mongoose = require("mongoose");
 const PINATA_API_KEY = '938d269e80d74e636354';
 const PINATA_API_SECRET = 'e1c7451ef6efea8a999af55ab661e636442997e1e89144c83b43c818bf2c2629';
+const EventEmitter = require('events');
+class UserEventEmitter extends EventEmitter { }
+const userEvents = new UserEventEmitter();
+
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/fullchain.pem')
@@ -62,7 +66,36 @@ async function unpinFile(cid) {
     console.error(`Error unpinning file with CID ${cid}:`, error);
   }
 }
+async function updateUserLevel(user) {
+  const { messagesCount, likesCount, currentLevel } = user;
 
+  // Define level-up criteria (example)
+  const levelCriteria = [
+    { level: 1, messagesRequired: 100, likesRequired: 50 },
+    { level: 2, messagesRequired: 500, likesRequired: 200 },
+    { level: 3, messagesRequired: 1000, likesRequired: 500 }
+    // Add more levels as needed
+  ];
+
+  for (let criteria of levelCriteria) {
+    if (messagesCount >= criteria.messagesRequired && likesCount >= criteria.likesRequired) {
+      if (currentLevel < criteria.level) {
+        user.currentLevel = criteria.level;
+        let messageContribution = (messagesCount / criteria.messagesRequired) * 60;
+        let likeContribution = (likesCount / criteria.likesRequired) * 40;
+
+        // Ensure contributions do not exceed their maximum values
+        messageContribution = Math.min(messageContribution, 60);
+        likeContribution = Math.min(likeContribution, 40);
+
+        // Set the next level threshold
+        user.nextLevelThreshold = messageContribution + likeContribution;
+      }
+    }
+  }
+
+  await user.save();
+}
 async function getPinnedFiles() {
   try {
     const response = await axios.get('https://api.pinata.cloud/data/pinList', {
@@ -430,4 +463,49 @@ function generateUniqueId() {
 // Basic health check endpoint
 app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
+});
+
+app.get('/api/user/:username', async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({
+      username: user.username,
+      walletAddress: user.publicKey,
+      messages: user.messagesCount, // Assuming you have this field
+      likes: user.likesCount, // Assuming you have this field
+      currentLevel: user.currentLevel, // Assuming you have this field
+      nextLevelThreshold: user.nextLevelThreshold // Assuming you have this field
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+userEvents.on('newMessage', async (username) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { $inc: { messagesCount: 1 } },
+      { new: true }
+    );
+    await updateUserLevel(user);
+  } catch (error) {
+    console.error('Error updating message count:', error);
+  }
+});
+
+userEvents.on('like', async (username, increment) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { username },
+      { $inc: { likesCount: increment } },
+      { new: true }
+    );
+    await updateUserLevel(user);
+  } catch (error) {
+    console.error('Error updating likes count:', error);
+  }
 });

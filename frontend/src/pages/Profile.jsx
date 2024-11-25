@@ -1,4 +1,6 @@
 import { Mail, Heart, Award, ArrowRight, Shield, CheckCircle2 } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import { Avatar, Identity } from '@coinbase/onchainkit/identity';
 import VerifiedBadge from '../components/icons/bluebadge.jpg'
 import BronzeBadge from '../components/icons/bronze.jpg'
@@ -56,14 +58,29 @@ const BADGES = [
 
 
 const Profile = ({ username, walletAddress }) => {
-    console.log("Profile Wallet Address", walletAddress);
-    const stats = {
-        messages: 1234,
-        likes: 789,
-        currentLevel: 0,
-        nextLevelThreshold: 2000,
-        progress: 67, // Current progress percentage to next level
+    // console.log("Profile Wallet Address", walletAddress);
+    // const stats = {
+    //     messages: 1234,
+    //     likes: 789,
+    //     currentLevel: 0,
+    //     nextLevelThreshold: 2000,
+    //     progress: 67, // Current progress percentage to next level
+    // };
+    const [userData, setUserData] = useState(null);
+     useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const response = await axios.get(`/api/user/${username}`);
+        setUserData(response.data);
+      } catch (error) {
+        console.error('Error fetching user profile:', error);
+      }
     };
+
+    fetchUserProfile();
+  }, [username]);
+
+  if (!userData) return <div>Loading...</div>;
 
     return (
         <div className="container max-w-4xl mx-auto bg-white">
@@ -88,7 +105,7 @@ const Profile = ({ username, walletAddress }) => {
                         <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="px-4 text-xl">
                                 <img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />
-                                Level {stats.currentLevel}
+                                Level {userData.currentLevel}
                             </Badge>
                             <Badge variant="outline" className="px-4 text-xl">Basic Member</Badge>
                         </div>
@@ -104,7 +121,7 @@ const Profile = ({ username, walletAddress }) => {
                                         <Mail className="w-4 h-4 text-muted-foreground" />
                                         <span className="text-md font-medium">Messages</span>
                                     </div>
-                                    <span className="text-2xl font-bold">{stats.messages}</span>
+                                    <span className="text-2xl font-bold">{userData.messagesCount}</span>
                                 </div>
                             </CardContent>
                         </Card>
@@ -116,7 +133,7 @@ const Profile = ({ username, walletAddress }) => {
                                         <Heart className="w-4 h-4 text-muted-foreground" />
                                         <span className="text-md font-medium">Likes</span>
                                     </div>
-                                    <span className="text-2xl font-bold">{stats.likes}</span>
+                                    <span className="text-2xl font-bold">{userData.likesCount}</span>
                                 </div>
                             </CardContent>
                         </Card>
@@ -128,17 +145,17 @@ const Profile = ({ username, walletAddress }) => {
                                 <div className="flex  content-space-between items-center justify-between">
                                     {/* <span className="text-sm font-medium">Next Level Progress</span> */}
                                     {/* <div className="flex  text-md text-muted-foreground"> */}
-                                            <span className='text-blue-500'>Level {stats.currentLevel}</span>
+                                            <span className='text-blue-500'>Level {userData.currentLevel}</span>
                                             {/* <ArrowRight className="w-4 h-4 mx-2 flex items-center" /> */}
-                                            <span className=''>Level {stats.currentLevel + 1}</span>
+                                            <span className=''>Level {userData.currentLevel + 1}</span>
                                     {/* </div> */}
                                 </div>
                                 <Progress
-                                    value={stats.progress}
+                                    value={userData.nextLevelThreshold}
                                     className="h-3 [&>div]:bg-blue-500 bg-gray-200"
                                 />
                                 <p className="text-xs text-muted-foreground text-right">
-                                    {stats.progress}% Complete
+                                    {userData.nextLevelThreshold}% Complete
                                 </p>
                             </div>
                         </CardContent>

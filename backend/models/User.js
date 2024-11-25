@@ -21,6 +21,22 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  messagesCount: {
+    type: Number,
+    default: 0
+  },
+  likesCount: {
+    type: Number,
+    default: 0
+  },
+  currentLevel: {
+    type: Number,
+    default: 0
+  },
+  nextLevelThreshold: {
+    type: Number,
+    default: 100 // Example threshold for level progression
   }
 });
 
