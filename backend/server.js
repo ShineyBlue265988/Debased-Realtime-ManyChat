@@ -16,7 +16,19 @@ const PINATA_API_SECRET = 'e1c7451ef6efea8a999af55ab661e636442997e1e89144c83b43c
 const EventEmitter = require('events');
 class UserEventEmitter extends EventEmitter { }
 const userEvents = new UserEventEmitter();
-
+const cors = require('cors');
+const allowedOrigins = ['https://debase.pages.dev', 'https://debase.app', 'http://localhost:5173'];
+app.use(cors({
+  origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) === -1) {
+          const msg = 'This site does not have access to this resource';
+          return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+  }
+}));
 const options = {
   key: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/privkey.pem'),
   cert: fs.readFileSync('/etc/letsencrypt/live/backend.debase.app/fullchain.pem')
