@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '../components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '../lib/utils';
+
 const BADGES = [
     {
         type: 'verified',
@@ -108,7 +109,7 @@ const Profile = ({ username, walletAddress }) => {
 
                         <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="px-4 text-xl">
-                                <img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />
+                                <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" />
                                 Level {userData.currentLevel}
                             </Badge>
                             <Badge variant="outline" className="px-4 text-xl">Basic Member</Badge>

@@ -85,7 +85,8 @@ async function updateUserLevel(user) {
   const levelCriteria = [
     { level: 1, messagesRequired: 100, likesRequired: 50 },
     { level: 2, messagesRequired: 500, likesRequired: 200 },
-    { level: 3, messagesRequired: 1000, likesRequired: 500 }
+    { level: 3, messagesRequired: 1000, likesRequired: 500 },
+    { level: 4, messagesRequired: 2000, likesRequired: 1000 },
     // Add more levels as needed
   ];
 
@@ -99,9 +100,24 @@ async function updateUserLevel(user) {
         // Ensure contributions do not exceed their maximum values
         messageContribution = Math.min(messageContribution, 60);
         likeContribution = Math.min(likeContribution, 40);
-
         // Set the next level threshold
         user.nextLevelThreshold = messageContribution + likeContribution;
+        switch (currentLevel) {
+          case 0:
+            user.badge = "verified";
+            break;
+          case 1:
+            user.badge = 'bronze';
+            break;
+          case 2:
+            user.badge = 'silver';
+            break;
+          case 3:
+            user.badge = 'gold';
+          case 10:
+            user.badge = 'admin';
+            break;
+        }
       }
     }
   }
@@ -493,10 +509,11 @@ app.get('/api/user/:username', async (req, res) => {
     res.json({
       username: user.username,
       walletAddress: user.publicKey,
-      messages: user.messagesCount, // Assuming you have this field
-      likes: user.likesCount, // Assuming you have this field
-      currentLevel: user.currentLevel, // Assuming you have this field
-      nextLevelThreshold: user.nextLevelThreshold // Assuming you have this field
+      messages: user.messagesCount, 
+      likes: user.likesCount, 
+      currentLevel: user.currentLevel, 
+      nextLevelThreshold: user.nextLevelThreshold, 
+      badge: user.badge, 
     });
     console.log("user profile", res.json);
   } catch (error) {
