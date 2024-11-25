@@ -96,7 +96,7 @@ async function updateUserLevel(user) {
   likeContribution = Math.min(likeContribution, 40);
   // Set the next level threshold
   user.nextLevelThreshold = messageContribution + likeContribution;
-  if (nextLevelThreshold !== null) {
+  if (user.nextLevelThreshold !== null) {
     let thresholdPercent = (totalContribution / 100) * 100; // Since total is out of 100
     user.nextLevelThreshold = parseFloat(thresholdPercent.toFixed(1)); // Format to 1 decimal place
   }
@@ -382,7 +382,6 @@ wss.on('connection', (ws) => {
         } else {
           likes.likes = likes.likes.filter(username => username !== data.username);
           if (data.username != data.messageUsername) { await User.findOneAndUpdate({ username: data.messageUsername }, { $inc: { likesCount: -1 } }); }
-
         }
         await likes.save();
       } else {
@@ -390,6 +389,7 @@ wss.on('connection', (ws) => {
           messageId: data.messageId,
           likes: [data.username]
         });
+        if (data.username != data.messageUsername) { await User.findOneAndUpdate({ username: data.messageUsername }, { $inc: { likesCount: 1 } }); }
         await likes.save();
       }
 
