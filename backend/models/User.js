@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
   },
   badge: {
     type: String,
-    default: 'verified'
+    default: 'VerifiedBadge'
   },
   createdAt: {
     type: Date,

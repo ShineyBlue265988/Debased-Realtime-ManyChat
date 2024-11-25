@@ -109,10 +109,22 @@ const Profile = ({ username, walletAddress }) => {
 
                         <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="px-4 text-xl">
-                                <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" />
+                                {userData.currentLevel==0&&<img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel==1&&<img src={BronzeBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel==1&&<img src={SilverBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel==3&&<img src={GoldBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel==10&&<img src={AdminBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+
+                                {/* <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" /> */}
                                 Level {userData.currentLevel}
                             </Badge>
-                            <Badge variant="outline" className="px-4 text-xl">Basic Member</Badge>
+                            <Badge variant="outline" className="px-4 text-xl">
+                            {userData.currentLevel==0&&"Basic User"}
+                                {userData.currentLevel==1&&"Engaged User"}
+                                {userData.currentLevel==1&&"Facilitate User"}
+                                {userData.currentLevel==3&&"Enthusiast"}
+                                {userData.currentLevel==10&&"Administrator"}
+                            </Badge>
                         </div>
                     </div>
                 </CardHeader>
