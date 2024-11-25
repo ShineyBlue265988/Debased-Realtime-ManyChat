@@ -4,7 +4,7 @@ import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
 import { Identity, getName } from '@coinbase/onchainkit/identity';
 import { base, baseSepolia } from 'viem/chains';
 
-const CONTRACT_ADDRESS = "0xFBeF9631bff614C602c09C806FDA7eeceBf30bC7";
+const CONTRACT_ADDRESS = "0xd28bBB6f11a722af3CDF909E19525d212eA0f74e";
 const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},
 {"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"to","type":"address"}],"name":"FeePaid","type":"event"},
 {"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"feeType","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"FeeUpdated","type":"event"},
