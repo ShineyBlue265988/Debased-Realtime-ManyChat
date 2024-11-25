@@ -371,14 +371,13 @@ wss.on('connection', (ws) => {
   async function handleLike(data) {
     try {
       let likes = await Likes.findOne({ messageId: data.messageId });
-      const message = await Message.findById(data.messageId);
       if (likes) {
         if (!likes.likes.includes(data.username)) {
           likes.likes.push(data.username);
-          if (data.username != message.username) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: 1 } }); }
+          if (data.username != data.messageUsername) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: 1 } }); }
         } else {
           likes.likes = likes.likes.filter(username => username !== data.username);
-          if (data.username != message.username) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: -1 } }); }
+          if (data.username != data.messageUsername) { await User.findOneAndUpdate({ username: data.username }, { $inc: { likesCount: -1 } }); }
 
         }
         await likes.save();

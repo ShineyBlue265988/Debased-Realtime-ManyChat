@@ -70,7 +70,7 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
 
-  const handleLike = useCallback((messageId) => {
+  const handleLike = useCallback((messageId, messageUsername) => {
     // Update local state optimistically
     setMessageLikes(prev => {
       const updatedLikes = { ...prev };
@@ -92,6 +92,7 @@ const ChatBox = ({ username, walletAddress }) => {
       type: 'like',
       username,
       messageId,
+      messageUsername
     }));
 
     console.log("This is liked messageId", messageId);
@@ -480,7 +481,7 @@ const ChatBox = ({ username, walletAddress }) => {
                     transition={{ duration: 0.2 }}
                   >
                     <motion.button
-                      onClick={() => handleLike(msg._id)}
+                      onClick={() => handleLike(msg._id, msg.username)}
                       className="text-xl relative z-10"
                     >
                       <AnimatePresence mode="wait">
