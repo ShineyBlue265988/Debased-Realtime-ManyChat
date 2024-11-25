@@ -67,19 +67,23 @@ const Profile = ({ username, walletAddress }) => {
     //     progress: 67, // Current progress percentage to next level
     // };
     const [userData, setUserData] = useState(null);
-     useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        const response = await axios.get(`/api/user/${username}`);
-        setUserData(response.data);
-      } catch (error) {
-        console.error('Error fetching user profile:', error);
-      }
-    };
+    useEffect(() => {
+        const fetchUserProfile = async () => {
+            try {
+                console.log("Fetching user profile for username:", `/api/user/${username}`);
+                const response = await fetch(`https://backend.debase.app/api/user/${username}`);
+                console.log("Response from API:", response);
+                const data = await response.json();
+                setUserData(data);
+            } catch (error) {
+                console.error("Error fetching user profile:", error);
+            }
+        };
 
-    fetchUserProfile();
-  }, [username]);
-
+        if (username) { // Only fetch if username is defined
+            fetchUserProfile();
+        }
+    }, [username]); // Fetch when username changes
   if (!userData) return <div>Loading...</div>;
 
     return (
