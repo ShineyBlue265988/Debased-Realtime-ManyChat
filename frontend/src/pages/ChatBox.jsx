@@ -96,7 +96,7 @@ const ChatBox = ({ username, walletAddress }) => {
       messageUsername
     }));
 
-    console.log("This is liked messageId", messageId);
+    // console.log("This is liked messageId", messageId);
   }, [username]);
 
   const adjustTextareaHeight = () => {
@@ -142,7 +142,7 @@ const ChatBox = ({ username, walletAddress }) => {
   };
   const isAtBottom = () => {
     const container = messageContainerRef.current;
-    console.log("container.scrollHeight", container.scrollHeight, "container.scrollTop", container.scrollTop, "container.clientHeight", container.clientHeight)
+    // console.log("container.scrollHeight", container.scrollHeight, "container.scrollTop", container.scrollTop, "container.clientHeight", container.clientHeight)
 
     if (container.scrollHeight - container.scrollTop <= container.clientHeight + 50) return true;
     else return false;
@@ -256,36 +256,36 @@ const ChatBox = ({ username, walletAddress }) => {
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       setTimeout(() => scrollToBottom(true), 50); // Add delay to ensure DOM update
-      console.log('messages', message);
+      // console.log('messages', message);
       setNewMessageCount(0); // Reset unread count
       scrollToBottom(true);
     } else {
       // For others' messages: check scroll position
       // const receivedMessage = {
       //   ...message,text: getText(message)}
-      console.log("receivedMessage", message);
+      // console.log("receivedMessage", message);
       setMessages(prev => [...prev, message]);
       // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
-      console.log("bottomstate", bottomstate);
+      // console.log("bottomstate", bottomstate);
       if (!bottomstate) {
-        console.log('Scrolling to bottom', isAtBottom());
+        // console.log('Scrolling to bottom', isAtBottom());
         setNewMessageCount(prev => prev + 1);
         setShowScrollButton(true);
       } else {
-        console.log('Scrolling to bottom');
+        // console.log('Scrolling to bottom');
         setTimeout(() => scrollToBottom(true), 50);
         setNewMessageCount(0);
       }
     }
   };
   function updateLikes(messageID, userList) {
-    console.log('messageID', messageID);
-    console.log('userList', userList);
+    // console.log('messageID', messageID);
+    // console.log('userList', userList);
     setMessageLikes(prevLikes => {
       const _prevLikes = { ...prevLikes };
       _prevLikes[messageID] = userList;
-      console.log('_prevLikes', _prevLikes);
+      // console.log('_prevLikes', _prevLikes);
       return _prevLikes;
     });
     // setMessageLikes(prevLikes => ({
@@ -293,7 +293,7 @@ const ChatBox = ({ username, walletAddress }) => {
     //     [messageID]: userList
     // }));
   }
-  console.log('messageLikes', messageLikes);
+  // console.log('messageLikes', messageLikes);
   function hasUserLiked(messageId, username) {
     return messageLikes[messageId]?.includes(username) ? true : false;
   }
@@ -304,19 +304,19 @@ const ChatBox = ({ username, walletAddress }) => {
     }
 
     const ws = new WebSocket(backgroundUrl);
-    console.log('WebSocket Connecting...', `${backgroundUrl}`);
+    // console.log('WebSocket Connecting...', `${backgroundUrl}`);
     ws.onerror = (error) => {
       console.error('WebSocket Error:', error);
     };
     ws.onopen = () => {
-      console.log('WebSocket Connected');
+      // console.log('WebSocket Connected');
       wsRef.current = ws;
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log('Received message:', data);
+        // console.log('Received message:', data);
         if (data.type === 'history') {
           const reversedMessages = data.messages.reverse();
           const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
@@ -331,13 +331,13 @@ const ChatBox = ({ username, walletAddress }) => {
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
-          console.log('Added message:', data.message);
+          // console.log('Added message:', data.message);
         }
         else if (data.type === "likes") {
-          console.log("data", data);
+          // console.log("data", data);
           const { messageId, likes } = data.message;
-          console.log("likes", likes);
-          console.log("messageId", messageId);
+          // console.log("likes", likes);
+          // console.log("messageId", messageId);
           updateLikes(messageId, likes);
           // console.log("likes", messageLikes);
         }
@@ -372,14 +372,14 @@ const ChatBox = ({ username, walletAddress }) => {
     if (text.match(/(http|https):\/\/[^\s]+/) || text.match(/\.(jpg|jpeg|png|gif)/i)) {
       return;
     }
-    console.log('Sending message:', JSON.stringify({
-      username,
-      publicKey: walletAddress,
-      text: text.trim(),
-      timestamp: new Date(),
-      read: false,
-      mentions: text.match(/@[\w]+/g) || []
-    }));
+    // console.log('Sending message:', JSON.stringify({
+    //   username,
+    //   publicKey: walletAddress,
+    //   text: text.trim(),
+    //   timestamp: new Date(),
+    //   read: false,
+    //   mentions: text.match(/@[\w]+/g) || []
+    // }));
     const newMessage = {
       // _id: `temp-${Date.now()}`, // Temporary ID
       username,
@@ -391,7 +391,7 @@ const ChatBox = ({ username, walletAddress }) => {
     };
     // setMessages(prev => [...prev, newMessage]);
 
-    console.log('Sending message:', JSON.stringify(newMessage));
+    // console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         type: 'message',

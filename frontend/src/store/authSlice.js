@@ -60,7 +60,7 @@ export const fetchUserName = createAsyncThunk(
     const address = wallet.address;
     try {
       const username = await getName({ address, chain: base });
-      console.log("username", username);
+      // console.log("username", username);
       if (username) {
         return username;
       } else {
@@ -80,7 +80,7 @@ export const fetchPublicKey = createAsyncThunk(
     const provider = await getWeb3Provider(wallet);
     const publicKey = wallet.publicKey;
 
-    console.log("publicKey", publicKey)
+    // console.log("publicKey", publicKey)
     return publicKey;
   }
 );

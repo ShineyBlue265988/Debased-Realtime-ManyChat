@@ -33,8 +33,8 @@ const Header = () => {
   ];
   let { address } = useAccount();
   const account = useAccount();
-  console.log("Account: ", account);
-  console.log("Address: ", address);
+  // console.log("Account: ", account);
+  // console.log("Address: ", address);
   // Effect to handle wallet connection
   // console.log("primaryWallet: ", primaryWallet);
   useEffect(() => {
@@ -48,8 +48,8 @@ const Header = () => {
   }, [primaryWallet, dispatch]);
   const subscriptionEndDate = useSelector(state => state.auth.subscriptionEndDate);
   const isSubscribed = useSelector(state => state.auth.isSubscribed);
-  console.log("subscriptionEndDate: ", subscriptionEndDate);
-  console.log("isSubscribed: ", isSubscribed);
+  // console.log("subscriptionEndDate: ", subscriptionEndDate);
+  // console.log("isSubscribed: ", isSubscribed);
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle menu on click
 
   const handleLogOutClick = () => {

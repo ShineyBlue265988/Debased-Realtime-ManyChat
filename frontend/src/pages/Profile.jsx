@@ -71,9 +71,9 @@ const Profile = ({ username, walletAddress }) => {
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
-                console.log("Fetching user profile for username:", `/api/user/${username}`);
+                // console.log("Fetching user profile for username:", `/api/user/${username}`);
                 const response = await fetch(`https://backend.debase.app/api/user/${username}`);
-                console.log("Response from API:", response);
+                // console.log("Response from API:", response);
                 const data = await response.json();
                 setUserData(data);
             } catch (error) {
@@ -86,7 +86,7 @@ const Profile = ({ username, walletAddress }) => {
         }
     }, [username]); // Fetch when username changes
   if (!userData) return <Loading/>;
-    console.log("User Data:", userData);
+    // console.log("User Data:", userData);
     return (
         <div className="container max-w-4xl mx-auto bg-white">
             <Card className="relative overflow-hidden max-w-2xl mx-auto bg-white shadow-lg rounded-lg">

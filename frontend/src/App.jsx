@@ -31,7 +31,7 @@ const ProtectedRoute = ({ address, children }) => {
   }
 
   // let username = useSelector(state => state.auth.username);
-  console.log("Username:", username);
+  // console.log("Username:", username);
   if (!username) {
     return <Navigate to="/" />;
   }
@@ -46,7 +46,7 @@ function App() {
   const [user, setUser] = useState(null);
   const queryClient = new QueryClient();
   const username = useSelector(state => state.auth.username);
-  console.log("Username:", username);
+  // console.log("Username:", username);
   const walletAddress = useSelector(state => state.auth.walletAddress);
   const dynamicSettings = {
     environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",

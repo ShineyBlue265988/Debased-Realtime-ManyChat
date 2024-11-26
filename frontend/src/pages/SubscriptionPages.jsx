@@ -104,11 +104,11 @@ const SubscriptionPages = (address) => {
       const signer = await getSigner(primaryWallet);
       // Create a contract instance with the signer
       const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-      console.log("Contract instance created:", contract);
+      // console.log("Contract instance created:", contract);
 
       // Fetch ETH price from the contract
       const ethPrice = await contract.getETHPrice();
-      console.log("ETH price:", ethPrice.toString());
+      // console.log("ETH price:", ethPrice.toString());
 
       // Calculate the required ETH based on the plan fee
       const feeType = feeTypeMap[plan.duration];
@@ -130,11 +130,11 @@ const SubscriptionPages = (address) => {
           gasLimit: 700000 // Add explicit gas limit
         }
       );
-      console.log("Transaction sent:", tx.hash);
+      // console.log("Transaction sent:", tx.hash);
 
       // Wait for the transaction to be mined
       await tx.wait();
-      console.log("Transaction confirmed:", tx.hash);
+      // console.log("Transaction confirmed:", tx.hash);
 
       // Verify if the subscription was successful
       const isSubscribed = await contract.isHavingSubscription(primaryWallet.address);
