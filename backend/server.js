@@ -87,6 +87,12 @@ async function updateUserLevel(user) {
     { level: 1, messagesRequired: 500, likesRequired: 200 },
     { level: 2, messagesRequired: 1000, likesRequired: 500 },
     { level: 3, messagesRequired: 2000, likesRequired: 1000 },
+    { level: 4, messagesRequired: 5000, likesRequired: 2000 },
+    { level: 5, messagesRequired: 10000, likesRequired: 5000 },
+    { level: 6, messagesRequired: 20000, likesRequired: 10000 },
+    { level: 7, messagesRequired: 50000, likesRequired: 20000 },
+    { level: 8, messagesRequired: 100000, likesRequired: 50000 },
+    { level: 9, messagesRequired: 200000, likesRequired: 100000 },
     { level: 10, messagesRequired: 9999999999, likesRequired: 9999999999999 },
     // Add more levels as needed
   ];
