@@ -87,6 +87,7 @@ async function updateUserLevel(user) {
     { level: 1, messagesRequired: 500, likesRequired: 200 },
     { level: 2, messagesRequired: 1000, likesRequired: 500 },
     { level: 3, messagesRequired: 2000, likesRequired: 1000 },
+    { level: 10, messagesRequired: 9999999999, likesRequired: 9999999999999 },
     // Add more levels as needed
   ];
   let messageContribution = (messagesCount / levelCriteria[currentLevel].messagesRequired) * 60;
