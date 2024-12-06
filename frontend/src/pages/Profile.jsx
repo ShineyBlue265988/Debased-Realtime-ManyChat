@@ -72,7 +72,8 @@ const Profile = ({ username, walletAddress }) => {
         const fetchUserProfile = async () => {
             try {
                 // console.log("Fetching user profile for username:", `/api/user/${username}`);
-                const response = await fetch(`https://backend.debase.app/api/user/${username}`);
+                // const response = await fetch(`https://backend.debase.app/api/user/${username}`);
+                const response = await fetch(`https://100.126.119.11/api/user/${username}`);
                 // console.log("Response from API:", response);
                 const data = await response.json();
                 setUserData(data);
