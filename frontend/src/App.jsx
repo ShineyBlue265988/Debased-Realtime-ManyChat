@@ -49,7 +49,8 @@ function App() {
   // console.log("Username:", username);
   const walletAddress = useSelector(state => state.auth.walletAddress);
   const dynamicSettings = {
-    environmentId: "ce7eb472-8f4f-43d0-9eab-edc98094c129",
+    // environmentId: "ce7eb472-8f4f-43d0-9eab-edc98094c129",
+    environmentId: "83ff71ab-4c2e-4b74-b464-681e067c59ac",
     walletConnectors: [EthereumWalletConnectors,],
     enableEnsLookup: true,
     evmNetworks: [
@@ -78,6 +79,7 @@ function App() {
         blockExplorerUrls: [baseSepolia.blockExplorers.default.url],
       },
     ],
+    autoConnect: false,
     defaultNetwork: base.id,
     cssOverride: {
       colors: {

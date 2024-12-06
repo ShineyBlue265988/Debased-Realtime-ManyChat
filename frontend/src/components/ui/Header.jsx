@@ -22,7 +22,7 @@ const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { primaryWallet, handleLogOut } = useDynamicContext();
+  const { primaryWallet, handleLogOut, clearWalletConnectorPersistence, } = useDynamicContext();
   const { isAuthenticated, username } = useSelector(state => state.auth);
 
   // Navigation items
@@ -53,6 +53,7 @@ const Header = () => {
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen); // Toggle menu on click
 
   const handleLogOutClick = () => {
+    clearWalletConnectorPersistence();
     handleLogOut(); // Log out from Dynamic context
     dispatch(logout()); // Clear Redux state
     navigate('/'); // Redirect to home after logout
