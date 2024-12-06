@@ -55,6 +55,8 @@ const Header = () => {
   const handleLogOutClick = () => {
     // clearWalletConnectorPersistence();
     handleLogOut(); // Log out from Dynamic context
+    localStorage.clear();
+    sessionStorage.clear();
     dispatch(logout()); // Clear Redux state
     navigate('/'); // Redirect to home after logout
   };
