@@ -122,9 +122,7 @@ function App() {
                 element={<Login />}
               />
               <Route path="/subscription" element={<SubscriptionPages address={walletAddress} />} />
-              <ProtectedRoute address={walletAddress}>
-                <Route path="/Profile" className="max-w-2xl bg-white" element={<Profile username={username} walletAddress={walletAddress} />} />
-              </ProtectedRoute>
+
               <Route
                 path="/chat"
                 element={
@@ -142,7 +140,25 @@ function App() {
                   </div>
                 }
               />
+              <Route
+                path="/profile"
+                element={
+                  <div style={{
+                    backgroundImage: `url('https://hebbkx1anhila5yf.public.blob.vercel-storage.com/pattern-01-qX0NjZaOV8g9QrnkzzOeFWx1ByjbJH.png')`,
+                    backgroundRepeat: 'repeat',
+                    height: '92vh',
+                    width: '100vw',
+                  }}>
+                    {
+                      <ProtectedRoute address={walletAddress}>
+                        <Profile username={username} walletAddress={walletAddress} />
+                      </ProtectedRoute>
+                    }
+                  </div>
+                }
+              />
             </Routes>
+
           </div>
           {/* </QueryClientProvider> */}
         </div>
