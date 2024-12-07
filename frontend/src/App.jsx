@@ -81,6 +81,7 @@ function App() {
     ],
     autoConnect: false,
     defaultNetwork: base.id,
+    mobileExperience:'redirect',
     cssOverride: {
       colors: {
         primary: '#3B82F6',
