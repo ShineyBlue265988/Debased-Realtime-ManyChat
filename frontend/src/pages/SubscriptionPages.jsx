@@ -165,6 +165,12 @@ const SubscriptionPages = (address) => {
             <span className="text-green-600 bg-green-50 px-4 py-2">{subscriptionEndDate}</span>
           </div>
         )}
+        {!subscriptionEndDate && (
+          <div className="rounded-lg flex justify-end mb-2">
+            <span className="text-red-700 font-medium bg-red-50 px-4 py-2">Please Subscribe to Get Access: </span>
+            {/* <span className="text-green-600 bg-green-50 px-4 py-2">{subscriptionEndDate}</span> */}
+          </div>
+        )}
         <div className="flex flex-col items-center">
           {/* Duration Selector */}
           <div className="mb-12 flex flex-wrap gap-3 bg-gray-100 p-3 rounded-lg w-full max-w-md">

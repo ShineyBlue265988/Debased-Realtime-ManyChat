@@ -101,7 +101,7 @@ const Header = () => {
           <div className="flex items-center gap-4">
             <div className="flex justify-end ">
               {/* {!address&&<ConnectButton/>} */}
-              {!address && <DynamicWidget />}
+              {!address && <DynamicWidget innerButtonComponent={<button>Connect Wallet</button>}/>}
               {address && <Wallet >
                 <ConnectWallet className='rounded-full  border-gray-200 flex items-center gap-2'>
                   <Avatar className="h-6 w-6 " />
