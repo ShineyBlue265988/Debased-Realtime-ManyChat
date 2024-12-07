@@ -81,7 +81,7 @@ function App() {
     ],
     autoConnect: false,
     defaultNetwork: base.id,
-    mobileExperience:'redirect',
+    mobileExperience: 'redirect',
     cssOverride: {
       colors: {
         primary: '#3B82F6',
@@ -122,7 +122,9 @@ function App() {
                 element={<Login />}
               />
               <Route path="/subscription" element={<SubscriptionPages address={walletAddress} />} />
-              <Route path="/Profile" className="max-w-2xl bg-white" element={<Profile username={username} walletAddress={walletAddress} />} />
+              <ProtectedRoute address={walletAddress}>
+                <Route path="/Profile" className="max-w-2xl bg-white" element={<Profile username={username} walletAddress={walletAddress} />} />
+              </ProtectedRoute>
               <Route
                 path="/chat"
                 element={

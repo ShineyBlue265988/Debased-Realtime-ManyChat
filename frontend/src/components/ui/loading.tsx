@@ -9,7 +9,7 @@ const Loading = () => {
       width: '100vw',
     }}>
       <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 border-t-transparent"></div>
-      <p className="mt-4 text-lg text-blue-500">Loading...</p>
+      <p className="mt-4 text-lg text-blue-500">Getting User Data...</p>
     </div>
   );
 };

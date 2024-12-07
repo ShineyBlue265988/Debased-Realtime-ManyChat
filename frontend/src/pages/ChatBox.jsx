@@ -484,7 +484,7 @@ const ChatBox = ({ username, walletAddress }) => {
                   >
                     <motion.button
                       onClick={() => handleLike(msg._id, msg.username)}
-                      className="text-xl relative z-10"
+                      className="text-xl relative"
                     >
                       <AnimatePresence mode="wait">
                         {messageLikes[msg._id]?.includes(username) ? (

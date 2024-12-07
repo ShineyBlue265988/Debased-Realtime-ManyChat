@@ -13,7 +13,6 @@ const formatSubscriptionDate = (timestamp) => {
     month: "2-digit",
     day: "2-digit"
   });
-
 };
 
 const SubscriptionPages = (address) => {
@@ -59,7 +58,7 @@ const SubscriptionPages = (address) => {
         const provider = await getWeb3Provider(primaryWallet);
         const signer = await getSigner(primaryWallet);
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-        const endDate = await contract.subscriptionEndDate(address);
+        const endDate = await contract.subscriptionEndDate(primaryWallet.address);
         if (endDate > 0) {
           setSubscriptionEndDate(formatSubscriptionDate(endDate));
         }
