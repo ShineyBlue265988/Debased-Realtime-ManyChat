@@ -113,13 +113,14 @@ const SubscriptionPages = (address) => {
       const feeType = feeTypeMap[plan.duration];
       const planFee = await contract.fee(feeType);
       // Calculate the required ETH
-      const requiredEth = ethPrice.mul(planFee); // BigNumber multiplication
+      const requiredEth = ethPrice*planFee; // BigNumber multiplication
       console.log("Original Required ETH:", requiredEth.toString());
 
       // Add a buffer (1%)
       const bufferPercentage = 1; // Change this to tweak the buffer amount
-      const buffer = requiredEth.mul(bufferPercentage).div(100); // 1% buffer
-      const adjustedRequiredEth = requiredEth.add(buffer); // Add the buffer
+      const buffer = requiredEth*bufferPercentage/100; // 1% buffer
+      console.log("Buffer:", buffer.toString());
+      const adjustedRequiredEth = requiredEth+buffer; // Add the buffer
       console.log("Adjusted Required ETH:", adjustedRequiredEth.toString());
 
       // Fetch wallet balance
