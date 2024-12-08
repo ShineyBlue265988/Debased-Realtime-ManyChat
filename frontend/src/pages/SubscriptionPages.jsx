@@ -112,7 +112,7 @@ const SubscriptionPages = (address) => {
       // Calculate the required ETH based on the plan fee
       const feeType = feeTypeMap[plan.duration];
       const planFee = await contract.fee(feeType);
-      const requiredEth = ethPrice * planFee * 1.01;
+      const requiredEth = ethPrice * planFee;
       // Add this before the contract call
       const balance = ethers.getBigInt(await provider.getBalance(primaryWallet.address))
       const requiredAmount = ethers.getBigInt(planFee);
