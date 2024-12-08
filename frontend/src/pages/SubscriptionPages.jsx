@@ -19,7 +19,7 @@ const SubscriptionPages = (address) => {
   const { primaryWallet } = useDynamicContext();
   const [selectedDuration, setSelectedDuration] = useState('1 Month');
   const CONTRACT_ADDRESS = "0xb557Fa65aF0f482E34799eFA76176B269Cd88c40";
-  const CONTRACT_ABI = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "to", "type": "address" }], "name": "FeePaid", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "feeType", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "FeeUpdated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [], "name": "Withdraw", "type": "event" }, { "inputs": [], "name": "ONE_MONTH_PERIOD", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "name": "fee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getETHPrice", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "to", "type": "address" }], "name": "isHavingSubscription", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_to", "type": "address" }, { "internalType": "uint256", "name": "_feeType", "type": "uint256" }], "name": "payFee", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }], "name": "subscriptionEndDate", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_feeType", "type": "uint256" }, { "internalType": "uint256", "name": "_target", "type": "uint256" }], "name": "updateFee", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "withdrawFee", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }];
+  const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"address","name":"to","type":"address"}],"name":"FeePaid","type":"event"},{"anonymous":false,"inputs":[{"indexed":false,"internalType":"uint256","name":"feeType","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"FeeUpdated","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[],"name":"Withdraw","type":"event"},{"inputs":[],"name":"ONE_MONTH_PERIOD","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"fee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getETHPrice","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"}],"name":"isHavingSubscription","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_feeType","type":"uint256"}],"name":"payFee","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"subscriptionEndDate","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_feeType","type":"uint256"},{"internalType":"uint256","name":"_target","type":"uint256"}],"name":"updateFee","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawFee","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"}];
   const [subscriptionEndDate, setSubscriptionEndDate] = useState(null);
   const dispatch = useDispatch();
 
@@ -112,33 +112,23 @@ const SubscriptionPages = (address) => {
       // Calculate the required ETH based on the plan fee
       const feeType = feeTypeMap[plan.duration];
       const planFee = await contract.fee(feeType);
-      // Calculate the required ETH
-      const requiredEth = ethPrice*planFee; // BigNumber multiplication
-      console.log("Original Required ETH:", requiredEth.toString());
-
-      // Add a buffer (1%)
-      const bufferPercentage = 1; // Change this to tweak the buffer amount
-      const buffer = requiredEth*bufferPercentage/100; // 1% buffer
-      console.log("Buffer:", buffer.toString());
-      const adjustedRequiredEth = requiredEth+buffer; // Add the buffer
-      console.log("Adjusted Required ETH:", adjustedRequiredEth.toString());
-
-      // Fetch wallet balance
-      const balance = await provider.getBalance(primaryWallet.address); // BigNumber
-      console.log("Wallet Balance:", balance.toString());
-
-      // Check if the balance is sufficient
-      if (balance.lt(adjustedRequiredEth)) { // Compare with adjusted ETH
+      const requiredEth = ethPrice * planFee;
+      console.log("Required ETH:", requiredEth.toString());
+      // Add this before the contract call
+      const balance = ethers.getBigInt(await provider.getBalance(primaryWallet.address))
+      console.log("Balance:", balance.toString());
+      const requiredAmount = ethers.getBigInt(planFee);
+      console.log("Required amount:", requiredAmount.toString());
+      if (balance < requiredAmount) {
         alert("Insufficient funds for subscription");
         return;
       }
-
       // Execute the payFee function
       const tx = await contract.payFee(
         primaryWallet.address,
         feeType,
         {
-          value: BigInt(adjustedRequiredEth), // Add the required ETH value
+          value: BigInt(requiredEth), // Add the required ETH value
           gasLimit: 700000 // Add explicit gas limit
         }
       );
