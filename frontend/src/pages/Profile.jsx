@@ -13,6 +13,7 @@ import { Progress } from '../components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '../lib/utils';
 import Loading from '../components/ui/loading';
+import { useSelector } from 'react-redux';
 const BADGES = [
     {
         type: 'verified',
@@ -68,6 +69,7 @@ const Profile = ({ username, walletAddress }) => {
     //     progress: 67, // Current progress percentage to next level
     // };
     const [userData, setUserData] = useState(null);
+    const subscriptionEndDate = useSelector((state) => state.auth.subscriptionEndDate);
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -87,7 +89,7 @@ const Profile = ({ username, walletAddress }) => {
             fetchUserProfile();
         }
     }, [username]); // Fetch when username changes
-  if (!userData) return <Loading/>;
+    if (!userData) return <Loading />;
     // console.log("User Data:", userData);
     return (
         <div className="container max-w-4xl mx-auto bg-white">
@@ -111,23 +113,36 @@ const Profile = ({ username, walletAddress }) => {
 
                         <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="px-4 text-xl">
-                                {userData.currentLevel==0&&<img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel==1&&<img src={BronzeBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel==1&&<img src={SilverBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel==3&&<img src={GoldBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel==10&&<img src={AdminBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 0 && <img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 1 && <img src={BronzeBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 1 && <img src={SilverBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 3 && <img src={GoldBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 10 && <img src={AdminBadge} alt="Badge" className="w-8 h-8 mr-2" />}
 
                                 {/* <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" /> */}
                                 Level {userData.currentLevel}
                             </Badge>
                             <Badge variant="outline" className="px-4 text-xl">
-                            {userData.currentLevel==0&&"Basic User"}
-                                {userData.currentLevel==1&&"Engaged User"}
-                                {userData.currentLevel==1&&"Facilitate User"}
-                                {userData.currentLevel==3&&"Enthusiast"}
-                                {userData.currentLevel==10&&"Administrator"}
+                                {userData.currentLevel == 0 && "Basic User"}
+                                {userData.currentLevel == 1 && "Engaged User"}
+                                {userData.currentLevel == 1 && "Facilitate User"}
+                                {userData.currentLevel == 3 && "Enthusiast"}
+                                {userData.currentLevel == 10 && "Administrator"}
                             </Badge>
+
                         </div>
+                        {subscriptionEndDate && (
+                            <div className="rounded-lg flex justify-end mb-2">
+                                <span className="border-green-600 border-l-4 text-green-700 font-medium bg-green-50 px-4 py-2">Active Until: </span>
+                                <span className="text-green-600 bg-green-50 px-4 py-2">{subscriptionEndDate}</span>
+                            </div>
+                        )}
+                        {!subscriptionEndDate && (
+                            <div className="rounded-lg flex justify-end mb-2">
+                                <span className="border-red-600 border-l-4 text-red-700 font-medium bg-red-50 px-4 py-2">Please Subscribe to Get Access: </span>
+                                {/* <span className="text-green-600 bg-green-50 px-4 py-2">{subscriptionEndDate}</span> */}
+                            </div>
+                        )}
                     </div>
                 </CardHeader>
 
@@ -164,9 +179,9 @@ const Profile = ({ username, walletAddress }) => {
                                 <div className="flex  content-space-between items-center justify-between">
                                     {/* <span className="text-sm font-medium">Next Level Progress</span> */}
                                     {/* <div className="flex  text-md text-muted-foreground"> */}
-                                            <span className='text-blue-500'>Level {userData.currentLevel}</span>
-                                            {/* <ArrowRight className="w-4 h-4 mx-2 flex items-center" /> */}
-                                            <span className=''>Level {userData.currentLevel + 1}</span>
+                                    <span className='text-blue-500'>Level {userData.currentLevel}</span>
+                                    {/* <ArrowRight className="w-4 h-4 mx-2 flex items-center" /> */}
+                                    <span className=''>Level {userData.currentLevel + 1}</span>
                                     {/* </div> */}
                                 </div>
                                 <Progress
@@ -208,7 +223,8 @@ const Profile = ({ username, walletAddress }) => {
                         </div>
                     </div>
                     <div className="mt-6 text-center text-sm text-muted-foreground">
-                        <p>Member since January 2024</p>
+                        <p>Member since </p>
+                        <span>{userData.createdAt}</span>
                     </div>
                 </CardContent>
             </Card>

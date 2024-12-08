@@ -525,6 +525,7 @@ app.get('/api/user/:username', async (req, res) => {
       currentLevel: user.currentLevel,
       nextLevelThreshold: user.nextLevelThreshold,
       badge: user.badge,
+      createdAt: user.createdAt,
     });
     console.log("user profile", res.json);
   } catch (error) {
