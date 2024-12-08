@@ -14,6 +14,14 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '../lib/utils';
 import Loading from '../components/ui/loading';
 import { useSelector } from 'react-redux';
+const formatSubscriptionDate = (timestamp) => {
+    const formated= timestamp ? new Date(Number(timestamp) * 1000).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      }) : null
+      return formated;
+};
 const BADGES = [
     {
         type: 'verified',
@@ -70,6 +78,7 @@ const Profile = ({ username, walletAddress }) => {
     // };
     const [userData, setUserData] = useState(null);
     const subscriptionEndDate = useSelector((state) => state.auth.subscriptionEndDate);
+    const formatedEndDate = subscriptionEndDate ? formatSubscriptionDate(subscriptionEndDate) : '';
     useEffect(() => {
         const fetchUserProfile = async () => {
             try {
@@ -224,7 +233,7 @@ const Profile = ({ username, walletAddress }) => {
                     </div>
                     <div className="mt-6 text-center text-sm text-muted-foreground">
                         <p>Member since </p>
-                        <span>{userData.createdAt}</span>
+                        <span>{formatSubscriptionDate(userData.createdAt)}</span>
                     </div>
                 </CardContent>
             </Card>
