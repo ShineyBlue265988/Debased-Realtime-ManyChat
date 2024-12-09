@@ -118,13 +118,32 @@ async function updateUserLevel(user) {
         user.badge = "VerifiedBadge";
         break;
       case 1:
-        user.badge = 'BronzeBadge';
+        user.badge = 'NewbBadge';
         break;
       case 2:
-        user.badge = 'SilverBadge';
+        user.badge = 'HodlerBadge';
         break;
       case 3:
-        user.badge = 'GoldBadge';
+        user.badge = 'ApeBadge';
+        break;
+      case 4:
+        user.badge = 'DegenBadge';
+        break;        
+      case 5:
+        user.badge = 'ChadBadge';
+        break;        
+      case 6: 
+        user.badge = 'DogeBadge';
+        break;        
+      case 7:
+        user.badge = 'MemeBadge';        
+        break;
+      case 8:
+        user.badge = 'BullBadge';
+        break;
+      case 9:
+        user.badge = 'BearBadge';
+        break;
       case 10:
         user.badge = 'AdminBadge';
         break;

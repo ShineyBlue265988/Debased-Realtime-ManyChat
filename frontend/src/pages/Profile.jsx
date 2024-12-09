@@ -3,9 +3,10 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Avatar, Identity } from '@coinbase/onchainkit/identity';
 import VerifiedBadge from '../components/icons/bluebadge.jpg'
-import BronzeBadge from '../components/icons/bronze.jpg'
-import SilverBadge from '../components/icons/silver.jpg'
-import GoldBadge from '../components/icons/gold.jpg'
+import NewbBadge from '../components/icons/newb.png'
+import HodlerBadge from '../components/icons/hodler.png'
+import ApeBadge from '../components/icons/ape.png'
+import DegenBadge from '../components/icons/degen.png'
 import AdminBadge from '../components/icons/admin.jpg'
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 // import ProgressBar from 'react-progressbar';
@@ -42,28 +43,36 @@ const BADGES = [
         badgeimage: VerifiedBadge
     },
     {
-        type: 'bronze',
-        label: 'Bronze',
+        type: 'newb',
+        label: 'Newb',
         icon: <Award className="w-3 h-3 mr-1" />,
         condition: '100+ messages & 50+ likes',
         className: 'bg-amber-700/10 text-amber-700 hover:bg-amber-700/20 text-md',
-        badgeimage: BronzeBadge
+        badgeimage: NewbBadge
     },
     {
-        type: 'silver',
-        label: 'Silver',
+        type: 'hodler',
+        label: 'Hodler',
         icon: <Award className="w-3 h-3 mr-1" />,
         condition: '500+ messages & 200+ likes',
         className: 'bg-slate-400/10 text-slate-400 hover:bg-slate-400/20 text-md',
-        badgeimage: SilverBadge
+        badgeimage: HodlerBadge
     },
     {
-        type: 'gold',
-        label: 'Gold',
+        type: 'ape',
+        label: 'Ape',
         icon: <Award className="w-3 h-3 mr-1" />,
         condition: '1000+ messages & 500+ likes',
         className: 'bg-yellow-400/10 text-yellow-600 hover:bg-yellow-600/20 text-md',
-        badgeimage: GoldBadge
+        badgeimage: ApeBadge
+    },
+    {
+        type: 'degen',
+        label: 'Degen',
+        icon: <Award className="w-3 h-3 mr-1" />,
+        condition: '1000+ messages & 500+ likes',
+        className: 'bg-yellow-400/10 text-yellow-600 hover:bg-yellow-600/20 text-md',
+        badgeimage: DegenBadge
     },
     {
         type: 'admin',

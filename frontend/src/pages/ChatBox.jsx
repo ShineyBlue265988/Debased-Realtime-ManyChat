@@ -9,9 +9,10 @@ import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import Loading from '../components/ui/loading';
 import VerifiedBadge from '../components/icons/bluebadge.jpg'
-import BronzeBadge from '../components/icons/bronze.jpg'
-import SilverBadge from '../components/icons/silver.jpg'
-import GoldBadge from '../components/icons/gold.jpg'
+import NewbBadge from '../components/icons/newb.png'
+import HodlerBadge from '../components/icons/hodler.png'
+import ApeBadge from '../components/icons/ape.png'
+import DegenBadge from '../components/icons/degen.png'
 import AdminBadge from '../components/icons/admin.jpg'
 
 
@@ -476,9 +477,10 @@ const ChatBox = ({ username, walletAddress }) => {
 
                           {(msg.badge == 'AdminBadge') && (<img src={AdminBadge} className="w-6 h-6 inline-block " alt="Admin2" />)}
                           {(msg.badge == "VerifiedBadge" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
-                          {(msg.badge == "BronzeBadge" && <img src={BronzeBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
-                          {(msg.badge == "SilverBadge" && <img src={SilverBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
-                          {(msg.badge == "GoldBadge" && <img src={GoldBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == "NewbBadge" && <img src={NewbBadge} className="w-5 h-5 inline-block " alt="Newb" />)}
+                          {(msg.badge == "HodlerBadge" && <img src={HodlerBadge} className="w-5 h-5 inline-block " alt="Hodler" />)}
+                          {(msg.badge == "ApeBadge" && <img src={ApeBadge} className="w-5 h-5 inline-block " alt="Ape" />)}
+                          {(msg.badge == "DegenBadge" && <img src={DegenBadge} className="w-5 h-5 inline-block " alt="Degen" />)}
                         </div>
                       </div>
 
