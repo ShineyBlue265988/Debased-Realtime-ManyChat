@@ -243,7 +243,7 @@ const Profile = ({ username, walletAddress }) => {
                     </div>
                     <div className="mt-6 text-center text-sm text-muted-foreground">
                         <p>Member since </p>
-                        <span>{formatedEndDate}</span>
+                        <span>formatSubscriptionDate(userData.createdAt)</span>
                     </div>
                 </CardContent>
             </Card>
