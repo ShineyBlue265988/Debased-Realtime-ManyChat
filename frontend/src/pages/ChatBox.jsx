@@ -35,7 +35,8 @@ const ChatBox = ({ username, walletAddress }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [userAvatar, setUserAvatar] = useState('');
   const [messageLikes, setMessageLikes] = useState({});
-  const dataReceivedFlag=useRef(false);
+  const dataReceivedFlag = useRef(false);
+  const groupedMessages = groupMessagesByDate(messages);
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -70,7 +71,16 @@ const ChatBox = ({ username, walletAddress }) => {
   // .catch(console.error);
   // return data.text;
   //   }
-
+  const groupMessagesByDate = (messages) => {
+    return messages.reduce((acc, message) => {
+      const date = new Date(message.timestamp).toLocaleDateString();
+      if (!acc[date]) {
+        acc[date] = [];
+      }
+      acc[date].push(message);
+      return acc;
+    }, {});
+  };
   const handleLike = useCallback((messageId, messageUsername) => {
     // Update local state optimistically
     setMessageLikes(prev => {
@@ -413,7 +423,7 @@ const ChatBox = ({ username, walletAddress }) => {
       }, 20);
     }
   };
-  if (!dataReceivedFlag.current) return <Loading/>;
+  if (!dataReceivedFlag.current) return <Loading />;
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       {/* <div className="flex items-center justify-between p-2 ">
@@ -444,92 +454,96 @@ const ChatBox = ({ username, walletAddress }) => {
 
         className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-100 scroll-smooth [scroll-behavior:smooth] [transition:all_10ms_ease-in-out]"
       >
-        {messages.map((msg, index) => (
-          <div key={index} className="flex flex-col pr-3">
-            <div className="flex items-start gap-2">
-              <div className={`py-2 pl-3 pr-12 rounded-lg inline-block relative ${msg.username === username
-                ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
-                : 'bg-[#FFFFFF] mr-auto max-w-[80%] '
-                } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
-                {msg.username !== username && (
-                  <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800 flex items-center"
-                    onClick={() => handleUsernameClick(msg.username)}
-                  >
-                    {msg.username}
-                    <div className='flex items-center p-1'>
+        {Object.entries(groupedMessages).map(([date, msgs]) => (
+          <div key={date}>
+            <div className="text-gray-500 text-center my-2">{date}</div> {/* Display date */}
+            {messages.map((msg, index) => (
+              <div key={index} className="flex flex-col pr-3">
+                <div className="flex items-start gap-2">
+                  <div className={`py-2 pl-3 pr-12 rounded-lg inline-block relative ${msg.username === username
+                    ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
+                    : 'bg-[#FFFFFF] mr-auto max-w-[80%] '
+                    } ${isOnlyEmojis(msg.text) && 'bg-transparent '}`}>
+                    {msg.username !== username && (
+                      <div className="font-semibold text-blue-600 cursor-pointer hover:text-blue-800 flex items-center"
+                        onClick={() => handleUsernameClick(msg.username)}
+                      >
+                        {msg.username}
+                        <div className='flex items-center p-1'>
 
-                      {(msg.badge == 'admin') && (<img src={admin} className="w-6 h-6 inline-block " alt="Admin2" />)}
-                      {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
-                      {(msg.badge == "verified" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == 'admin') && (<img src={admin} className="w-6 h-6 inline-block " alt="Admin2" />)}
+                          {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
+                          {(msg.badge == "verified" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                        </div>
+                      </div>
+
+                    )}
+                    <div className="break-words ">
+                      {isOnlyEmojis(msg.text) ? (
+                        <span className="text-6xl">{msg.text}</span>
+                      ) : (
+                        formatMessageWithMentions(msg.text, msg.username === username)
+                      )}
+                      <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
+                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
-                  </div>
-
-                )}
-                <div className="break-words ">
-                  {isOnlyEmojis(msg.text) ? (
-                    <span className="text-6xl">{msg.text}</span>
-                  ) : (
-                    formatMessageWithMentions(msg.text, msg.username === username)
-                  )}
-                  <span className={`text-xs mt-1 ${(msg.username === username) && !isOnlyEmojis(msg.text) ? 'text-white/70' : 'text-gray-500'} `}>
-                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-                <div className={`flex items-end mt-1 p-1 justify-end absolute bottom-0.5 right-1 `}>
-                  <motion.div
-                    className={`relative group flex  ` }
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <motion.button
-                      onClick={() => handleLike(msg._id, msg.username)}
-                      className="text-xl relative"
-                    >
-                      <AnimatePresence mode="wait">
-                        {messageLikes[msg._id]?.includes(username) ? (
-                          <motion.div
-                            key="liked"
-                            initial={{ scale: 0, rotate: -180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            exit={{ scale: 0, rotate: 180 }}
-                            transition={{ duration: 0.3, type: "spring" }}
-                          >
-                            <FaHeart className="text-red-500 w-4 h-4" />
-                          </motion.div>
-                        ) : (
-                          <motion.div
-                            key="unliked"
-                            initial={{ scale: 0, rotate: 180 }}
-                            animate={{ scale: 1, rotate: 0 }}
-                            exit={{ scale: 0, rotate: -180 }}
-                            transition={{ duration: 0.3, type: "spring" }}
-                          >
-                            <FaRegHeart className="text-gray-400 group-hover:text-pink-400 w-4 h-4" />
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </motion.button>
-
-                    {messageLikes[msg._id]?.length > 0 && (
+                    <div className={`flex items-end mt-1 p-1 justify-end absolute bottom-0.5 right-1 `}>
                       <motion.div
-                        className={`rounded-full  text-xs font-bold pl-1 flex items-center justify-center 
+                        className={`relative group flex  `}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <motion.button
+                          onClick={() => handleLike(msg._id, msg.username)}
+                          className="text-xl relative"
+                        >
+                          <AnimatePresence mode="wait">
+                            {messageLikes[msg._id]?.includes(username) ? (
+                              <motion.div
+                                key="liked"
+                                initial={{ scale: 0, rotate: -180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0, rotate: 180 }}
+                                transition={{ duration: 0.3, type: "spring" }}
+                              >
+                                <FaHeart className="text-red-500 w-4 h-4" />
+                              </motion.div>
+                            ) : (
+                              <motion.div
+                                key="unliked"
+                                initial={{ scale: 0, rotate: 180 }}
+                                animate={{ scale: 1, rotate: 0 }}
+                                exit={{ scale: 0, rotate: -180 }}
+                                transition={{ duration: 0.3, type: "spring" }}
+                              >
+                                <FaRegHeart className="text-gray-400 group-hover:text-pink-400 w-4 h-4" />
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </motion.button>
+
+                        {messageLikes[msg._id]?.length > 0 && (
+                          <motion.div
+                            className={`rounded-full  text-xs font-bold pl-1 flex items-center justify-center 
                         ${messageLikes[msg._id]?.includes(username) ? 'text-red-500' : 'text-gray-400'}
                         `}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1, duration: 0.2 }}
-                      >
-                        {messageLikes[msg._id]?.length}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.1, duration: 0.2 }}
+                          >
+                            {messageLikes[msg._id]?.length}
+                          </motion.div>
+                        )}
                       </motion.div>
-                    )}
-                  </motion.div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         ))}
-
         <div ref={messagesEndRef} />
       </div>
 

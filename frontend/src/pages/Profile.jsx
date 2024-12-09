@@ -30,7 +30,7 @@ const formatSubscriptionDate = (dateString) => {
     // Convert to locale string and split to rearrange
     const formattedDate = date.toLocaleDateString('en-US', options);
     
-    return formattedDate.split('/').reverse().join('/'); // Rearranging to MM/DD/YYYY
+    return formattedDate.split('/').join('/'); // Rearranging to MM/DD/YYYY
 };
 const BADGES = [
     {
@@ -241,8 +241,8 @@ const Profile = ({ username, walletAddress }) => {
                             ))}
                         </div>
                     </div>
-                    <div className="mt-6 text-center text-sm text-muted-foreground">
-                        <p>Member since </p>
+                    <div className="mt-6 text-center text-lg text-muted-foreground">
+                        <span>Member since </span>
                         <span>{formatSubscriptionDate(userData.createdAt)}</span>
                     </div>
                 </CardContent>
