@@ -2,12 +2,12 @@ import { Mail, Heart, Award, ArrowRight, Shield, CheckCircle2, Rocket, Star, Luc
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Avatar, Identity } from '@coinbase/onchainkit/identity';
-import VerifiedBadge from '../components/icons/bluebadge.jpg'
+import VerifiedBadge from '../components/icons/bluebadge.png'
 import NewbBadge from '../components/icons/newb.png'
 import HodlerBadge from '../components/icons/hodler.png'
 import ApeBadge from '../components/icons/ape.png'
 import DegenBadge from '../components/icons/degen.png'
-import AdminBadge from '../components/icons/admin.jpg'
+import AdminBadge from '../components/icons/admin.png'
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 // import ProgressBar from 'react-progressbar';
 import { Progress } from '../components/ui/progress';
