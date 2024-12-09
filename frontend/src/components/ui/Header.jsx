@@ -39,7 +39,11 @@ const Header = () => {
   // console.log("primaryWallet: ", primaryWallet);
   useEffect(() => {
     if (primaryWallet) {
-      dispatch(setAuth(primaryWallet));
+      dispatch(setAuth({
+        address: primaryWallet.address,
+        id: primaryWallet.id, // If needed
+        key: primaryWallet.key // If needed
+      }));
       dispatch(fetchUserName(primaryWallet));
       dispatch(fetchPublicKey(primaryWallet));
       dispatch(getSubscriptionState(primaryWallet));

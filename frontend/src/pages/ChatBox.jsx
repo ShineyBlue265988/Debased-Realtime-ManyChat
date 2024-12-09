@@ -7,10 +7,12 @@ import { Settings, AtSign, SmilePlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
-import VerifiedBadge from '../components/icons/bluebadge.jpg'
 import Loading from '../components/ui/loading';
-import admin from '../components/icons/admin.jpg'
-
+import VerifiedBadge from '../components/icons/bluebadge.jpg'
+import BronzeBadge from '../components/icons/bronze.jpg'
+import SilverBadge from '../components/icons/silver.jpg'
+import GoldBadge from '../components/icons/gold.jpg'
+import AdminBadge from '../components/icons/admin.jpg'
 
 
 const ChatBox = ({ username, walletAddress }) => {
@@ -472,9 +474,11 @@ const ChatBox = ({ username, walletAddress }) => {
                         {msg.username}
                         <div className='flex items-center p-1'>
 
-                          {(msg.badge == 'admin') && (<img src={admin} className="w-6 h-6 inline-block " alt="Admin2" />)}
-                          {/* {(msg.username === 'valcour.base.eth') && (<img src={golden5} className="w-5 h-5 inline-block " alt="Admin1" />)} */}
-                          {(msg.badge == "verified" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == 'AdminBadge') && (<img src={AdminBadge} className="w-6 h-6 inline-block " alt="Admin2" />)}
+                          {(msg.badge == "VerifiedBadge" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == "BronzeBadge" && <img src={BronzeBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == "SilverBadge" && <img src={SilverBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == "GoldBadge" && <img src={GoldBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
                         </div>
                       </div>
 
