@@ -1,4 +1,4 @@
-import { Mail, Heart, Award, ArrowRight, Shield, CheckCircle2 } from 'lucide-react';
+import { Mail, Heart, Award, ArrowRight, Shield, CheckCircle2, Rocket, Star, LucideSkull, Leaf } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Avatar, Identity } from '@coinbase/onchainkit/identity';
@@ -30,13 +30,14 @@ const formatSubscriptionDate = (dateString) => {
 
     // Convert to locale string and split to rearrange
     const formattedDate = date.toLocaleDateString('en-US', options);
-    
+
     return formattedDate.split('/').join('/'); // Rearranging to MM/DD/YYYY
 };
 const BADGES = [
     {
         type: 'verified',
         label: 'Verified',
+        level: 0,
         icon: <CheckCircle2 className="w-3 h-3 mr-1" />,
         condition: 'Verified member',
         className: 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20 text-md',
@@ -45,31 +46,35 @@ const BADGES = [
     {
         type: 'newb',
         label: 'Newb',
-        icon: <Award className="w-3 h-3 mr-1" />,
+        level: 1,
+        icon: <Leaf className="w-3 h-3 mr-1" />,
         condition: '100+ messages & 50+ likes',
-        className: 'bg-amber-700/10 text-amber-700 hover:bg-amber-700/20 text-md',
+        className: 'bg-green-500/10 text-green-500 hover:bg-green-500/20 text-md',
         badgeimage: NewbBadge
     },
     {
         type: 'hodler',
         label: 'Hodler',
-        icon: <Award className="w-3 h-3 mr-1" />,
+        level: 2,
+        icon: <Rocket className="w-3 h-3 mr-1" />,
         condition: '500+ messages & 200+ likes',
-        className: 'bg-slate-400/10 text-slate-400 hover:bg-slate-400/20 text-md',
+        className: 'bg-red-500/10 text-red-500 hover:bg-red-500/20 text-md',
         badgeimage: HodlerBadge
     },
     {
         type: 'ape',
         label: 'Ape',
-        icon: <Award className="w-3 h-3 mr-1" />,
+        level: 3,
+        icon: <Star className="w-3 h-3 mr-1" />,
         condition: '1000+ messages & 500+ likes',
-        className: 'bg-yellow-400/10 text-yellow-600 hover:bg-yellow-600/20 text-md',
+        className: 'bg-gray-900/10 text-gray-900 hover:bg-gray-900/20 text-md',
         badgeimage: ApeBadge
     },
     {
         type: 'degen',
         label: 'Degen',
-        icon: <Award className="w-3 h-3 mr-1" />,
+        level: 4,
+        icon: <LucideSkull className="w-3 h-3 mr-1" />,
         condition: '1000+ messages & 500+ likes',
         className: 'bg-yellow-400/10 text-yellow-600 hover:bg-yellow-600/20 text-md',
         badgeimage: DegenBadge
@@ -77,9 +82,10 @@ const BADGES = [
     {
         type: 'admin',
         label: 'Admin',
+        level: 10,
         icon: <Shield className="w-3 h-3 mr-1" />,
         condition: 'Administrator',
-        className: 'bg-red-500/10 text-red-500 hover:bg-red-500/20 text-md',
+        className: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 text-md',
         badgeimage: AdminBadge
     },
 ];
@@ -142,19 +148,20 @@ const Profile = ({ username, walletAddress }) => {
                         <div className="flex items-center gap-2">
                             <Badge variant="secondary" className="px-4 text-xl">
                                 {userData.currentLevel == 0 && <img src={VerifiedBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel == 1 && <img src={BronzeBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel == 1 && <img src={SilverBadge} alt="Badge" className="w-8 h-8 mr-2" />}
-                                {userData.currentLevel == 3 && <img src={GoldBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 1 && <img src={NewbBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 1 && <img src={HodlerBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 3 && <img src={ApeBadge} alt="Badge" className="w-8 h-8 mr-2" />}
+                                {userData.currentLevel == 4 && <img src={DegenBadge} alt="Badge" className="w-8 h-8 mr-2" />}
                                 {userData.currentLevel == 10 && <img src={AdminBadge} alt="Badge" className="w-8 h-8 mr-2" />}
 
                                 {/* <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" /> */}
                                 Level {userData.currentLevel}
                             </Badge>
                             <Badge variant="outline" className="px-4 text-xl">
-                                {userData.currentLevel == 0 && "Basic User"}
-                                {userData.currentLevel == 1 && "Engaged User"}
-                                {userData.currentLevel == 1 && "Facilitate User"}
-                                {userData.currentLevel == 3 && "Enthusiast"}
+                                {userData.currentLevel == 0 && "Newb User"}
+                                {userData.currentLevel == 1 && "Hodler User"}
+                                {userData.currentLevel == 1 && "Ape User"}
+                                {userData.currentLevel == 3 && "Degen User"}
                                 {userData.currentLevel == 10 && "Administrator"}
                             </Badge>
 
