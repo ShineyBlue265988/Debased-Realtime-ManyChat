@@ -14,13 +14,23 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '../lib/utils';
 import Loading from '../components/ui/loading';
 import { useSelector } from 'react-redux';
-const formatSubscriptionDate = (timestamp) => {
-    const formated= timestamp ? new Date(Number(timestamp) * 1000).toLocaleDateString('en-US', {
+const formatSubscriptionDate = (dateString) => {
+    if (!dateString) return null; // Return null if no date string is provided
+
+    // Create a new Date object from the date string
+    const date = new Date(dateString);
+
+    // Format the date as MM/DD/YYYY
+    const options = {
         year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      }) : null
-      return formated;
+        month: '2-digit', // Two-digit month
+        day: '2-digit' // Two-digit day
+    };
+
+    // Convert to locale string and split to rearrange
+    const formattedDate = date.toLocaleDateString('en-US', options);
+    
+    return formattedDate.split('/').reverse().join('/'); // Rearranging to MM/DD/YYYY
 };
 const BADGES = [
     {
@@ -233,7 +243,7 @@ const Profile = ({ username, walletAddress }) => {
                     </div>
                     <div className="mt-6 text-center text-sm text-muted-foreground">
                         <p>Member since </p>
-                        <span>{formatSubscriptionDate(userData.createdAt)}</span>
+                        <span>{formatedEndDate}</span>
                     </div>
                 </CardContent>
             </Card>
