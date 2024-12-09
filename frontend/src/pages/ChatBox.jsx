@@ -457,9 +457,9 @@ const ChatBox = ({ username, walletAddress }) => {
       >
         {Object.entries(groupedMessages).map(([date, msgs]) => (
           <div key={date} className="py-2">
-            <div className="text-gray-500 text-center my-2">{date}</div> {/* Display date */}
+            <div className="text-gray-500 text-center my-2 ">{date}</div> {/* Display date */}
             {msgs.map((msg, index) => (
-              <div key={index} className="flex flex-col py-2 pr-3">
+              <div key={index} className="flex flex-col py-1 pr-3">
                 <div className="flex items-start gap-2">
                   <div className={`py-2 pl-3 pr-12 rounded-lg inline-block relative ${msg.username === username
                     ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
