@@ -36,7 +36,6 @@ const ChatBox = ({ username, walletAddress }) => {
   const [userAvatar, setUserAvatar] = useState('');
   const [messageLikes, setMessageLikes] = useState({});
   const dataReceivedFlag = useRef(false);
-  const groupedMessages = groupMessagesByDate(messages);
   username = useSelector(state => state.auth.username)
   useEffect(() => {
     adjustTextareaHeight();
@@ -72,6 +71,7 @@ const ChatBox = ({ username, walletAddress }) => {
   // return data.text;
   //   }
   const groupMessagesByDate = (messages) => {
+    messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     return messages.reduce((acc, message) => {
       const date = new Date(message.timestamp).toLocaleDateString();
       if (!acc[date]) {
@@ -328,9 +328,8 @@ const ChatBox = ({ username, walletAddress }) => {
         const data = JSON.parse(event.data);
         // console.log('Received message:', data);
         if (data.type === 'history') {
-          const reversedMessages = data.messages.reverse();
-          const historyMessage = reversedMessages.sort((a, b) => a.timestamp - b.timestamp);
-          setMessages(historyMessage);
+          const sortedMessages = data.messages.sort((a, b) => b.timestamp - a.timestamp);
+          setMessages(sortedMessages); // Set sorted messages
           data.messages.forEach((message) => {
             messageIds.current.add(message._id);
             updateLikes(message._id, message.likes);
@@ -424,6 +423,8 @@ const ChatBox = ({ username, walletAddress }) => {
     }
   };
   if (!dataReceivedFlag.current) return <Loading />;
+  const groupedMessages = groupMessagesByDate(messages);
+
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
       {/* <div className="flex items-center justify-between p-2 ">
@@ -455,10 +456,10 @@ const ChatBox = ({ username, walletAddress }) => {
         className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-rounded scrollbar-thumb-gray-500 scrollbar-track-gray-100 scroll-smooth [scroll-behavior:smooth] [transition:all_10ms_ease-in-out]"
       >
         {Object.entries(groupedMessages).map(([date, msgs]) => (
-          <div key={date}>
+          <div key={date} className="py-2">
             <div className="text-gray-500 text-center my-2">{date}</div> {/* Display date */}
-            {messages.map((msg, index) => (
-              <div key={index} className="flex flex-col pr-3">
+            {msgs.map((msg, index) => (
+              <div key={index} className="flex flex-col py-2 pr-3">
                 <div className="flex items-start gap-2">
                   <div className={`py-2 pl-3 pr-12 rounded-lg inline-block relative ${msg.username === username
                     ? 'bg-[#007AFF] ml-auto max-w-[80%]  text-white'
