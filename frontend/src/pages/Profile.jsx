@@ -125,6 +125,7 @@ const Profile = ({ username, walletAddress }) => {
     }, [username]); // Fetch when username changes
     if (!userData) return <Loading />;
     // console.log("User Data:", userData);
+    const userBadgeClass = BADGES.find(badge => badge.level === userData.currentLevel)?.className || '';
     return (
         <div className="container max-w-4xl mx-auto bg-white">
             <Card className="relative overflow-hidden max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
@@ -157,7 +158,9 @@ const Profile = ({ username, walletAddress }) => {
                                 {/* <img src={userData.badge} alt="Badge" className="w-8 h-8 mr-2" /> */}
                                 Level {userData.currentLevel}
                             </Badge>
-                            <Badge variant="outline" className="px-4 text-xl">
+                            <Badge variant="outline" className={`px-4 text-xl
+                            ${userBadgeClass}
+                            `}>
                                 {userData.currentLevel == 0 && "Newb User"}
                                 {userData.currentLevel == 1 && "Hodler User"}
                                 {userData.currentLevel == 1 && "Ape User"}
