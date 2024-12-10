@@ -6,8 +6,7 @@ import Picker from '@emoji-mart/react'
 import { Settings, AtSign, SmilePlus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from "react-redux";
-import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
-import Loading from '../components/ui/loading';
+import LoadingMessage from '../components/ui/loadingmessage';
 import VerifiedBadge from '../components/icons/bluebadge.png'
 import NewbBadge from '../components/icons/newb.png'
 import HodlerBadge from '../components/icons/hodler.png'
@@ -36,7 +35,6 @@ const ChatBox = ({ username, walletAddress }) => {
   const lastScrollPositionRef = useRef(0);
   const navigate = useNavigate();
   const [replyingTo, setReplyingTo] = useState(null);
-  const [userAvatar, setUserAvatar] = useState('');
   const [messageLikes, setMessageLikes] = useState({});
   const dataReceivedFlag = useRef(false);
   username = useSelector(state => state.auth.username)
@@ -44,35 +42,6 @@ const ChatBox = ({ username, walletAddress }) => {
     adjustTextareaHeight();
   }, [text]);
 
-  //   async function fetchFromIPFSGateways(cid) {
-  //     const gateways = [
-  //       `https://cloudflare-ipfs.com/ipfs/${cid}`,
-  //       `https://gateway.pinata.cloud/ipfs/${cid}`,
-  //       `https://ipfs.io/ipfs/${cid}`,
-  //       `https://dweb.link/ipfs/${cid}`
-  //     ];
-
-  //     for (const url of gateways) {
-  //       try {
-  //         const response = await axios.get(url);
-  //         if (response.status === 200) {
-  //           console.log(`Fetched data from ${url}`);
-  //           console.log("response.data", response.data);
-  //           return response.data;
-  //         }
-  //       } catch (error) {
-  //         console.error(`Failed to fetch from ${url}:`, error.message);
-  //       }
-  //     }
-  //     throw new Error(`Content not available on any public gateway for CID: ${cid}`);
-  //   }
-
-  //   const getText=async(message)=>{
-  //     fetchFromIPFSGateways(message.cid)
-  // .then(data => console.log('Data:', data.text))
-  // .catch(console.error);
-  // return data.text;
-  //   }
   const groupMessagesByDate = (messages) => {
     messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     return messages.reduce((acc, message) => {
@@ -101,7 +70,6 @@ const ChatBox = ({ username, walletAddress }) => {
       return updatedLikes;
     });
 
-    // Send like action to WebSocket
     wsRef.current.send(JSON.stringify({
       type: 'like',
       username,
@@ -109,7 +77,6 @@ const ChatBox = ({ username, walletAddress }) => {
       messageUsername
     }));
 
-    // console.log("This is liked messageId", messageId);
   }, [username]);
 
   const adjustTextareaHeight = () => {
@@ -145,10 +112,6 @@ const ChatBox = ({ username, walletAddress }) => {
     });
   };
 
-  const handleLogout = () => {
-    // Your logout logic here
-    navigate('/login');
-  };
   const isOnlyEmojis = (text) => {
     const emojiRegex = /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F100}-\u{1F1FF}\u{1F200}-\u{1F2FF}\u{1F600}-\u{1F64F}\u{1F680}-\u{1F6FF}\u{1F900}-\u{1F9FF}\s]+$/u;
     return emojiRegex.test(text);
@@ -265,48 +228,30 @@ const ChatBox = ({ username, walletAddress }) => {
 
   const handleNewMessage = (message) => {
     if (message.username === username) {
-      // For own messages: just add message and scroll to bottom
       setMessages(prev => [...prev, message]);
-      // console.log('Added own message:', message);
       setTimeout(() => scrollToBottom(true), 50); // Add delay to ensure DOM update
-      // console.log('messages', message);
       setNewMessageCount(0); // Reset unread count
       scrollToBottom(true);
     } else {
-      // For others' messages: check scroll position
-      // const receivedMessage = {
-      //   ...message,text: getText(message)}
-      // console.log("receivedMessage", message);
       setMessages(prev => [...prev, message]);
-      // console.log('Added own message:', message);
       const bottomstate = isAtBottom()
-      // console.log("bottomstate", bottomstate);
       if (!bottomstate) {
-        // console.log('Scrolling to bottom', isAtBottom());
         setNewMessageCount(prev => prev + 1);
         setShowScrollButton(true);
       } else {
-        // console.log('Scrolling to bottom');
         setTimeout(() => scrollToBottom(true), 50);
         setNewMessageCount(0);
       }
     }
   };
   function updateLikes(messageID, userList) {
-    // console.log('messageID', messageID);
-    // console.log('userList', userList);
     setMessageLikes(prevLikes => {
       const _prevLikes = { ...prevLikes };
       _prevLikes[messageID] = userList;
-      // console.log('_prevLikes', _prevLikes);
       return _prevLikes;
     });
-    // setMessageLikes(prevLikes => ({
-    //     ...prevLikes,
-    //     [messageID]: userList
-    // }));
+
   }
-  // console.log('messageLikes', messageLikes);
   function hasUserLiked(messageId, username) {
     return messageLikes[messageId]?.includes(username) ? true : false;
   }
@@ -317,41 +262,32 @@ const ChatBox = ({ username, walletAddress }) => {
     }
 
     const ws = new WebSocket(backgroundUrl);
-    // console.log('WebSocket Connecting...', `${backgroundUrl}`);
     ws.onerror = (error) => {
       console.error('WebSocket Error:', error);
     };
     ws.onopen = () => {
-      // console.log('WebSocket Connected');
       wsRef.current = ws;
     };
 
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        // console.log('Received message:', data);
         if (data.type === 'history') {
           const sortedMessages = data.messages.sort((a, b) => b.timestamp - a.timestamp);
           setMessages(sortedMessages); // Set sorted messages
           data.messages.forEach((message) => {
             messageIds.current.add(message._id);
             updateLikes(message._id, message.likes);
-            // console.log("message", message);
           });
           setTimeout(() => scrollToBottom(true), 50);
           dataReceivedFlag.current = true;
         } else if (data.type === 'message' && !messageIds.current.has(data.message._id)) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
-          // console.log('Added message:', data.message);
         }
         else if (data.type === "likes") {
-          // console.log("data", data);
           const { messageId, likes } = data.message;
-          // console.log("likes", likes);
-          // console.log("messageId", messageId);
           updateLikes(messageId, likes);
-          // console.log("likes", messageLikes);
         }
       } catch (error) {
         console.log('Message processing error:', error);
@@ -384,16 +320,7 @@ const ChatBox = ({ username, walletAddress }) => {
     if (text.match(/(http|https):\/\/[^\s]+/) || text.match(/\.(jpg|jpeg|png|gif)/i)) {
       return;
     }
-    // console.log('Sending message:', JSON.stringify({
-    //   username,
-    //   publicKey: walletAddress,
-    //   text: text.trim(),
-    //   timestamp: new Date(),
-    //   read: false,
-    //   mentions: text.match(/@[\w]+/g) || []
-    // }));
     const newMessage = {
-      // _id: `temp-${Date.now()}`, // Temporary ID
       username,
       publicKey: walletAddress,
       text: text.trim(),
@@ -401,9 +328,7 @@ const ChatBox = ({ username, walletAddress }) => {
       read: false,
       mentions: text.match(/@[\w]+/g) || []
     };
-    // setMessages(prev => [...prev, newMessage]);
 
-    // console.log('Sending message:', JSON.stringify(newMessage));
     if (text.trim() && wsRef.current?.readyState === WebSocket.OPEN) {
       wsRef.current.send(JSON.stringify({
         type: 'message',
@@ -417,7 +342,6 @@ const ChatBox = ({ username, walletAddress }) => {
       setText("");
       setNewMessageCount(0);
 
-      // Add small delay to ensure DOM update
       setTimeout(() => {
         if (messageContainerRef.current) {
           messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
@@ -425,33 +349,11 @@ const ChatBox = ({ username, walletAddress }) => {
       }, 20);
     }
   };
-  if (!dataReceivedFlag.current) return <Loading />;
+  if (!dataReceivedFlag.current) return <LoadingMessage />;
   const groupedMessages = groupMessagesByDate(messages);
 
   return (
     <div className="flex flex-col overflow-hidden h-[92vh] p-0 w-full max-w-2xl mx-auto  relative">
-      {/* <div className="flex items-center justify-between p-2 ">
-        <div className="flex items-center">
-          <span className="bg-transparent">
-            <Identity
-              address={walletAddress}
-              schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-              chain={base}
-              className="bg-transparent"
-            >
-              <Avatar className='w-8 h-8 bg-transparent' />
-            </Identity>
-          </span>
-          <span className="text-green-700 text-xl bg-green-50 px-2 py-1">CurrentUser: {username}</span>
-        </div>
-      </div> */}
-
-      {/* </div> */}
-      {/* <ScrollArea 
-        ref={messageContainerRef}
-        onScroll={handleScroll}
-        className="flex-1 p-4 space-y-4"
-      > */}
       <div
         ref={messageContainerRef}
         onScroll={handleScroll}
