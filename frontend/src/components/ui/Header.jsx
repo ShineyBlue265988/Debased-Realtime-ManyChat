@@ -61,6 +61,8 @@ const Header = () => {
     handleLogOut(); // Log out from Dynamic context
     localStorage.clear();
     sessionStorage.clear();
+    localStorage.removeItem('walletAddress');
+    localStorage.removeItem('username'); // or any other relevant keys
     dispatch(logout()); // Clear Redux state
     navigate('/'); // Redirect to home after logout
   };

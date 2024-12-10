@@ -25,7 +25,7 @@ const queryClient = new QueryClient();
 
 function OnchainProviders({ children }: Props) {
   return (
-    <WagmiProvider config={wagmiConfig}>
+    <WagmiProvider config={wagmiConfig} reconnectOnMount={false}>
       <QueryClientProvider client={queryClient}>
         <OnchainKitProvider
           //   apiKey={process.env.CDP_API_KEY}
