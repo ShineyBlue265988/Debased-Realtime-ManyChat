@@ -80,7 +80,7 @@ const Header = () => {
               className="hover:scale-105 cursor-pointer"
             /> */}
             <div className="md:hidden flex items-center gap-2">
-              <button onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen}>
+              <button onClick={toggleMenu} aria-label="Toggle menu" aria-expanded={isMenuOpen} className='md:hidden'>
                 {isMenuOpen ? <FiX size={24} /> : <FiMenu size={24} />}
               </button>
             </div>
