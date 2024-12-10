@@ -476,7 +476,7 @@ const ChatBox = ({ username, walletAddress }) => {
                         <div className='flex items-center p-1'>
 
                           {(msg.badge == 'AdminBadge') && (<img src={AdminBadge} className="w-6 h-6 inline-block " alt="Admin2" />)}
-                          {(msg.badge == "VerifiedBadge" && <img src={VerifiedBadge} className="w-5 h-5 inline-block " alt="Verified" />)}
+                          {(msg.badge == "VerifiedBadge" && <img src={VerifiedBadge} className="w-6 h-6 inline-block " alt="Verified" />)}
                           {(msg.badge == "NewbBadge" && <img src={NewbBadge} className="w-6 h-6 inline-block " alt="Newb" />)}
                           {(msg.badge == "HodlerBadge" && <img src={HodlerBadge} className="w-6 h-6 inline-block " alt="Hodler" />)}
                           {(msg.badge == "ApeBadge" && <img src={ApeBadge} className="w-6 h-6 inline-block " alt="Ape" />)}

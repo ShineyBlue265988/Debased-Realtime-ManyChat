@@ -8,6 +8,8 @@ import HodlerBadge from '../components/icons/hodler.png'
 import ApeBadge from '../components/icons/ape.png'
 import DegenBadge from '../components/icons/degen.png'
 import AdminBadge from '../components/icons/admin.png'
+import Gorilla from '../components/icons/gorilla.png'
+import Skull from '../components/icons/skull.png'
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 // import ProgressBar from 'react-progressbar';
 import { Progress } from '../components/ui/progress';
@@ -65,18 +67,18 @@ const BADGES = [
         type: 'ape',
         label: 'Ape',
         level: 3,
-        icon: <Star className="w-3 h-3 mr-1" />,
+        icon: <img src={Gorilla} className="w-3 h-3 mr-1" />,
         condition: '1000+ messages & 500+ likes',
-        className: 'bg-gray-900/10 text-gray-900 hover:bg-gray-900/20 text-md',
+        className: 'bg-gray-900/10 text-gray-700 hover:bg-gray-900/20 text-md',
         badgeimage: ApeBadge
     },
     {
         type: 'degen',
         label: 'Degen',
         level: 4,
-        icon: <LucideSkull className="w-3 h-3 mr-1" />,
-        condition: '1000+ messages & 500+ likes',
-        className: 'bg-yellow-400/10 text-yellow-600 hover:bg-yellow-600/20 text-md',
+        icon: <img src={Skull} className="w-3 h-3 mr-1" />,
+        condition: '2000+ messages & 1000+ likes',
+        className: 'bg-gray-900/30 text-black hover:bg-gray-600/80 text-md',
         badgeimage: DegenBadge
     },
     {
@@ -85,7 +87,7 @@ const BADGES = [
         level: 10,
         icon: <Shield className="w-3 h-3 mr-1" />,
         condition: 'Administrator',
-        className: 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20 text-md',
+        className: 'bg-green-700/10 text-green-900 hover:bg-green-700/20 text-md',
         badgeimage: AdminBadge
     },
 ];
@@ -126,8 +128,17 @@ const Profile = ({ username, walletAddress }) => {
     if (!userData) return <Loading />;
     // console.log("User Data:", userData);
     const userBadgeClass = BADGES.find(badge => badge.level === userData.currentLevel)?.className || '';
+    const userBadgeLabel = BADGES.find(badge => badge.level === userData.currentLevel).label;
+    // switch (userData.currentLevel) {
+    //     case 0: return <CheckCircle2 className="w-3 h-3 mr-1" />;
+    //     case 1: return <Leaf className="w-3 h-3 mr-1" />;
+    //     case 2: return <Rocket className="w-3 h-3 mr-1" />;
+    //     case 3: return <Star className="w-3 h-3 mr-1" />;
+    //     case 4: return <LucideSkull className="w-3 h-3 mr-1" />;
+    //     case 10: return <Shield className="w-3 h-3 mr-1" />;
+    // }
     return (
-        <div className="container max-w-4xl mx-auto bg-white">
+        <div className="container max-w-4xl mx-auto ">
             <Card className="relative overflow-hidden max-w-2xl mx-auto bg-white shadow-lg rounded-lg">
                 <div className="absolute top-0  h-32 " />
 
@@ -161,11 +172,13 @@ const Profile = ({ username, walletAddress }) => {
                             <Badge variant="outline" className={`px-4 text-xl
                             ${userBadgeClass}
                             `}>
-                                {userData.currentLevel == 0 && "Newb User"}
-                                {userData.currentLevel == 1 && "Hodler User"}
-                                {userData.currentLevel == 1 && "Ape User"}
-                                {userData.currentLevel == 3 && "Degen User"}
-                                {userData.currentLevel == 10 && "Administrator"}
+                                {userBadgeLabel}
+                                {userData.currentLevel == 0 && <CheckCircle2 className="w-5 h-5 ml-1" />}
+                                {userData.currentLevel == 1 && <Leaf className="w-5 h-5 ml-1" />}
+                                {userData.currentLevel == 2 && <Rocket className="w-5 h-5 ml-1" />}
+                                {userData.currentLevel == 3 && <img src={Gorilla} className="w-5 h-5 ml-1" />}
+                                {userData.currentLevel == 4 && <img src={Skull} className="w-5 h-5 ml-1" />}
+                                {userData.currentLevel == 10 && <Shield className="w-5 h-5 ml-1" />} 
                             </Badge>
 
                         </div>
