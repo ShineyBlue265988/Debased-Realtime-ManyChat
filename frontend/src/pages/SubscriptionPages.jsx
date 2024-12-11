@@ -6,6 +6,8 @@ import { getWeb3Provider, getSigner } from '@dynamic-labs/ethers-v6';
 import { useDispatch } from 'react-redux';
 import { setSubscriptionEndDate } from '../store/authSlice';
 import { useSelector } from 'react-redux';
+import { ToastContainer, toast } from 'react-toastify'; // Import Toastify components
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 // Add this helper function at the top of your component
 const formatSubscriptionDate = (timestamp) => {
   const date = new Date(Number(timestamp) * 1000);
@@ -95,7 +97,7 @@ const SubscriptionPages = (address) => {
 
       // Check if the wallet is connected
       if (!primaryWallet) {
-        alert("Please connect your wallet.");
+        toast.error("Please connect your wallet.");
         return;
       }
 
@@ -121,7 +123,7 @@ const SubscriptionPages = (address) => {
       const requiredAmount = ethers.getBigInt(planFee);
       console.log("Required amount:", requiredAmount.toString());
       if (balance < requiredAmount) {
-        alert("Insufficient funds for subscription");
+        toast.error("Insufficient funds for subscription");
         return;
       }
       // Execute the payFee function
@@ -146,21 +148,22 @@ const SubscriptionPages = (address) => {
         const endDate = await contract.subscriptionEndDate(primaryWallet.address);
         const formattedDate = formatSubscriptionDate(endDate);
         setSubscriptionEndDate(formattedDate);
-        alert(`Successfully subscribed! Your subscription ends on: ${formattedDate}`);
+        toast.success(`Successfully subscribed! Your subscription ends on: ${formattedDate}`);
       } else {
-        alert("Subscription was not successful. Please try again.");
+        toast.error("Subscription was not successful. Please try again.");
       }
 
 
     } catch (error) {
       console.error("Subscription error:", error);
-      alert("Transaction failed. Please try again.");
+      toast.error("Transaction failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
   return (
     <div className="min-h-[92vh] bg-gray-50 w-full">
+      <ToastContainer className={'top-[200px]'}/> {/* Add ToastContainer for displaying toasts */}
       {/* Main Content */}
       <div className="max-w-[1440px] mx-auto px-8 py-12">
         {subscriptionEndDate && (
