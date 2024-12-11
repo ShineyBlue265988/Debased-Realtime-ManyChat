@@ -169,15 +169,6 @@ const ChatBox = ({ username, walletAddress }) => {
       return true;
     else return false;
   };
-  const requestOlderMessages = () => {
-    if (messages.length > 0) {
-      const oldestMessageTimestamp = messages[0].timestamp;
-      wsRef.current.send(JSON.stringify({
-        type: "requestOlderMessages",
-        oldestMessageTimestamp
-      }));
-    }
-  };
   const handleEmojiSelect = (emoji) => {
     setText(text + emoji.native);
     setShowEmojiPicker(false);
@@ -260,7 +251,6 @@ const ChatBox = ({ username, walletAddress }) => {
       // Prevent navigation if at the top
       if (scrollTop === 0) {
         // Do nothing or handle as needed
-        requestOlderMessages();
         return;
       }
 
@@ -330,13 +320,21 @@ const ChatBox = ({ username, walletAddress }) => {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === "recentMessages") {
-          console.log("receive recentMessages", data)
-          setMessages(data.messages);
-          scrollToBottom(true);
-        } else if (data.type === "olderMessages") {
-          setMessages(prevMessages => [...data.messages, ...prevMessages]);
-        } else if (data.type === "message" && !messageIds.current.has(data.message._id)) {
+        if (data.type === "history") {
+          const sortedMessages = data.messages.sort(
+            (a, b) => b.timestamp - a.timestamp
+          );
+          setMessages(sortedMessages); // Set sorted messages
+          data.messages.forEach((message) => {
+            messageIds.current.add(message._id);
+            updateLikes(message._id, message.likes);
+          });
+          setTimeout(() => scrollToBottom(true), 50);
+          dataReceivedFlag.current = true;
+        } else if (
+          data.type === "message" &&
+          !messageIds.current.has(data.message._id)
+        ) {
           messageIds.current.add(data.message._id);
           handleNewMessage(data.message);
         } else if (data.type === "likes") {
@@ -347,8 +345,6 @@ const ChatBox = ({ username, walletAddress }) => {
         console.log("Message processing error:", error);
       }
     };
-
-
 
     ws.onclose = () => {
       console.log("WebSocket Disconnected - Retrying in 3s");
