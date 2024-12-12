@@ -398,7 +398,7 @@ const ChatBox = ({ username, walletAddress }) => {
       return;
     }
 
-    if (showCaptcha && !captchaValue) {
+    if (showCaptcha =='' && !captchaValue) {
       toast.error("Please complete the CAPTCHA.");
       return;
     }
@@ -433,7 +433,8 @@ const ChatBox = ({ username, walletAddress }) => {
       );
       setText("");
       setNewMessageCount(0);
-      setShowCaptcha("hidden"); // Hide CAPTCHA after successful send
+      // setShowCaptcha("hidden"); // Hide CAPTCHA after successful send
+      // setCaptchaValue(true);
       setTimeout(() => {
         if (messageContainerRef.current) {
           messageContainerRef.current.scrollTop =
