@@ -54,6 +54,7 @@ const ChatBox = ({ username, walletAddress }) => {
   const [replyingTo, setReplyingTo] = useState(null);
   const [messageLikes, setMessageLikes] = useState({});
   const dataReceivedFlag = useRef(false);
+  // const inputField = document.getElementById('inputMessage');
 
   const MESSAGE_LIMIT_INTERVAL = 5000; // 5 seconds
   const MESSAGE_LIMIT_COUNT = 5; // Allow 3 messages in 5 seconds
@@ -176,6 +177,11 @@ const ChatBox = ({ username, walletAddress }) => {
   const handleTextChange = (e) => {
     const newText = e.target.value.slice(0, 140);
     // Prevent consecutive "@" symbols
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevent default behavior (new line)
+      sendMessage(e); // Call the sendMessage function
+      return;
+    }
     if (newText.endsWith("@@")) {
       setText(newText.slice(0, -1));
       return;
@@ -638,6 +644,7 @@ const ChatBox = ({ username, walletAddress }) => {
             ref={textareaRef}
             value={text}
             onChange={handleTextChange}
+            onKeyDown={handleTextChange}
             id="inputMessage"
             placeholder="Type your message..."
             className="flex-1 p-2 rounded-lg focus:outline-gray-300 outline-none w-full bg-inherit resize-none overflow-hidden"
