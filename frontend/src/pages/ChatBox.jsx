@@ -41,6 +41,8 @@ const ChatBox = ({ username, walletAddress }) => {
   const recaptchaRef = useRef(); // Ref for reCAPTCHA
   const [showCaptcha, setShowCaptcha] = useState("hidden"); // State to control CAPTCHA visibility
   const [messageCount, setMessageCount] = useState(0);
+  const [cooldownEnd, setCooldownEnd] = useState(0);
+
 
   const messageIds = useRef(new Set());
   const messagesEndRef = useRef(null);
@@ -58,6 +60,7 @@ const ChatBox = ({ username, walletAddress }) => {
 
   const MESSAGE_LIMIT_INTERVAL = 5000; // 5 seconds
   const MESSAGE_LIMIT_COUNT = 5; // Allow 3 messages in 5 seconds
+  const COOLDOWN_PERIOD = 20000; // 20 seconds cooldown after triggering CAPTCHA
 
   const forbiddenWords = ["spam", "nsfw", "nude"]; // Add more as needed
 
@@ -76,6 +79,9 @@ const ChatBox = ({ username, walletAddress }) => {
 
   const onCaptchaChange = (value) => {
     setCaptchaValue(value);
+    if (value) {
+      setCooldownEnd(0); // Reset cooldown when CAPTCHA is solved
+    }
   };
 
   const groupMessagesByDate = (messages) => {
@@ -370,18 +376,41 @@ const ChatBox = ({ username, walletAddress }) => {
       }
     };
   }, []);
-
+  
+  useEffect(() => {
+    if (cooldownEnd > Date.now()) {
+      const timer = setInterval(() => {
+        const remainingTime = Math.ceil((cooldownEnd - Date.now()) / 1000);
+        if (remainingTime > 0) {
+          toast.info(`Cooldown: ${remainingTime} seconds remaining`, { toastId: 'cooldown' });
+        } else {
+          toast.success("You can now send messages again.", { toastId: 'cooldown-end' });
+          clearInterval(timer);
+        }
+      }, 1000);
+  
+      return () => clearInterval(timer);
+    }
+  }, [cooldownEnd]);
   const sendMessage = (e) => {
     e?.preventDefault();
 
     const currentTime = Date.now();
 
+    if (currentTime < cooldownEnd) {
+      const remainingTime = Math.ceil((cooldownEnd - currentTime) / 1000);
+      toast.error(`Please wait ${remainingTime} seconds before sending another message.`);
+      return;
+    }
+
+
     // Rate limiting check
     if (currentTime - lastMessageTime < MESSAGE_LIMIT_INTERVAL) {
       setMessageCount((prevCount) => prevCount + 1);
       if (messageCount >= MESSAGE_LIMIT_COUNT) {
-        toast.error("You are sending messages too quickly. Please wait a moment.");
         setShowCaptcha(""); // Show CAPTCHA when rate limit is exceeded
+        setCooldownEnd(currentTime + COOLDOWN_PERIOD);
+        toast.error("You are sending messages too quickly. Please complete the CAPTCHA and wait.");
         recaptchaRef.current.reset(); // Reset CAPTCHA widget
         setCaptchaValue(null);
         return;
