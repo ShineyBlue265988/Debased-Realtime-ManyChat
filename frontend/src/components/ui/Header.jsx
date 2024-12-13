@@ -69,7 +69,7 @@ const Header = () => {
 
 
   return (
-    <header className="bg-white shadow-md w-full border-b-4 border-gray-200">
+    <header className="bg-white shadow-md w-full border-b-4 border-gray-200 max-h-8vh ">
       <div className="max-w-[1440px] mx-auto px-4 md:px-8 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
