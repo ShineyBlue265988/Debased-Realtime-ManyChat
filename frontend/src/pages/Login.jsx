@@ -121,7 +121,7 @@ const Login = () => {
           </div>
         </section>
         <div className="mt-6">
-          <div className="flex text-center md:flex-row gap-4 items-center justify-center px-4 md:px-[400px]">
+          <div className="flex  md:flex-row gap-4 items-center justify-center px-4 md:px-[400px]">
             {/* <div className='order-2 md:order-1'>
               <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 blur-3xl" />
               <img
@@ -130,9 +130,9 @@ const Login = () => {
                 className="relative rounded-2xl shadow-2xl "
               />
             </div> */}
-            <div className='order-1 md:order-2 md:px-12'>
+            <div className='order-1 md:order-2 max-w-5xl'>
               <h2 className="text-4xl font-bold mb-6">What is deBase?</h2>
-              <p className="text-gray-600 text-xl leading-relaxed text-start">
+              <p className="text-black text-lg leading-relaxed text-start">
                 deBase is a new kind of social space where crypto users connect with their Ethereum identity.
                 <br />
                 Whether you’re here to share ideas, join the banter, or just see what others are saying, deBase keeps it real and engaging.
@@ -142,7 +142,7 @@ const Login = () => {
         </div>
       </main>
       <section className="container mx-auto px-4 pt-24 pb-8">
-        <div className="max-w-5xl mx-auto flex flex-col items-center justify-start md:flex-row">
+        <div className="max-w-5xl mx-auto flex flex-col  justify-start md:flex-row">
           <div className="mb-12 mr-4">
             <h2 className="text-4xl md:text-5xl font-bold mb-4">
               Questions?
