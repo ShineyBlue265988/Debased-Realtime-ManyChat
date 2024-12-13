@@ -130,9 +130,9 @@ const Login = () => {
                 className="relative rounded-2xl shadow-2xl "
               />
             </div> */}
-            <div className='order-1 md:order-2 max-w-5xl'>
-              <h2 className="text-4xl font-bold mb-6">What is deBase?</h2>
-              <p className="text-black text-lg leading-relaxed text-start">
+            <div className='order-1 md:order-2 max-w-4xl'>
+              <h2 className="text-3xl font-bold mb-6 sm:text-center flex lg:text-start ">What is deBase?</h2>
+              <p className="text-black text-lg leading-relaxed text-start text-3xl">
                 deBase is a new kind of social space where crypto users connect with their Ethereum identity.
                 <br />
                 Whether you’re here to share ideas, join the banter, or just see what others are saying, deBase keeps it real and engaging.
@@ -142,77 +142,77 @@ const Login = () => {
         </div>
       </main>
       <section className="container mx-auto px-4 pt-24 pb-8">
-        <div className="max-w-5xl mx-auto flex flex-col  justify-start md:flex-row">
+        <div className="max-w-4xl mx-auto flex flex-col  justify-start md:flex-row">
           <div className="mb-12 mr-4">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-5xl font-bold mb-4  text-center md:text-start">
               Questions?
               <br />
               See our FAQ
             </h2>
-            <p className="text-lg text-black">
-              Get more answers in our FAQ, and view our developer docs to see how you can build with Basenames.
+            <p className="text-lg text-black ">
+              Get more answers in our FAQ, and view our developer docs to see how you can build with Base Names.
             </p>
           </div>
           <Accordion type="single" collapsible className="w-full space-y-2">
             <AccordionItem value="item-1" className="border-b w-full">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 What is deBase?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 deBase is a unique chat platform that uses Base and Ethereum identities to create an open, fun, and lively chat experience for crypto enthusiasts.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-2" className="border-b w-full">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 What are the registration fees?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 Just a small monthly subscription fee (e.g., $2) to access the deBase chat room and become part of the conversation.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-3" className="border-b w-full ">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 How do I get started?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 Log in with your Base wallet, pay the small monthly fee, and jump right into the chat room!
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-4" className="border-b">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 How can I use Basenames?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 You can use your Basename across apps in the Base ecosystem, starting with base.org, Onchain Registry, and Onchain Summer Pass. You can also use it for sending and receiving on Base and other EVM chains.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-5" className="border-b">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 Can I use my existing Ethereum name?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 Yes! Your Base and Ethereum name is your ticket to the deBase community. Just connect your wallet and start chatting.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-6" className="border-b">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 How do I update my profile or identity?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 You can update your Ethereum name or wallet profile anytime and bring your unique identity to the deBase chat.
               </AccordionContent>
             </AccordionItem>
 
             <AccordionItem value="item-7" className="border-b">
-              <AccordionTrigger className="text-lg font-medium text-left">
+              <AccordionTrigger className="text-lg font-bold text-left">
                 How do I contact support?
               </AccordionTrigger>
-              <AccordionContent className="text-md">
+              <AccordionContent className="text-md px-2">
                 Chat with us directly on deBase.  We won't ask for your private keys or seed phrases.  Keep those private.
               </AccordionContent>
             </AccordionItem>
